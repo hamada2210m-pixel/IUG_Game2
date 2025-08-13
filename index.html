@@ -164,7 +164,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // =================================================
-            // 1. تعريف بيانات اللعبة (الأسئلة والمراحل) - (بدون تغيير)
+            // 1. تعريف بيانات اللعبة (الأسئلة والمراحل)
             // =================================================
             const gameData = {
                 'gate': { image: 'hares 1.png', question: 'أهلاً بك في الجامعة الإسلامية! للدخول، أجب عن السؤال التالي: في أي عام تأسست الجامعة؟', options: { '1978': '1978', '1982': '1982', '1960': '1960', '1990': '1990' }, correctAnswer: '1978', points: 1, correctFeedback: 'رائع! لقد حصلت على 1 جنيه فلسطيني. البوابة الآن مفتوحة أمامك!', incorrectFeedback: 'إجابة غير صحيحة. حاول مرة أخرى!' },
@@ -173,13 +173,13 @@
             };
 
             // =================================================
-            // 2. حالة اللعبة (معلومات اللاعب الحالية) - (⭐ تم التعديل هنا)
+            // 2. حالة اللعبة (معلومات اللاعب الحالية)
             // =================================================
             const gameState = {
                 playerName: '',
                 playerPhone: '',
                 tawjihiYear: '',
-                uniquePlayerId: null, // <-- لحفظ الرقم التعريفي الفريد
+                uniquePlayerId: null,
                 score: 0,
                 currentScene: null,
                 currentSubQuestionIndex: 0,
@@ -187,7 +187,7 @@
             };
 
             // =================================================
-            // 3. جلب عناصر واجهة المستخدم - (بدون تغيير)
+            // 3. جلب عناصر واجهة المستخدم
             // =================================================
             const startScreen = document.getElementById('start-screen');
             const gameSceneContainer = document.getElementById('game-scene');
@@ -203,34 +203,25 @@
             // =================================================
             // 4. وظائف اللعبة الرئيسية
             // =================================================
-
-            // ⭐ تم استبدال هذه الدالة بالكامل لتصبح ذكية
             function startGame(event) {
                 event.preventDefault();
                 const nameInput = document.getElementById('name').value.trim();
                 const phoneInput = document.getElementById('phone').value.trim();
                 const tawjihiYearInput = document.getElementById('tawjihi-year').value.trim();
-
                 if (nameInput === '' || phoneInput === '' || tawjihiYearInput === '') {
                     alert('الرجاء تعبئة جميع الحقول.');
                     return;
                 }
-
                 const startButton = event.target.querySelector('.action-button');
                 startButton.disabled = true;
                 startButton.textContent = 'جاري التسجيل...';
-
-                // استدعاء دالة التسجيل وانتظار الرد
                 registerPlayer(nameInput, phoneInput, tawjihiYearInput)
                     .then(data => {
                         if (data.result === 'success' && data.uniqueId) {
-                            // تم التسجيل بنجاح! نحفظ الرقم التعريفي
                             gameState.playerName = nameInput;
                             gameState.playerPhone = phoneInput;
                             gameState.tawjihiYear = tawjihiYearInput;
-                            gameState.uniquePlayerId = data.uniqueId; // حفظ الرقم التعريفي
-
-                            // الآن نبدأ اللعبة
+                            gameState.uniquePlayerId = data.uniqueId;
                             updatePlayerStats();
                             startScreen.classList.add('hidden');
                             gameSceneContainer.classList.remove('hidden');
@@ -239,7 +230,6 @@
                                 renderScene('gate');
                             });
                         } else {
-                            // حدث خطأ
                             alert('حدث خطأ أثناء التسجيل. الرجاء المحاولة مرة أخرى. الخطأ: ' + (data.message || 'Unknown error'));
                             startButton.disabled = false;
                             startButton.textContent = 'ابدأ الرحلة!';
@@ -252,36 +242,141 @@
                     });
             }
 
-            // ⭐ تم تعديل هذه الدالة لتحديث النتيجة فقط
+            function checkGameCompletion() {
+                const totalScenesWithPoints = Object.keys(gameData).filter(key => {
+                    const scene = gameData[key];
+                    if (Array.isArray(scene)) return true; // like library
+                    return scene.points > 0; // like gate
+                });
+
+                let completedScenes = 0;
+                totalScenesWithPoints.forEach(sceneId => {
+                    const scene = gameData[sceneId];
+                    if (Array.isArray(scene)) {
+                        const lastQuestionId = scene[scene.length - 1].id;
+                        if (gameState.answeredQuestions.has(lastQuestionId)) {
+                            completedScenes++;
+                        }
+                    } else {
+                        if (gameState.answeredQuestions.has(sceneId)) {
+                            completedScenes++;
+                        }
+                    }
+                });
+
+                if (completedScenes === totalScenesWithPoints.length) {
+                    showEndScene();
+                }
+            }
+
             function showEndScene() {
                 document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
                 const endScene = document.getElementById('end-scene');
                 const finalMessage = document.getElementById('final-message');
-                
                 finalMessage.textContent = `أحسنت يا ${gameState.playerName}! لقد أنهيت الرحلة برصيد ${gameState.score} جنيه.`;
-                
                 endScene.classList.remove('hidden');
+                // The final score is already sent after the last question, so no need to send it again here.
+            }
+            
+            function renderScene(sceneId, questionIndex = 0, pushState = true) { 
+                if (pushState) { 
+                    history.pushState({ scene: sceneId, index: questionIndex }, ''); 
+                } 
+                document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden')); 
+                let sceneData = gameData[sceneId]; 
+                const sceneElement = document.getElementById(`${sceneId}-scene`); 
+                gameState.currentScene = sceneId; 
+                if (Array.isArray(sceneData)) { 
+                    gameState.currentSubQuestionIndex = questionIndex; 
+                    sceneData = sceneData[questionIndex]; 
+                } 
+                if (!sceneData || !sceneElement) { 
+                    if (sceneElement) sceneElement.classList.remove('hidden'); 
+                    return; 
+                } 
+                let optionsHTML = ''; 
+                for (const key in sceneData.options) { 
+                    optionsHTML += `<button class="option-btn" data-answer="${key}">${sceneData.options[key]}</button>`; 
+                } 
+                sceneElement.innerHTML = ` <img src="${sceneData.image}" alt="صورة مشهد ${sceneId}" class="scene-image"> <div class="scene-content"> <p class="scene-title">${sceneData.question}</p> <div class="options-container">${optionsHTML}</div> <div class="feedback-message"></div> </div> `; 
+                sceneElement.classList.remove('hidden'); 
+                sceneElement.querySelector('.options-container').addEventListener('click', handleAnswer); 
+            }
+            
+            function handleAnswer(event) { 
+                if (!event.target.classList.contains('option-btn')) return; 
+                const sceneId = gameState.currentScene; 
+                let sceneData = gameData[sceneId]; 
+                let questionId = sceneId; 
+                if (Array.isArray(sceneData)) { 
+                    sceneData = sceneData[gameState.currentSubQuestionIndex]; 
+                    questionId = sceneData.id; 
+                } 
+                if (gameState.answeredQuestions.has(questionId)) return; 
+                const selectedAnswer = event.target.dataset.answer; 
+                const feedbackElement = document.querySelector(`#${sceneId}-scene .feedback-message`); 
+                
+                if (sceneData.correctAnswer === null) { 
+                    gameState.answeredQuestions.add(questionId); 
+                    feedbackElement.textContent = sceneData.correctFeedback; 
+                    feedbackElement.classList.add('info'); 
+                    feedbackElement.style.display = 'block'; 
+                    setTimeout(() => renderScene('map'), 2000); 
+                    return; 
+                } 
+                
+                if (selectedAnswer === sceneData.correctAnswer) { 
+                    gameState.score += sceneData.points; 
+                    gameState.answeredQuestions.add(questionId); 
+                    updatePlayerStats(); 
+                    
+                    // ⭐ الحل: تحديث النتيجة فوراً بعد كل إجابة صحيحة
+                    if (gameState.uniquePlayerId) {
+                        updatePlayerScore(gameState.uniquePlayerId, gameState.score);
+                    }
 
-                // استدعاء دالة تحديث النتيجة بالرقم التعريفي
-                if (gameState.uniquePlayerId) {
-                    updatePlayerScore(gameState.uniquePlayerId, gameState.score);
-                } else {
-                    console.error("خطأ: لا يمكن تحديث النتيجة لعدم وجود رقم تعريفي.");
-                }
+                    event.target.style.backgroundColor = '#28a745'; 
+                    event.target.style.color = '#fff'; 
+                    feedbackElement.textContent = sceneData.correctFeedback; 
+                    feedbackElement.classList.add('correct'); 
+                    feedbackElement.style.display = 'block'; 
+                    
+                    setTimeout(() => { 
+                        let isLastQuestionOfScene = false;
+                        if (Array.isArray(gameData[sceneId])) { 
+                            const nextQuestionIndex = gameState.currentSubQuestionIndex + 1; 
+                            if (nextQuestionIndex < gameData[sceneId].length) { 
+                                renderScene(sceneId, nextQuestionIndex); 
+                            } else { 
+                                showModal("إنجاز رائع!", `لقد أكملت جميع تحديات المكتبة بنجاح. لنعد إلى الخريطة.`, () => { 
+                                    renderScene('map'); 
+                                    checkGameCompletion();
+                                }); 
+                            } 
+                        } else { 
+                           renderScene('map'); 
+                           checkGameCompletion();
+                        } 
+                    }, 2000); 
+                } else { 
+                    event.target.style.backgroundColor = '#dc3545'; 
+                    event.target.style.color = '#fff'; 
+                    event.target.disabled = true; 
+                    feedbackElement.textContent = sceneData.incorrectFeedback; 
+                    feedbackElement.classList.add('incorrect'); 
+                    feedbackElement.style.display = 'block'; 
+                } 
             }
 
-            // (باقي دوال الجافاسكربت هنا بدون تغيير)
-            function renderScene(sceneId, questionIndex = 0, pushState = true) { if (pushState) { history.pushState({ scene: sceneId, index: questionIndex }, ''); } document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden')); let sceneData = gameData[sceneId]; const sceneElement = document.getElementById(`${sceneId}-scene`); gameState.currentScene = sceneId; if (Array.isArray(sceneData)) { gameState.currentSubQuestionIndex = questionIndex; sceneData = sceneData[questionIndex]; } if (!sceneData || !sceneElement) { if (sceneElement) sceneElement.classList.remove('hidden'); return; } let optionsHTML = ''; for (const key in sceneData.options) { optionsHTML += `<button class="option-btn" data-answer="${key}">${sceneData.options[key]}</button>`; } sceneElement.innerHTML = ` <img src="${sceneData.image}" alt="صورة مشهد ${sceneId}" class="scene-image"> <div class="scene-content"> <p class="scene-title">${sceneData.question}</p> <div class="options-container">${optionsHTML}</div> <div class="feedback-message"></div> </div> `; sceneElement.classList.remove('hidden'); sceneElement.querySelector('.options-container').addEventListener('click', handleAnswer); }
-            function handleAnswer(event) { if (!event.target.classList.contains('option-btn')) return; const sceneId = gameState.currentScene; let sceneData = gameData[sceneId]; let questionId = sceneId; if (Array.isArray(sceneData)) { sceneData = sceneData[gameState.currentSubQuestionIndex]; questionId = sceneData.id; } if (gameState.answeredQuestions.has(questionId)) return; const selectedAnswer = event.target.dataset.answer; const feedbackElement = document.querySelector(`#${sceneId}-scene .feedback-message`); if (sceneData.correctAnswer === null) { gameState.answeredQuestions.add(questionId); feedbackElement.textContent = sceneData.correctFeedback; feedbackElement.classList.add('info'); feedbackElement.style.display = 'block'; setTimeout(() => renderScene('map'), 2000); return; } if (selectedAnswer === sceneData.correctAnswer) { gameState.score += sceneData.points; gameState.answeredQuestions.add(questionId); updatePlayerStats(); event.target.style.backgroundColor = '#28a745'; event.target.style.color = '#fff'; feedbackElement.textContent = sceneData.correctFeedback; feedbackElement.classList.add('correct'); feedbackElement.style.display = 'block'; setTimeout(() => { if (Array.isArray(gameData[sceneId])) { const nextQuestionIndex = gameState.currentSubQuestionIndex + 1; if (nextQuestionIndex < gameData[sceneId].length) { renderScene(sceneId, nextQuestionIndex); } else { showModal("إنجاز رائع!", `لقد أكملت جميع تحديات المكتبة بنجاح. لنعد إلى الخريطة.`, () => { renderScene('map'); }); } } else { if (gameState.answeredQuestions.size === Object.keys(gameData).length) { showEndScene(); } else { renderScene('map'); } } }, 2000); } else { event.target.style.backgroundColor = '#dc3545'; event.target.style.color = '#fff'; event.target.disabled = true; feedbackElement.textContent = sceneData.incorrectFeedback; feedbackElement.classList.add('incorrect'); feedbackElement.style.display = 'block'; } }
             function updatePlayerStats() { playerNameSpan.textContent = `اللاعب: ${gameState.playerName}`; playerScoreSpan.innerHTML = `الرصيد: <span id="player-score-value">${gameState.score}</span> جنيه`; }
             function showModal(title, text, callback) { modalTitle.textContent = title; modalText.textContent = text; modal.classList.remove('hidden'); modalCloseBtn.addEventListener('click', () => { modal.classList.add('hidden'); if (callback) callback(); }, { once: true }); }
 
             // =================================================
-            // 5. ربط الأحداث بالوظائف - (بدون تغيير)
+            // 5. ربط الأحداث بالوظائف
             // =================================================
             playerForm.addEventListener('submit', startGame);
             document.getElementById('map-scene').addEventListener('click', (e) => { const button = e.target.closest('.option-btn'); if(button) { const destination = button.dataset.destination; const destinationData = gameData[destination]; if (Array.isArray(destinationData) && gameState.answeredQuestions.has(destinationData[destinationData.length - 1].id)) { showModal("مكان مألوف!", "لقد أكملت جميع تحديات هذا المكان. اختر وجهة أخرى.", null); } else if (gameState.answeredQuestions.has(destination)) { showModal("مكان مألوف!", "لقد قمت بزيارة هذا المكان بالفعل. اختر وجهة أخرى.", null); } else if (destinationData) { renderScene(destination); } else { showModal("قيد الإنشاء!", "هذا الجزء من الجامعة سيتم افتتاحه قريباً في التحديثات القادمة للعبة.", null); } } });
-            document.getElementById('restart-btn').addEventListener('click', () => { location.reload(); }); // أسهل طريقة لإعادة البدء
+            document.getElementById('restart-btn').addEventListener('click', () => { location.reload(); });
             window.addEventListener('popstate', (event) => { if (event.state && event.state.scene) { renderScene(event.state.scene, event.state.index, false); } else { location.reload(); } });
         });
     </script>

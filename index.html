@@ -48,6 +48,7 @@
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
+            animation: fadeIn 0.5s ease-out; /* ⭐ إضافة حركة */
         }
         .logo { max-width: 150px; margin-bottom: 20px; }
         h1 { color: #004422; margin-bottom: 10px; }
@@ -61,7 +62,7 @@
         .hidden { display: none !important; }
         #player-stats { position: fixed; top: 15px; left: 15px; background-color: rgba(0, 68, 34, 0.9); color: white; padding: 10px 15px; border-radius: 8px; font-size: 16px; font-weight: bold; z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,0.2); display: flex; gap: 15px; align-items: center; }
         #player-score { background-color: #fdd835; color: #333; padding: 5px 10px; border-radius: 5px; }
-        .game-stage { background-color: #fff; padding: 0; border-radius: 15px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); text-align: center; width: 100%; box-sizing: border-box; overflow: hidden; }
+        .game-stage { background-color: #fff; padding: 0; border-radius: 15px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); text-align: center; width: 100%; box-sizing: border-box; overflow: hidden; animation: fadeIn 0.5s ease-out; } /* ⭐ إضافة حركة */
         .scene-image { width: 100%; height: auto; display: block; }
         .scene-content { padding: 25px; }
         .scene-title { font-size: 24px; font-weight: bold; color: #004422; margin-bottom: 20px; }
@@ -75,6 +76,8 @@
         .modal { position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; direction: rtl; }
         .modal-content { background-color: #fff; padding: 30px; border-radius: 15px; text-align: center; width: 90%; max-width: 400px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); animation: slide-down 0.4s ease-out; }
         @keyframes slide-down { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        /* ⭐ إضافة حركة الظهور */
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         .modal-content h2 { color: #006633; margin-bottom: 10px; }
         .modal-content p { color: #555; font-size: 16px; }
         #map-scene .options-container .option-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; font-size: 18px; padding: 25px 15px; }
@@ -83,6 +86,10 @@
     </style>
 </head>
 <body>
+
+    <!-- ⭐ إضافة عناصر الصوت -->
+    <audio id="correct-sound" src="https://actions.google.com/sounds/v1/coins/coin_drop.ogg"></audio>
+    <audio id="incorrect-sound" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"></audio>
 
     <div class="game-container">
         <div id="start-screen">
@@ -163,18 +170,12 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // =================================================
-            // 1. تعريف بيانات اللعبة (الأسئلة والمراحل)
-            // =================================================
             const gameData = {
                 'gate': { image: 'hares 1.png', question: 'أهلاً بك في الجامعة الإسلامية! للدخول، أجب عن السؤال التالي: في أي عام تأسست الجامعة؟', options: { '1978': '1978', '1982': '1982', '1960': '1960', '1990': '1990' }, correctAnswer: '1978', points: 1, correctFeedback: 'رائع! لقد حصلت على 1 جنيه فلسطيني. البوابة الآن مفتوحة أمامك!', incorrectFeedback: 'إجابة غير صحيحة. حاول مرة أخرى!' },
                 'library': [ { id: 'library_q1', image: 'library_question.png', question: 'تضم مكتبتنا كنزاً معرفياً ضخماً. كم عدد المراجع الإلكترونية التي توفرها؟', options: { '100k': 'أكثر من 100 ألف مرجع الكتروني', '150k': 'أكثر من 150 ألف مرجع الكتروني', '50k': 'أقل من 50 ألف مرجع الكتروني', '200k': 'أكثر من 200 ألف مرجع الكتروني' }, correctAnswer: '150k', points: 2, correctFeedback: 'إجابة ممتازة! معرفتك دقيقة. لقد ربحت 2 جنيه. لننتقل للتحدي التالي.', incorrectFeedback: 'حاول مرة أخرى! المعرفة قوة.' }, { id: 'library_q2', image: 'library_question_2.png', question: 'هل توفر المكتبة قاعات هادئة ومخصصة للدراسة؟', options: { 'yes': 'نعم، توفر قاعات هادئة', 'no': 'لا، المكتبة للكتب فقط' }, correctAnswer: 'yes', points: 1, correctFeedback: 'بالتأكيد! راحتك أثناء الدراسة تهمنا. لقد ربحت 1 جنيه إضافي.', incorrectFeedback: 'إجابة غير صحيحة. المكتبة مكان مثالي للدراسة.' }, { id: 'library_q3', image: 'library_question_3.png', question: 'كيف تساعدك المكتبة في أبحاثك الجامعية؟', options: { 'resources': 'توفر مصادر ومراجع متنوعة', 'writes_for_you': 'تكتب البحث بدلاً عنك' }, correctAnswer: 'resources', points: 1, correctFeedback: 'صحيح! المكتبة هي شريكك الأول في البحث العلمي. ربحت 1 جنيه.', incorrectFeedback: 'إجابة غير دقيقة. المكتبة تدعمك بالمصادر لا بالقيام بالعمل عنك.' }, { id: 'library_q4', image: 'library_question_4.png', question: 'هل توفر المكتبة مواد رقمية يمكن الوصول إليها عن بعد؟', options: { 'yes_ebooks': 'نعم، توفر كتباً إلكترونية', 'no_digital': 'لا، كل المواد ورقية فقط' }, correctAnswer: 'yes_ebooks', points: 1, correctFeedback: 'أحسنت! يمكنك الوصول لكنز معرفي من أي مكان. لقد ربحت آخر جنيه في هذه المرحلة.', incorrectFeedback: 'إجابة غير صحيحة. العصر الرقمي في قلب مكتبتنا.' } ],
                 'cafeteria': { image: 'https://placehold.co/400x250/fd7e14/FFFFFF?text=كافتيريا+شهية', question: 'بعد يوم دراسي، ما هي وجبتك المفضلة من كافتيريا الجامعة؟ (هذا سؤال ترويحي بدون نقاط)', options: { 'shawarma': 'شاورما', 'burger': 'برجر', 'salad': 'سلطة صحية' }, correctAnswer: null, points: 0, correctFeedback: 'اختيار شهي! بالهناء والشفاء. لنكمل جولتنا.' }
             };
 
-            // =================================================
-            // 2. حالة اللعبة (معلومات اللاعب الحالية)
-            // =================================================
             const gameState = {
                 playerName: '',
                 playerPhone: '',
@@ -186,9 +187,6 @@
                 answeredQuestions: new Set()
             };
 
-            // =================================================
-            // 3. جلب عناصر واجهة المستخدم
-            // =================================================
             const startScreen = document.getElementById('start-screen');
             const gameSceneContainer = document.getElementById('game-scene');
             const playerForm = document.getElementById('player-form');
@@ -199,10 +197,10 @@
             const modalTitle = document.getElementById('modal-title');
             const modalText = document.getElementById('modal-text');
             const modalCloseBtn = document.getElementById('modal-close-btn');
+            // ⭐ جلب عناصر الصوت
+            const correctSound = document.getElementById('correct-sound');
+            const incorrectSound = document.getElementById('incorrect-sound');
 
-            // =================================================
-            // 4. وظائف اللعبة الرئيسية
-            // =================================================
             function startGame(event) {
                 event.preventDefault();
                 const nameInput = document.getElementById('name').value.trim();
@@ -242,66 +240,20 @@
                     });
             }
 
-            function checkGameCompletion() {
-                const totalScenesWithPoints = Object.keys(gameData).filter(key => {
-                    const scene = gameData[key];
-                    if (Array.isArray(scene)) return true; // like library
-                    return scene.points > 0; // like gate
-                });
-
-                let completedScenes = 0;
-                totalScenesWithPoints.forEach(sceneId => {
-                    const scene = gameData[sceneId];
-                    if (Array.isArray(scene)) {
-                        const lastQuestionId = scene[scene.length - 1].id;
-                        if (gameState.answeredQuestions.has(lastQuestionId)) {
-                            completedScenes++;
-                        }
-                    } else {
-                        if (gameState.answeredQuestions.has(sceneId)) {
-                            completedScenes++;
-                        }
-                    }
-                });
-
-                if (completedScenes === totalScenesWithPoints.length) {
-                    showEndScene();
-                }
-            }
-
             function showEndScene() {
                 document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
                 const endScene = document.getElementById('end-scene');
                 const finalMessage = document.getElementById('final-message');
                 finalMessage.textContent = `أحسنت يا ${gameState.playerName}! لقد أنهيت الرحلة برصيد ${gameState.score} جنيه.`;
                 endScene.classList.remove('hidden');
-                // The final score is already sent after the last question, so no need to send it again here.
+                if (gameState.uniquePlayerId) {
+                    updatePlayerScore(gameState.uniquePlayerId, gameState.score);
+                } else {
+                    console.error("خطأ: لا يمكن تحديث النتيجة لعدم وجود رقم تعريفي.");
+                }
             }
             
-            function renderScene(sceneId, questionIndex = 0, pushState = true) { 
-                if (pushState) { 
-                    history.pushState({ scene: sceneId, index: questionIndex }, ''); 
-                } 
-                document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden')); 
-                let sceneData = gameData[sceneId]; 
-                const sceneElement = document.getElementById(`${sceneId}-scene`); 
-                gameState.currentScene = sceneId; 
-                if (Array.isArray(sceneData)) { 
-                    gameState.currentSubQuestionIndex = questionIndex; 
-                    sceneData = sceneData[questionIndex]; 
-                } 
-                if (!sceneData || !sceneElement) { 
-                    if (sceneElement) sceneElement.classList.remove('hidden'); 
-                    return; 
-                } 
-                let optionsHTML = ''; 
-                for (const key in sceneData.options) { 
-                    optionsHTML += `<button class="option-btn" data-answer="${key}">${sceneData.options[key]}</button>`; 
-                } 
-                sceneElement.innerHTML = ` <img src="${sceneData.image}" alt="صورة مشهد ${sceneId}" class="scene-image"> <div class="scene-content"> <p class="scene-title">${sceneData.question}</p> <div class="options-container">${optionsHTML}</div> <div class="feedback-message"></div> </div> `; 
-                sceneElement.classList.remove('hidden'); 
-                sceneElement.querySelector('.options-container').addEventListener('click', handleAnswer); 
-            }
+            function renderScene(sceneId, questionIndex = 0, pushState = true) { if (pushState) { history.pushState({ scene: sceneId, index: questionIndex }, ''); } document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden')); let sceneData = gameData[sceneId]; const sceneElement = document.getElementById(`${sceneId}-scene`); gameState.currentScene = sceneId; if (Array.isArray(sceneData)) { gameState.currentSubQuestionIndex = questionIndex; sceneData = sceneData[questionIndex]; } if (!sceneData || !sceneElement) { if (sceneElement) sceneElement.classList.remove('hidden'); return; } let optionsHTML = ''; for (const key in sceneData.options) { optionsHTML += `<button class="option-btn" data-answer="${key}">${sceneData.options[key]}</button>`; } sceneElement.innerHTML = ` <img src="${sceneData.image}" alt="صورة مشهد ${sceneId}" class="scene-image"> <div class="scene-content"> <p class="scene-title">${sceneData.question}</p> <div class="options-container">${optionsHTML}</div> <div class="feedback-message"></div> </div> `; sceneElement.classList.remove('hidden'); sceneElement.querySelector('.options-container').addEventListener('click', handleAnswer); }
             
             function handleAnswer(event) { 
                 if (!event.target.classList.contains('option-btn')) return; 
@@ -326,11 +278,11 @@
                 } 
                 
                 if (selectedAnswer === sceneData.correctAnswer) { 
+                    correctSound.play(); // ⭐ تشغيل صوت الإجابة الصحيحة
                     gameState.score += sceneData.points; 
                     gameState.answeredQuestions.add(questionId); 
                     updatePlayerStats(); 
                     
-                    // ⭐ الحل: تحديث النتيجة فوراً بعد كل إجابة صحيحة
                     if (gameState.uniquePlayerId) {
                         updatePlayerScore(gameState.uniquePlayerId, gameState.score);
                     }
@@ -342,7 +294,6 @@
                     feedbackElement.style.display = 'block'; 
                     
                     setTimeout(() => { 
-                        let isLastQuestionOfScene = false;
                         if (Array.isArray(gameData[sceneId])) { 
                             const nextQuestionIndex = gameState.currentSubQuestionIndex + 1; 
                             if (nextQuestionIndex < gameData[sceneId].length) { 
@@ -350,15 +301,14 @@
                             } else { 
                                 showModal("إنجاز رائع!", `لقد أكملت جميع تحديات المكتبة بنجاح. لنعد إلى الخريطة.`, () => { 
                                     renderScene('map'); 
-                                    checkGameCompletion();
                                 }); 
                             } 
                         } else { 
                            renderScene('map'); 
-                           checkGameCompletion();
                         } 
                     }, 2000); 
                 } else { 
+                    incorrectSound.play(); // ⭐ تشغيل صوت الإجابة الخاطئة
                     event.target.style.backgroundColor = '#dc3545'; 
                     event.target.style.color = '#fff'; 
                     event.target.disabled = true; 
@@ -371,9 +321,6 @@
             function updatePlayerStats() { playerNameSpan.textContent = `اللاعب: ${gameState.playerName}`; playerScoreSpan.innerHTML = `الرصيد: <span id="player-score-value">${gameState.score}</span> جنيه`; }
             function showModal(title, text, callback) { modalTitle.textContent = title; modalText.textContent = text; modal.classList.remove('hidden'); modalCloseBtn.addEventListener('click', () => { modal.classList.add('hidden'); if (callback) callback(); }, { once: true }); }
 
-            // =================================================
-            // 5. ربط الأحداث بالوظائف
-            // =================================================
             playerForm.addEventListener('submit', startGame);
             document.getElementById('map-scene').addEventListener('click', (e) => { const button = e.target.closest('.option-btn'); if(button) { const destination = button.dataset.destination; const destinationData = gameData[destination]; if (Array.isArray(destinationData) && gameState.answeredQuestions.has(destinationData[destinationData.length - 1].id)) { showModal("مكان مألوف!", "لقد أكملت جميع تحديات هذا المكان. اختر وجهة أخرى.", null); } else if (gameState.answeredQuestions.has(destination)) { showModal("مكان مألوف!", "لقد قمت بزيارة هذا المكان بالفعل. اختر وجهة أخرى.", null); } else if (destinationData) { renderScene(destination); } else { showModal("قيد الإنشاء!", "هذا الجزء من الجامعة سيتم افتتاحه قريباً في التحديثات القادمة للعبة.", null); } } });
             document.getElementById('restart-btn').addEventListener('click', () => { location.reload(); });

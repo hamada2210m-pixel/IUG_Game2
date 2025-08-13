@@ -1,8 +1,6 @@
-// =================================================================
-// ملف saveData.js - النسخة النهائية (تاريخ: 13 أغسطس 2025)
-// =================================================================
+// saveData.js - الكود النهائي والمحدث بتاريخ 13 أغسطس 2025
 
-// لقد تم وضع الرابط الجديد والصحيح الذي أرسلته لي
+// لقد تم وضع الرابط الجديد والصحيح هنا
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-lE41eY0lEWEOxZevGyTMxNbpY2zTmRzWa3DEAd5Dc6O72GgtMA/exec';
 
 // دالة للتسجيل الفوري
@@ -13,19 +11,15 @@ function registerPlayer(name, phone, year) {
   formData.append('phone', phone);
   formData.append('year', year);
 
+  // إرجاع الوعد (Promise) للعبة لكي تنتظر الرد
   return fetch(SCRIPT_URL, {
     method: 'POST',
     body: formData,
   }).then(response => response.json());
 }
 
-// دالة لتحديث النتيجة بشكل فوري
+// دالة لتحديث النتيجة في النهاية
 function updatePlayerScore(uniqueId, score) {
-  if (!uniqueId) {
-      console.error("Attempted to update score without a uniqueId.");
-      return; // لا ترسل الطلب إذا لم يكن هناك رقم تعريفي
-  }
-  
   const formData = new FormData();
   formData.append('action', 'updateScore');
   formData.append('uniqueId', uniqueId);
@@ -38,7 +32,7 @@ function updatePlayerScore(uniqueId, score) {
     .then(response => response.json())
     .then(data => {
       if (data.result === 'success') {
-        console.log(`Score updated to: ${score}`);
+        console.log('Score updated successfully!');
       } else {
         console.error('Error updating score:', data.message);
       }

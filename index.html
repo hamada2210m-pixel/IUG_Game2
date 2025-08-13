@@ -43,7 +43,8 @@
 
         .game-container {
             width: 100%;
-            max-width: 500px;
+            /* --- التعديل: زيادة العرض الأقصى --- */
+            max-width: 800px; 
             padding: 20px;
             position: relative;
             z-index: 1; /* للتأكد من أن محتوى اللعبة فوق الطبقة الشفافة */
@@ -156,8 +157,9 @@
         }
 
         .scene-image {
-            max-width: 100%;
-            height: auto;
+            width: 100%; /* --- التعديل: جعل الصورة تملأ العرض --- */
+            max-height: 400px; /* --- التعديل: تحديد ارتفاع أقصى للصورة --- */
+            object-fit: cover; /* --- التعديل: لضمان عدم تشوه الصورة --- */
             border-radius: 10px;
             margin-bottom: 20px;
             border: 3px solid #eee;

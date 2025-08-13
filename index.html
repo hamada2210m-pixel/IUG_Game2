@@ -43,7 +43,6 @@
 
         .game-container {
             width: 100%;
-            /* --- التعديل: زيادة العرض الأقصى --- */
             max-width: 800px; 
             padding: 20px;
             position: relative;
@@ -148,23 +147,25 @@
         /* --- أنماط مشهد اللعبة --- */
         .game-stage {
             background-color: #fff;
-            padding: 20px;
+            padding: 0;
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
             width: 100%;
             box-sizing: border-box;
+            overflow: hidden; 
         }
 
         .scene-image {
-            width: 100%; /* --- التعديل: جعل الصورة تملأ العرض --- */
-            max-height: 400px; /* --- التعديل: تحديد ارتفاع أقصى للصورة --- */
-            object-fit: cover; /* --- التعديل: لضمان عدم تشوه الصورة --- */
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border: 3px solid #eee;
+            width: 100%; 
+            height: auto; 
+            display: block; 
         }
         
+        .scene-content {
+            padding: 25px;
+        }
+
         .scene-title {
             font-size: 24px;
             font-weight: bold;
@@ -336,25 +337,47 @@
 
             <!-- مشهد خريطة الجامعة -->
             <div id="map-scene" class="game-stage hidden">
-                <h2 class="scene-title">خريطة الجامعة</h2>
-                <p>لقد دخلت الحرم الجامعي! اختر وجهتك التالية لاستكمال رحلتك.</p>
-                <div class="options-container">
-                    <button class="option-btn" data-destination="library">
-                        <span class="map-icon">📚</span>
-                        المكتبة المركزية
-                    </button>
-                    <button class="option-btn" data-destination="cafeteria">
-                        <span class="map-icon">☕</span>
-                        الكافتيريا
-                    </button>
-                    <button class="option-btn" data-destination="faculties">
-                        <span class="map-icon">🏢</span>
-                        الكليات
-                    </button>
-                     <button class="option-btn" data-destination="grants">
-                        <span class="map-icon">💰</span>
-                        المنح والمساعدات
-                    </button>
+                <div class="scene-content">
+                    <h2 class="scene-title">خريطة الجامعة</h2>
+                    <p>لقد دخلت الحرم الجامعي! اختر وجهتك التالية لاستكمال رحلتك.</p>
+                    <div class="options-container">
+                        <button class="option-btn" data-destination="library">
+                            <span class="map-icon">📚</span>
+                            المكتبة المركزية
+                        </button>
+                        <button class="option-btn" data-destination="cafeteria">
+                            <span class="map-icon">☕</span>
+                            الكافتيريا
+                        </button>
+                        <button class="option-btn" data-destination="faculties">
+                            <span class="map-icon">🏢</span>
+                            الكليات
+                        </button>
+                         <button class="option-btn" data-destination="grants">
+                            <span class="map-icon">💰</span>
+                            المنح والمساعدات
+                        </button>
+                        <button class="option-btn" data-destination="hospital">
+                            <span class="map-icon">🏥</span>
+                            المستشفى الجامعي
+                        </button>
+                        <button class="option-btn" data-destination="admission">
+                            <span class="map-icon">📝</span>
+                            القبول والتسجيل
+                        </button>
+                        <button class="option-btn" data-destination="conference">
+                            <span class="map-icon">🏛️</span>
+                            قاعة المؤتمرات
+                        </button>
+                        <button class="option-btn" data-destination="stadium">
+                            <span class="map-icon">🏟️</span>
+                            ملعب الجامعة
+                        </button>
+                        <button class="option-btn" data-destination="exchange">
+                            <span class="map-icon">🌍</span>
+                            التبادل الأكاديمي
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -368,11 +391,14 @@
                  <!-- سيتم ملء المحتوى بواسطة JavaScript -->
             </div>
 
-            <!-- مشهد الكليات (قيد الإنشاء) -->
+            <!-- مشاهد قيد الإنشاء -->
             <div id="faculties-scene" class="game-stage hidden"></div>
-            
-            <!-- مشهد المنح (قيد الإنشاء) -->
             <div id="grants-scene" class="game-stage hidden"></div>
+            <div id="hospital-scene" class="game-stage hidden"></div>
+            <div id="admission-scene" class="game-stage hidden"></div>
+            <div id="conference-scene" class="game-stage hidden"></div>
+            <div id="stadium-scene" class="game-stage hidden"></div>
+            <div id="exchange-scene" class="game-stage hidden"></div>
 
             <!-- مشهد النهاية -->
             <div id="end-scene" class="game-stage hidden">
@@ -534,9 +560,11 @@
 
                 sceneElement.innerHTML = `
                     <img src="${sceneData.image}" alt="صورة مشهد ${sceneId}" class="scene-image">
-                    <p class="scene-title">${sceneData.question}</p>
-                    <div class="options-container">${optionsHTML}</div>
-                    <div class="feedback-message"></div>
+                    <div class="scene-content">
+                        <p class="scene-title">${sceneData.question}</p>
+                        <div class="options-container">${optionsHTML}</div>
+                        <div class="feedback-message"></div>
+                    </div>
                 `;
 
                 sceneElement.classList.remove('hidden');
@@ -641,8 +669,9 @@
             playerForm.addEventListener('submit', startGame);
             
             document.getElementById('map-scene').addEventListener('click', (e) => {
-                if(e.target.classList.contains('option-btn')) {
-                    const destination = e.target.dataset.destination;
+                const button = e.target.closest('.option-btn');
+                if(button) {
+                    const destination = button.dataset.destination;
                     const destinationData = gameData[destination];
 
                     if (Array.isArray(destinationData) && gameState.answeredQuestions.has(destinationData[destinationData.length - 1].id)) {

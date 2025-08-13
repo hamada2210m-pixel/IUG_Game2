@@ -1,37 +1,41 @@
-// saveData.js - الكود النهائي مع الرابط الخاص بك
+// saveData.js - الكود النهائي والمحدث بتاريخ 13 أغسطس 2025
 
-// لقد تم وضع الرابط الصحيح هنا
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwUXA6HCET-1MPVvlyLIK-HJYFXqE8wHh71nO5lBBxvR_6yeqwaDOUBzi4cu7Q0wuRriA/exec';
+// لقد تم وضع الرابط الجديد والصحيح هنا
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-lE41eY0lEWEOxZevGyTMxNbpY2zTmRzWa3DEAd5Dc6O72GgtMA/exec';
 
-/**
- * يرسل بيانات اللاعب إلى Google Sheet
- * @param {string} name - اسم اللاعب الكامل
- * @param {string} phone - رقم جوال اللاعب
- * @param {string} year - سنة التوجيهي
- * @param {number} score - نتيجته في اللعبة
- */
-function saveDataToSheet(name, phone, year, score) {
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('phone', phone);
-    formData.append('year', year);
-    formData.append('score', score);
+// دالة للتسجيل الفوري
+function registerPlayer(name, phone, year) {
+  const formData = new FormData();
+  formData.append('action', 'register');
+  formData.append('name', name);
+  formData.append('phone', phone);
+  formData.append('year', year);
 
-    console.log("جاري إرسال البيانات إلى Google Sheet...");
+  // إرجاع الوعد (Promise) للعبة لكي تنتظر الرد
+  return fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: formData,
+  }).then(response => response.json());
+}
 
-    fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: formData,
+// دالة لتحديث النتيجة في النهاية
+function updatePlayerScore(uniqueId, score) {
+  const formData = new FormData();
+  formData.append('action', 'updateScore');
+  formData.append('uniqueId', uniqueId);
+  formData.append('score', score);
+
+  fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: formData,
     })
     .then(response => response.json())
     .then(data => {
-        if (data.result === 'success') {
-            console.log('تم حفظ البيانات بنجاح!');
-        } else {
-            console.error('حدث خطأ من Google Apps Script:', data.error);
-        }
+      if (data.result === 'success') {
+        console.log('Score updated successfully!');
+      } else {
+        console.error('Error updating score:', data.message);
+      }
     })
-    .catch(error => {
-        console.error('فشل الاتصال أو إرسال البيانات:', error);
-    });
+    .catch(error => console.error('Error in update fetch:', error));
 }

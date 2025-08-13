@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رحلتي في الإسلامية</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* إعدادات أساسية لضمان تناسق المظهر */
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f0f4f8; /* خلفية رمادية فاتحة */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #333;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* شاشة البداية */
+        #start-screen {
+            background-color: white;
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .logo {
+            max-width: 150px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #004422;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #004422;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .action-button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background-color: #006633;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            font-family: 'Cairo', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .action-button:hover {
+            background-color: #004422;
+        }
+
+        /* كلاس لإخفاء العناصر */
+        .hidden {
+            display: none !important;
+        }
+
+        /* --- أنماط لوحة النقاط --- */
+        #player-stats {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            background-color: rgba(0, 68, 34, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            z-index: 50;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        #player-score {
+            background-color: #fdd835;
+            color: #333;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        /* --- أنماط مشهد اللعبة --- */
+        .game-stage {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .scene-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 3px solid #eee;
+        }
+        
+        .scene-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #004422;
+            margin-bottom: 20px;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .option-btn {
+            padding: 15px 10px;
+            border: 2px solid #006633;
+            background-color: #fff;
+            color: #006633;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            height: 100%; /* لتوحيد ارتفاع الأزرار */
+        }
+
+        .option-btn:hover {
+            background-color: #e6f3ee;
+            transform: translateY(-2px);
+        }
+
+        .feedback-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            display: none; /* يبدأ مخفياً */
+        }
+
+        .feedback-message.correct {
+            background-color: #28a745;
+        }
+
+        .feedback-message.incorrect {
+            background-color: #dc3545;
+        }
+        
+        .feedback-message.info {
+             background-color: #17a2b8;
+        }
+
+        /* --- أنماط صندوق الرسائل (Modal) --- */
+        .modal {
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            direction: rtl;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            animation: slide-down 0.4s ease-out;
+        }
+        
+        @keyframes slide-down {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-content h2 {
+            color: #006633;
+            margin-bottom: 10px;
+        }
+
+        .modal-content p {
+            color: #555;
+            font-size: 16px;
+        }
+
+        /* --- أنماط شاشة الخريطة --- */
+        #map-scene .options-container .option-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 18px;
+            padding: 25px 15px;
+        }
+        
+        .map-icon {
+            font-size: 36px;
+            margin-bottom: 5px;
+        }
+        
+        /* التجاوب مع الأجهزة الصغيرة */
+        @media (max-width: 600px) {
+            .options-container {
+                grid-template-columns: 1fr; /* عمود واحد في الشاشات الصغيرة */
+            }
+             #player-stats {
+                font-size: 14px;
+                gap: 10px;
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <!-- شاشة البداية والتسجيل -->
+        <div id="start-screen">
+            <img src="logo.png" alt="شعار الجامعة الإسلامية" class="logo">
+            <h1>أهلاً بك في رحلتك الافتراضية</h1>
+            <p>استكشف الجامعة الإسلامية، أجب عن التحديات، واربح منحة دراسية حقيقية!</p>
+
+            <form id="player-form">
+                <div class="form-group">
+                    <label for="name">الاسم الكامل:</label>
+                    <input type="text" id="name" placeholder="مثال: أحمد علي" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">رقم الجوال:</label>
+                    <input type="tel" id="phone" placeholder="مثال: 059xxxxxxx" required>
+                </div>
+                <div class="form-group">
+                    <label for="tawjihi-year">سنة التوجيهي:</label>
+                    <input type="number" id="tawjihi-year" placeholder="مثال: 2024" required>
+                </div>
+                <button type="submit" class="action-button">ابدأ الرحلة!</button>
+            </form>
+        </div>
+
+        <!-- حاوية مشاهد اللعبة الرئيسية -->
+        <div id="game-scene" class="hidden">
+            <!-- شريط معلومات اللاعب -->
+            <div id="player-stats" class="hidden">
+                <span id="player-name"></span>
+                <span id="player-score"></span>
+            </div>
+            
+            <!-- مشهد بوابة الجامعة -->
+            <div id="gate-scene" class="game-stage hidden">
+                <!-- سيتم ملء المحتوى بواسطة JavaScript -->
+            </div>
+
+            <!-- مشهد خريطة الجامعة -->
+            <div id="map-scene" class="game-stage hidden">
+                <h2 class="scene-title">خريطة الجامعة</h2>
+                <p>لقد دخلت الحرم الجامعي! اختر وجهتك التالية لاستكمال رحلتك.</p>
+                <div class="options-container">
+                    <button class="option-btn" data-destination="library">
+                        <span class="map-icon">📚</span>
+                        المكتبة المركزية
+                    </button>
+                    <button class="option-btn" data-destination="cafeteria">
+                        <span class="map-icon">☕</span>
+                        الكافتيريا
+                    </button>
+                    <button class="option-btn" data-destination="faculties">
+                        <span class="map-icon">🏢</span>
+                        الكليات
+                    </button>
+                     <button class="option-btn" data-destination="grants">
+                        <span class="map-icon">💰</span>
+                        المنح والمساعدات
+                    </button>
+                </div>
+            </div>
+
+            <!-- مشهد المكتبة -->
+            <div id="library-scene" class="game-stage hidden">
+                 <!-- سيتم ملء المحتوى بواسطة JavaScript -->
+            </div>
+
+            <!-- مشهد الكافتيريا -->
+             <div id="cafeteria-scene" class="game-stage hidden">
+                 <!-- سيتم ملء المحتوى بواسطة JavaScript -->
+            </div>
+
+            <!-- مشهد الكليات (قيد الإنشاء) -->
+            <div id="faculties-scene" class="game-stage hidden"></div>
+            
+            <!-- مشهد المنح (قيد الإنشاء) -->
+            <div id="grants-scene" class="game-stage hidden"></div>
+
+            <!-- مشهد النهاية -->
+            <div id="end-scene" class="game-stage hidden">
+                <h2 class="scene-title">🎉 تهانينا! 🎉</h2>
+                <img src="https://placehold.co/400x250/28a745/FFFFFF?text=شهادة+شكر" alt="شهادة مشاركة" class="scene-image">
+                <p id="final-message"></p>
+                <p>يمكنك مشاركة هذه الشهادة مع أصدقائك!</p>
+                <button id="share-btn" class="action-button">مشاركة على وسائل التواصل</button>
+                <button id="restart-btn" class="action-button" style="margin-top: 10px; background-color: #555;">ابدأ من جديد</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- صندوق الرسائل العام -->
+    <div id="feedback-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2 id="modal-title"></h2>
+            <p id="modal-text"></p>
+            <button id="modal-close-btn" class="action-button">متابعة</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // =================================================
+            // 1. تعريف بيانات اللعبة (الأسئلة والمراحل)
+            // =================================================
+            const gameData = {
+                'gate': {
+                    image: 'hares 1.png',
+                    question: 'أهلاً بك في الجامعة الإسلامية! للدخول، أجب عن السؤال التالي: في أي عام تأسست الجامعة؟',
+                    options: { '1978': '1978', '1982': '1982', '1960': '1960', '1990': '1990' },
+                    correctAnswer: '1978',
+                    points: 1,
+                    correctFeedback: 'رائع! لقد حصلت على 1 جنيه فلسطيني. البوابة الآن مفتوحة أمامك!',
+                    incorrectFeedback: 'إجابة غير صحيحة. حاول مرة أخرى!'
+                },
+                'library': [ // مرحلة متعددة الأسئلة
+                    {
+                        id: 'library_q1',
+                        image: 'library_question.png',
+                        question: 'تضم مكتبتنا كنزاً معرفياً ضخماً. كم عدد الكتب والمصادر التي توفرها؟',
+                        options: { '50k': 'أكثر من 50 ألف', '100k': 'أكثر من 100 ألف', '10k': 'أقل من 10 آلاف', '200k': 'أكثر من 200 ألف' },
+                        correctAnswer: '200k',
+                        points: 2,
+                        correctFeedback: 'إجابة ممتازة! معرفتك قيمة. لقد ربحت 2 جنيه. لننتقل للتحدي التالي.',
+                        incorrectFeedback: 'حاول مرة أخرى! المعرفة قوة.'
+                    },
+                    {
+                        id: 'library_q2',
+                        image: 'library_question_2.png',
+                        question: 'هل توفر المكتبة قاعات هادئة ومخصصة للدراسة؟',
+                        options: { 'yes': 'نعم، توفر قاعات هادئة', 'no': 'لا، المكتبة للكتب فقط' },
+                        correctAnswer: 'yes',
+                        points: 1,
+                        correctFeedback: 'بالتأكيد! راحتك أثناء الدراسة تهمنا. لقد ربحت 1 جنيه إضافي.',
+                        incorrectFeedback: 'إجابة غير صحيحة. المكتبة مكان مثالي للدراسة.'
+                    },
+                    {
+                        id: 'library_q3',
+                        image: 'library_question_3.png',
+                        question: 'كيف تساعدك المكتبة في أبحاثك الجامعية؟',
+                        options: { 'resources': 'توفر مصادر ومراجع متنوعة', 'writes_for_you': 'تكتب البحث بدلاً عنك' },
+                        correctAnswer: 'resources',
+                        points: 1,
+                        correctFeedback: 'صحيح! المكتبة هي شريكك الأول في البحث العلمي. ربحت 1 جنيه.',
+                        incorrectFeedback: 'إجابة غير دقيقة. المكتبة تدعمك بالمصادر لا بالقيام بالعمل عنك.'
+                    },
+                     {
+                        id: 'library_q4',
+                        image: 'library_question_4.png',
+                        question: 'هل توفر المكتبة مواد رقمية يمكن الوصول إليها عن بعد؟',
+                        options: { 'yes_ebooks': 'نعم، توفر كتباً إلكترونية', 'no_digital': 'لا، كل المواد ورقية فقط' },
+                        correctAnswer: 'yes_ebooks',
+                        points: 1,
+                        correctFeedback: 'أحسنت! يمكنك الوصول لكنز معرفي من أي مكان. لقد ربحت آخر جنيه في هذه المرحلة.',
+                        incorrectFeedback: 'إجابة غير صحيحة. العصر الرقمي في قلب مكتبتنا.'
+                    }
+                ],
+                'cafeteria': {
+                    image: 'https://placehold.co/400x250/fd7e14/FFFFFF?text=كافتيريا+شهية',
+                    question: 'بعد يوم دراسي، ما هي وجبتك المفضلة من كافتيريا الجامعة؟ (هذا سؤال ترويحي بدون نقاط)',
+                    options: { 'shawarma': 'شاورما', 'burger': 'برجر', 'salad': 'سلطة صحية' },
+                    correctAnswer: null, // لا يوجد إجابة صحيحة
+                    points: 0,
+                    correctFeedback: 'اختيار شهي! بالهناء والشفاء. لنكمل جولتنا.',
+                }
+            };
+
+            // =================================================
+            // 2. حالة اللعبة (معلومات اللاعب الحالية)
+            // =================================================
+            const gameState = {
+                playerName: '',
+                score: 0,
+                currentScene: null,
+                currentSubQuestionIndex: 0, // لتتبع الأسئلة داخل المرحلة
+                answeredQuestions: new Set() 
+            };
+
+            // =================================================
+            // 3. جلب عناصر واجهة المستخدم
+            // =================================================
+            const startScreen = document.getElementById('start-screen');
+            const gameSceneContainer = document.getElementById('game-scene');
+            const playerForm = document.getElementById('player-form');
+            const playerNameSpan = document.getElementById('player-name');
+            const playerScoreSpan = document.getElementById('player-score');
+            const playerStats = document.getElementById('player-stats');
+            const modal = document.getElementById('feedback-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalText = document.getElementById('modal-text');
+            const modalCloseBtn = document.getElementById('modal-close-btn');
+
+            // =================================================
+            // 4. وظائف اللعبة الرئيسية
+            // =================================================
+
+            function startGame(event) {
+                event.preventDefault();
+                const nameInput = document.getElementById('name').value.trim();
+                if (nameInput === '') {
+                    alert('الرجاء إدخال اسمك.');
+                    return;
+                }
+                gameState.playerName = nameInput;
+                updatePlayerStats();
+
+                startScreen.classList.add('hidden');
+                gameSceneContainer.classList.remove('hidden');
+                playerStats.classList.remove('hidden');
+                
+                showModal(`أهلاً بك يا ${gameState.playerName}!`, 'هيا بنا نبدأ رحلتك في رحاب الجامعة الإسلامية.', () => {
+                    renderScene('gate');
+                });
+            }
+
+            function renderScene(sceneId, questionIndex = 0) {
+                document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
+
+                let sceneData = gameData[sceneId];
+                const sceneElement = document.getElementById(`${sceneId}-scene`);
+                gameState.currentScene = sceneId;
+                
+                if (Array.isArray(sceneData)) {
+                    gameState.currentSubQuestionIndex = questionIndex;
+                    sceneData = sceneData[questionIndex];
+                }
+                
+                if (!sceneData || !sceneElement) {
+                    if (sceneElement) sceneElement.classList.remove('hidden');
+                    return;
+                }
+
+                let optionsHTML = '';
+                for (const key in sceneData.options) {
+                    optionsHTML += `<button class="option-btn" data-answer="${key}">${sceneData.options[key]}</button>`;
+                }
+
+                sceneElement.innerHTML = `
+                    <img src="${sceneData.image}" alt="صورة مشهد ${sceneId}" class="scene-image">
+                    <p class="scene-title">${sceneData.question}</p>
+                    <div class="options-container">${optionsHTML}</div>
+                    <div class="feedback-message"></div>
+                `;
+
+                sceneElement.classList.remove('hidden');
+                sceneElement.querySelector('.options-container').addEventListener('click', handleAnswer);
+            }
+
+            function handleAnswer(event) {
+                if (!event.target.classList.contains('option-btn')) return;
+
+                const sceneId = gameState.currentScene;
+                let sceneData = gameData[sceneId];
+                let questionId = sceneId;
+
+                if (Array.isArray(sceneData)) {
+                    sceneData = sceneData[gameState.currentSubQuestionIndex];
+                    questionId = sceneData.id;
+                }
+
+                if (gameState.answeredQuestions.has(questionId)) return;
+
+                const selectedAnswer = event.target.dataset.answer;
+                const feedbackElement = document.querySelector(`#${sceneId}-scene .feedback-message`);
+                
+                if (sceneData.correctAnswer === null) {
+                    gameState.answeredQuestions.add(questionId);
+                    feedbackElement.textContent = sceneData.correctFeedback;
+                    feedbackElement.classList.add('info');
+                    feedbackElement.style.display = 'block';
+                    setTimeout(() => renderScene('map'), 2000);
+                    return;
+                }
+
+                if (selectedAnswer === sceneData.correctAnswer) {
+                    gameState.score += sceneData.points;
+                    gameState.answeredQuestions.add(questionId);
+                    updatePlayerStats();
+                    
+                    event.target.style.backgroundColor = '#28a745';
+                    event.target.style.color = '#fff';
+                    feedbackElement.textContent = sceneData.correctFeedback;
+                    feedbackElement.classList.add('correct');
+                    feedbackElement.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        if (Array.isArray(gameData[sceneId])) {
+                            const nextQuestionIndex = gameState.currentSubQuestionIndex + 1;
+                            if (nextQuestionIndex < gameData[sceneId].length) {
+                                renderScene(sceneId, nextQuestionIndex);
+                            } else {
+                                showModal("إنجاز رائع!", `لقد أكملت جميع تحديات المكتبة بنجاح. لنعد إلى الخريطة.`, () => {
+                                    renderScene('map');
+                                });
+                            }
+                        } else {
+                            if (gameState.answeredQuestions.size === Object.keys(gameData).length) {
+                                showEndScene();
+                            } else {
+                                renderScene('map');
+                            }
+                        }
+                    }, 2000);
+
+                } else {
+                    event.target.style.backgroundColor = '#dc3545';
+                    event.target.style.color = '#fff';
+                    event.target.disabled = true;
+                    feedbackElement.textContent = sceneData.incorrectFeedback;
+                    feedbackElement.classList.add('incorrect');
+                    feedbackElement.style.display = 'block';
+                }
+            }
+            
+            function showEndScene() {
+                 document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
+                 const endScene = document.getElementById('end-scene');
+                 const finalMessage = document.getElementById('final-message');
+                 
+                 finalMessage.textContent = `أحسنت يا ${gameState.playerName}! لقد أنهيت الرحلة برصيد ${gameState.score} جنيه. هذا يمنحك خصماً بنسبة ${gameState.score}% على الفصل الأول!`;
+                 
+                 endScene.classList.remove('hidden');
+            }
+
+            function updatePlayerStats() {
+                playerNameSpan.textContent = `اللاعب: ${gameState.playerName}`;
+                playerScoreSpan.innerHTML = `الرصيد: <span id="player-score-value">${gameState.score}</span> جنيه`;
+            }
+
+            function showModal(title, text, callback) {
+                modalTitle.textContent = title;
+                modalText.textContent = text;
+                modal.classList.remove('hidden');
+                
+                modalCloseBtn.addEventListener('click', () => {
+                    modal.classList.add('hidden');
+                    if (callback) callback();
+                }, { once: true });
+            }
+
+            // =================================================
+            // 5. ربط الأحداث بالوظائف
+            // =================================================
+            playerForm.addEventListener('submit', startGame);
+            
+            document.getElementById('map-scene').addEventListener('click', (e) => {
+                if(e.target.classList.contains('option-btn')) {
+                    const destination = e.target.dataset.destination;
+                    const destinationData = gameData[destination];
+
+                    if (Array.isArray(destinationData) && gameState.answeredQuestions.has(destinationData[destinationData.length - 1].id)) {
+                        showModal("مكان مألوف!", "لقد أكملت جميع تحديات هذا المكان. اختر وجهة أخرى.", null);
+                    } else if (gameState.answeredQuestions.has(destination)) {
+                         showModal("مكان مألوف!", "لقد قمت بزيارة هذا المكان بالفعل. اختر وجهة أخرى.", null);
+                    } else if (destinationData) {
+                        renderScene(destination);
+                    } else {
+                        showModal("قيد الإنشاء!", "هذا الجزء من الجامعة سيتم افتتاحه قريباً في التحديثات القادمة للعبة.", null);
+                    }
+                }
+            });
+
+            document.getElementById('restart-btn').addEventListener('click', () => {
+                 Object.assign(gameState, {
+                    playerName: '',
+                    score: 0,
+                    currentScene: null,
+                    currentSubQuestionIndex: 0,
+                    answeredQuestions: new Set()
+                });
+                gameSceneContainer.classList.add('hidden');
+                playerStats.classList.add('hidden');
+                document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
+                startScreen.classList.remove('hidden');
+                document.getElementById('player-form').reset();
+            });
+
+        });
+    </script>
+</body>
+</html>

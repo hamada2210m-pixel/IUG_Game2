@@ -48,7 +48,7 @@
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
-            animation: fadeIn 0.5s ease-out; /* ⭐ إضافة حركة */
+            animation: fadeInUp 0.6s ease-out; /* ⭐ تعديل الحركة */
         }
         .logo { max-width: 150px; margin-bottom: 20px; }
         h1 { color: #004422; margin-bottom: 10px; }
@@ -62,12 +62,25 @@
         .hidden { display: none !important; }
         #player-stats { position: fixed; top: 15px; left: 15px; background-color: rgba(0, 68, 34, 0.9); color: white; padding: 10px 15px; border-radius: 8px; font-size: 16px; font-weight: bold; z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,0.2); display: flex; gap: 15px; align-items: center; }
         #player-score { background-color: #fdd835; color: #333; padding: 5px 10px; border-radius: 5px; }
-        .game-stage { background-color: #fff; padding: 0; border-radius: 15px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); text-align: center; width: 100%; box-sizing: border-box; overflow: hidden; animation: fadeIn 0.5s ease-out; } /* ⭐ إضافة حركة */
+        .game-stage { background-color: #fff; padding: 0; border-radius: 15px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); text-align: center; width: 100%; box-sizing: border-box; overflow: hidden; animation: fadeInUp 0.6s ease-out; } /* ⭐ تعديل الحركة */
         .scene-image { width: 100%; height: auto; display: block; }
         .scene-content { padding: 25px; }
         .scene-title { font-size: 24px; font-weight: bold; color: #004422; margin-bottom: 20px; }
         .options-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
-        .option-btn { padding: 15px 10px; border: 2px solid #006633; background-color: #fff; color: #006633; font-size: 16px; font-weight: bold; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; height: 100%; }
+        .option-btn { 
+            padding: 15px 10px; 
+            border: 2px solid #006633; 
+            background-color: #fff; 
+            color: #006633; 
+            font-size: 16px; 
+            font-weight: bold; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            height: 100%; 
+            opacity: 0; /* ⭐ تبدأ مخفية */
+            animation: fadeIn 0.5s ease-out forwards; /* ⭐ إضافة حركة للخيارات */
+        }
         .option-btn:hover { background-color: #e6f3ee; transform: translateY(-2px); }
         .feedback-message { margin-top: 20px; padding: 15px; border-radius: 10px; font-size: 18px; font-weight: bold; color: #fff; display: none; }
         .feedback-message.correct { background-color: #28a745; }
@@ -76,8 +89,10 @@
         .modal { position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; direction: rtl; }
         .modal-content { background-color: #fff; padding: 30px; border-radius: 15px; text-align: center; width: 90%; max-width: 400px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); animation: slide-down 0.4s ease-out; }
         @keyframes slide-down { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        /* ⭐ إضافة حركة الظهور */
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        /* ⭐ تعديل حركة الظهور لتكون انزلاق للأعلى */
+        @keyframes fadeInUp { from { opacity: 0; transform: translate3d(0, 30px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
+        /* ⭐ حركة ظهور الأزرار */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .modal-content h2 { color: #006633; margin-bottom: 10px; }
         .modal-content p { color: #555; font-size: 16px; }
         #map-scene .options-container .option-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; font-size: 18px; padding: 25px 15px; }
@@ -89,7 +104,7 @@
 
     <!-- ⭐ إضافة عناصر الصوت -->
     <audio id="correct-sound" src="https://actions.google.com/sounds/v1/coins/coin_drop.ogg"></audio>
-    <audio id="incorrect-sound" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"></audio>
+    <audio id="incorrect-sound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg"></audio>
 
     <div class="game-container">
         <div id="start-screen">
@@ -197,7 +212,6 @@
             const modalTitle = document.getElementById('modal-title');
             const modalText = document.getElementById('modal-text');
             const modalCloseBtn = document.getElementById('modal-close-btn');
-            // ⭐ جلب عناصر الصوت
             const correctSound = document.getElementById('correct-sound');
             const incorrectSound = document.getElementById('incorrect-sound');
 
@@ -253,7 +267,32 @@
                 }
             }
             
-            function renderScene(sceneId, questionIndex = 0, pushState = true) { if (pushState) { history.pushState({ scene: sceneId, index: questionIndex }, ''); } document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden')); let sceneData = gameData[sceneId]; const sceneElement = document.getElementById(`${sceneId}-scene`); gameState.currentScene = sceneId; if (Array.isArray(sceneData)) { gameState.currentSubQuestionIndex = questionIndex; sceneData = sceneData[questionIndex]; } if (!sceneData || !sceneElement) { if (sceneElement) sceneElement.classList.remove('hidden'); return; } let optionsHTML = ''; for (const key in sceneData.options) { optionsHTML += `<button class="option-btn" data-answer="${key}">${sceneData.options[key]}</button>`; } sceneElement.innerHTML = ` <img src="${sceneData.image}" alt="صورة مشهد ${sceneId}" class="scene-image"> <div class="scene-content"> <p class="scene-title">${sceneData.question}</p> <div class="options-container">${optionsHTML}</div> <div class="feedback-message"></div> </div> `; sceneElement.classList.remove('hidden'); sceneElement.querySelector('.options-container').addEventListener('click', handleAnswer); }
+            function renderScene(sceneId, questionIndex = 0, pushState = true) { 
+                if (pushState) { 
+                    history.pushState({ scene: sceneId, index: questionIndex }, ''); 
+                } 
+                document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden')); 
+                let sceneData = gameData[sceneId]; 
+                const sceneElement = document.getElementById(`${sceneId}-scene`); 
+                gameState.currentScene = sceneId; 
+                if (Array.isArray(sceneData)) { 
+                    gameState.currentSubQuestionIndex = questionIndex; 
+                    sceneData = sceneData[questionIndex]; 
+                } 
+                if (!sceneData || !sceneElement) { 
+                    if (sceneElement) sceneElement.classList.remove('hidden'); 
+                    return; 
+                } 
+                let optionsHTML = ''; 
+                let delay = 0;
+                for (const key in sceneData.options) { 
+                    optionsHTML += `<button class="option-btn" data-answer="${key}" style="animation-delay: ${delay}s">${sceneData.options[key]}</button>`; 
+                    delay += 0.1;
+                } 
+                sceneElement.innerHTML = ` <img src="${sceneData.image}" alt="صورة مشهد ${sceneId}" class="scene-image"> <div class="scene-content"> <p class="scene-title">${sceneData.question}</p> <div class="options-container">${optionsHTML}</div> <div class="feedback-message"></div> </div> `; 
+                sceneElement.classList.remove('hidden'); 
+                sceneElement.querySelector('.options-container').addEventListener('click', handleAnswer); 
+            }
             
             function handleAnswer(event) { 
                 if (!event.target.classList.contains('option-btn')) return; 
@@ -278,7 +317,7 @@
                 } 
                 
                 if (selectedAnswer === sceneData.correctAnswer) { 
-                    correctSound.play(); // ⭐ تشغيل صوت الإجابة الصحيحة
+                    correctSound.play();
                     gameState.score += sceneData.points; 
                     gameState.answeredQuestions.add(questionId); 
                     updatePlayerStats(); 
@@ -308,7 +347,7 @@
                         } 
                     }, 2000); 
                 } else { 
-                    incorrectSound.play(); // ⭐ تشغيل صوت الإجابة الخاطئة
+                    incorrectSound.play();
                     event.target.style.backgroundColor = '#dc3545'; 
                     event.target.style.color = '#fff'; 
                     event.target.disabled = true; 

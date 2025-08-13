@@ -440,11 +440,11 @@
                     {
                         id: 'library_q1',
                         image: 'library_question.png',
-                        question: 'تضم مكتبتنا كنزاً معرفياً ضخماً. كم عدد الكتب والمصادر التي توفرها؟',
-                        options: { '50k': 'أكثر من 50 ألف', '100k': 'أكثر من 100 ألف', '10k': 'أقل من 10 آلاف', '200k': 'أكثر من 200 ألف' },
-                        correctAnswer: '200k',
+                        question: 'تضم مكتبتنا كنزاً معرفياً ضخماً. كم عدد المراجع الإلكترونية التي توفرها؟',
+                        options: { '100k': 'أكثر من 100 ألف', '150k': 'أكثر من 150 ألف', '50k': 'أقل من 50 ألف', '200k': 'أكثر من 200 ألف' },
+                        correctAnswer: '150k',
                         points: 2,
-                        correctFeedback: 'إجابة ممتازة! معرفتك قيمة. لقد ربحت 2 جنيه. لننتقل للتحدي التالي.',
+                        correctFeedback: 'إجابة ممتازة! معرفتك دقيقة. لقد ربحت 2 جنيه. لننتقل للتحدي التالي.',
                         incorrectFeedback: 'حاول مرة أخرى! المعرفة قوة.'
                     },
                     {
@@ -536,7 +536,11 @@
                 });
             }
 
-            function renderScene(sceneId, questionIndex = 0) {
+            function renderScene(sceneId, questionIndex = 0, pushState = true) {
+                if (pushState) {
+                    history.pushState({ scene: sceneId, index: questionIndex }, '');
+                }
+
                 document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
 
                 let sceneData = gameData[sceneId];
@@ -699,6 +703,14 @@
                 document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
                 startScreen.classList.remove('hidden');
                 document.getElementById('player-form').reset();
+            });
+
+            window.addEventListener('popstate', (event) => {
+                if (event.state && event.state.scene) {
+                    renderScene(event.state.scene, event.state.index, false);
+                } else {
+                    window.location.reload();
+                }
             });
 
         });

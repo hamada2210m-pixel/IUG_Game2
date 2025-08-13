@@ -25,7 +25,7 @@ function updatePlayerScore(uniqueId, score) {
       console.error("Attempted to update score without a uniqueId.");
       return; // لا ترسل الطلب إذا لم يكن هناك رقم تعريفي
   }
-  
+ 
   const formData = new FormData();
   formData.append('action', 'updateScore');
   formData.append('uniqueId', uniqueId);

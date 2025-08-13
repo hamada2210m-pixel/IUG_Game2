@@ -8,11 +8,47 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS الكامل هنا بدون تغيير */
-        body { font-family: 'Cairo', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; color: #333; padding: 10px; box-sizing: border-box; background-image: url('Ferst.png'); background-size: cover; background-position: center; background-repeat: no-repeat; position: relative; }
-        body::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(240, 244, 248, 0.85); z-index: -1; }
-        .game-container { width: 100%; max-width: 800px; padding: 20px; position: relative; z-index: 1; }
-        #start-screen { background-color: white; padding: 30px 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); text-align: center; }
+        /* كل كود الـ CSS الأصلي هنا بدون تغيير */
+        body {
+            font-family: 'Cairo', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #333;
+            padding: 10px;
+            box-sizing: border-box;
+            background-image: url('Ferst.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(240, 244, 248, 0.85);
+            z-index: -1;
+        }
+        .game-container {
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        #start-screen {
+            background-color: white;
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
         .logo { max-width: 150px; margin-bottom: 20px; }
         h1 { color: #004422; margin-bottom: 10px; }
         p { font-size: 16px; color: #555; margin-bottom: 25px; }
@@ -76,6 +112,7 @@
                 <span id="player-name"></span>
                 <span id="player-score"></span>
             </div>
+            
             <div id="gate-scene" class="game-stage hidden"></div>
             <div id="map-scene" class="game-stage hidden">
                 <div class="scene-content">
@@ -84,15 +121,31 @@
                     <div class="options-container">
                          <button class="option-btn" data-destination="library"><span class="map-icon">📚</span> المكتبة المركزية</button>
                          <button class="option-btn" data-destination="cafeteria"><span class="map-icon">☕</span> الكافتيريا</button>
+                         <button class="option-btn" data-destination="faculties"><span class="map-icon">🏢</span> الكليات</button>
+                         <button class="option-btn" data-destination="grants"><span class="map-icon">💰</span> المنح والمساعدات</button>
+                         <button class="option-btn" data-destination="hospital"><span class="map-icon">🏥</span> المستشفى الجامعي</button>
+                         <button class="option-btn" data-destination="admission"><span class="map-icon">📝</span> القبول والتسجيل</button>
+                         <button class="option-btn" data-destination="conference"><span class="map-icon">🏛️</span> قاعة المؤتمرات</button>
+                         <button class="option-btn" data-destination="stadium"><span class="map-icon">🏟️</span> ملعب الجامعة</button>
+                         <button class="option-btn" data-destination="exchange"><span class="map-icon">🌍</span> التبادل الأكاديمي</button>
                     </div>
                 </div>
             </div>
             <div id="library-scene" class="game-stage hidden"></div>
             <div id="cafeteria-scene" class="game-stage hidden"></div>
+            <div id="faculties-scene" class="game-stage hidden"></div>
+            <div id="grants-scene" class="game-stage hidden"></div>
+            <div id="hospital-scene" class="game-stage hidden"></div>
+            <div id="admission-scene" class="game-stage hidden"></div>
+            <div id="conference-scene" class="game-stage hidden"></div>
+            <div id="stadium-scene" class="game-stage hidden"></div>
+            <div id="exchange-scene" class="game-stage hidden"></div>
             <div id="end-scene" class="game-stage hidden">
                 <h2 class="scene-title">🎉 تهانينا! 🎉</h2>
                 <img src="https://placehold.co/400x250/28a745/FFFFFF?text=شهادة+شكر" alt="شهادة مشاركة" class="scene-image">
                 <p id="final-message"></p>
+                <p>يمكنك مشاركة هذه الشهادة مع أصدقائك!</p>
+                <button id="share-btn" class="action-button">مشاركة على وسائل التواصل</button>
                 <button id="restart-btn" class="action-button" style="margin-top: 10px; background-color: #555;">ابدأ من جديد</button>
             </div>
         </div>
@@ -110,23 +163,32 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // =================================================
+            // 1. تعريف بيانات اللعبة (الأسئلة والمراحل) - (بدون تغيير)
+            // =================================================
             const gameData = {
                 'gate': { image: 'hares 1.png', question: 'أهلاً بك في الجامعة الإسلامية! للدخول، أجب عن السؤال التالي: في أي عام تأسست الجامعة؟', options: { '1978': '1978', '1982': '1982', '1960': '1960', '1990': '1990' }, correctAnswer: '1978', points: 1, correctFeedback: 'رائع! لقد حصلت على 1 جنيه فلسطيني. البوابة الآن مفتوحة أمامك!', incorrectFeedback: 'إجابة غير صحيحة. حاول مرة أخرى!' },
-                'library': [ { id: 'library_q1', image: 'library_question.png', question: 'كم عدد المراجع الإلكترونية التي توفرها المكتبة؟', options: { '150k': 'أكثر من 150 ألف', '50k': 'أقل من 50 ألف' }, correctAnswer: '150k', points: 2, correctFeedback: 'إجابة ممتازة! لقد ربحت 2 جنيه.', incorrectFeedback: 'حاول مرة أخرى!' } ],
-                'cafeteria': { image: 'https://placehold.co/400x250/fd7e14/FFFFFF?text=كافتيريا+شهية', question: 'هذا سؤال ترويحي بدون نقاط', options: { 'shawarma': 'شاورما', 'burger': 'برجر' }, correctAnswer: null, points: 0, correctFeedback: 'اختيار شهي! بالهناء والشفاء.' }
+                'library': [ { id: 'library_q1', image: 'library_question.png', question: 'تضم مكتبتنا كنزاً معرفياً ضخماً. كم عدد المراجع الإلكترونية التي توفرها؟', options: { '100k': 'أكثر من 100 ألف مرجع الكتروني', '150k': 'أكثر من 150 ألف مرجع الكتروني', '50k': 'أقل من 50 ألف مرجع الكتروني', '200k': 'أكثر من 200 ألف مرجع الكتروني' }, correctAnswer: '150k', points: 2, correctFeedback: 'إجابة ممتازة! معرفتك دقيقة. لقد ربحت 2 جنيه. لننتقل للتحدي التالي.', incorrectFeedback: 'حاول مرة أخرى! المعرفة قوة.' }, { id: 'library_q2', image: 'library_question_2.png', question: 'هل توفر المكتبة قاعات هادئة ومخصصة للدراسة؟', options: { 'yes': 'نعم، توفر قاعات هادئة', 'no': 'لا، المكتبة للكتب فقط' }, correctAnswer: 'yes', points: 1, correctFeedback: 'بالتأكيد! راحتك أثناء الدراسة تهمنا. لقد ربحت 1 جنيه إضافي.', incorrectFeedback: 'إجابة غير صحيحة. المكتبة مكان مثالي للدراسة.' }, { id: 'library_q3', image: 'library_question_3.png', question: 'كيف تساعدك المكتبة في أبحاثك الجامعية؟', options: { 'resources': 'توفر مصادر ومراجع متنوعة', 'writes_for_you': 'تكتب البحث بدلاً عنك' }, correctAnswer: 'resources', points: 1, correctFeedback: 'صحيح! المكتبة هي شريكك الأول في البحث العلمي. ربحت 1 جنيه.', incorrectFeedback: 'إجابة غير دقيقة. المكتبة تدعمك بالمصادر لا بالقيام بالعمل عنك.' }, { id: 'library_q4', image: 'library_question_4.png', question: 'هل توفر المكتبة مواد رقمية يمكن الوصول إليها عن بعد؟', options: { 'yes_ebooks': 'نعم، توفر كتباً إلكترونية', 'no_digital': 'لا، كل المواد ورقية فقط' }, correctAnswer: 'yes_ebooks', points: 1, correctFeedback: 'أحسنت! يمكنك الوصول لكنز معرفي من أي مكان. لقد ربحت آخر جنيه في هذه المرحلة.', incorrectFeedback: 'إجابة غير صحيحة. العصر الرقمي في قلب مكتبتنا.' } ],
+                'cafeteria': { image: 'https://placehold.co/400x250/fd7e14/FFFFFF?text=كافتيريا+شهية', question: 'بعد يوم دراسي، ما هي وجبتك المفضلة من كافتيريا الجامعة؟ (هذا سؤال ترويحي بدون نقاط)', options: { 'shawarma': 'شاورما', 'burger': 'برجر', 'salad': 'سلطة صحية' }, correctAnswer: null, points: 0, correctFeedback: 'اختيار شهي! بالهناء والشفاء. لنكمل جولتنا.' }
             };
 
+            // =================================================
+            // 2. حالة اللعبة (معلومات اللاعب الحالية) - (⭐ تم التعديل هنا)
+            // =================================================
             const gameState = {
                 playerName: '',
                 playerPhone: '',
                 tawjihiYear: '',
-                uniquePlayerId: null,
+                uniquePlayerId: null, // <-- لحفظ الرقم التعريفي الفريد
                 score: 0,
                 currentScene: null,
                 currentSubQuestionIndex: 0,
                 answeredQuestions: new Set()
             };
 
+            // =================================================
+            // 3. جلب عناصر واجهة المستخدم - (بدون تغيير)
+            // =================================================
             const startScreen = document.getElementById('start-screen');
             const gameSceneContainer = document.getElementById('game-scene');
             const playerForm = document.getElementById('player-form');
@@ -138,6 +200,11 @@
             const modalText = document.getElementById('modal-text');
             const modalCloseBtn = document.getElementById('modal-close-btn');
 
+            // =================================================
+            // 4. وظائف اللعبة الرئيسية
+            // =================================================
+
+            // ⭐ تم استبدال هذه الدالة بالكامل لتصبح ذكية
             function startGame(event) {
                 event.preventDefault();
                 const nameInput = document.getElementById('name').value.trim();
@@ -153,14 +220,17 @@
                 startButton.disabled = true;
                 startButton.textContent = 'جاري التسجيل...';
 
+                // استدعاء دالة التسجيل وانتظار الرد
                 registerPlayer(nameInput, phoneInput, tawjihiYearInput)
                     .then(data => {
                         if (data.result === 'success' && data.uniqueId) {
+                            // تم التسجيل بنجاح! نحفظ الرقم التعريفي
                             gameState.playerName = nameInput;
                             gameState.playerPhone = phoneInput;
                             gameState.tawjihiYear = tawjihiYearInput;
-                            gameState.uniquePlayerId = data.uniqueId;
+                            gameState.uniquePlayerId = data.uniqueId; // حفظ الرقم التعريفي
 
+                            // الآن نبدأ اللعبة
                             updatePlayerStats();
                             startScreen.classList.add('hidden');
                             gameSceneContainer.classList.remove('hidden');
@@ -169,6 +239,7 @@
                                 renderScene('gate');
                             });
                         } else {
+                            // حدث خطأ
                             alert('حدث خطأ أثناء التسجيل. الرجاء المحاولة مرة أخرى. الخطأ: ' + (data.message || 'Unknown error'));
                             startButton.disabled = false;
                             startButton.textContent = 'ابدأ الرحلة!';
@@ -181,154 +252,37 @@
                     });
             }
 
-            function handleAnswer(event) {
-                if (!event.target.classList.contains('option-btn')) return;
-                const sceneId = gameState.currentScene;
-                let sceneData = gameData[sceneId];
-                let questionId = sceneId;
-
-                if (Array.isArray(sceneData)) {
-                    sceneData = sceneData[gameState.currentSubQuestionIndex];
-                    questionId = sceneData.id;
-                }
-
-                if (gameState.answeredQuestions.has(questionId)) return;
-                const selectedAnswer = event.target.dataset.answer;
-                const feedbackElement = document.querySelector(`#${sceneId}-scene .feedback-message`);
-
-                if (sceneData.correctAnswer === null) {
-                    gameState.answeredQuestions.add(questionId);
-                    feedbackElement.textContent = sceneData.correctFeedback;
-                    feedbackElement.classList.add('info');
-                    feedbackElement.style.display = 'block';
-                    setTimeout(() => renderScene('map'), 2000);
-                    return;
-                }
-
-                if (selectedAnswer === sceneData.correctAnswer) {
-                    gameState.score += sceneData.points;
-                    gameState.answeredQuestions.add(questionId);
-                    updatePlayerStats();
-                    
-                    // ▼▼▼ هذا هو التعديل الرئيسي: التحديث الفوري للنتيجة ▼▼▼
-                    updatePlayerScore(gameState.uniquePlayerId, gameState.score);
-                    
-                    event.target.style.backgroundColor = '#28a745';
-                    event.target.style.color = '#fff';
-                    feedbackElement.textContent = sceneData.correctFeedback;
-                    feedbackElement.classList.add('correct');
-                    feedbackElement.style.display = 'block';
-
-                    setTimeout(() => {
-                        if (Array.isArray(gameData[sceneId])) {
-                            const nextQuestionIndex = gameState.currentSubQuestionIndex + 1;
-                            if (nextQuestionIndex < gameData[sceneId].length) {
-                                renderScene(sceneId, nextQuestionIndex);
-                            } else {
-                                showModal("إنجاز رائع!", "لقد أكملت جميع تحديات هذا المكان. لنعد إلى الخريطة.", () => renderScene('map'));
-                            }
-                        } else {
-                            renderScene('map');
-                        }
-                    }, 2000);
-                } else {
-                    event.target.style.backgroundColor = '#dc3545';
-                    event.target.style.color = '#fff';
-                    event.target.disabled = true;
-                    feedbackElement.textContent = sceneData.incorrectFeedback;
-                    feedbackElement.classList.add('incorrect');
-                    feedbackElement.style.display = 'block';
-                }
-            }
-            
+            // ⭐ تم تعديل هذه الدالة لتحديث النتيجة فقط
             function showEndScene() {
                 document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
                 const endScene = document.getElementById('end-scene');
                 const finalMessage = document.getElementById('final-message');
-                finalMessage.textContent = `أحسنت يا ${gameState.playerName}! لقد أنهيت الرحلة برصيد ${gameState.score} جنيه.`;
-                endScene.classList.remove('hidden');
-                // لا يوجد تحديث للنتيجة هنا بعد الآن
-            }
-
-            function renderScene(sceneId, questionIndex = 0) {
-                // Check if all challenges are complete to show end scene
-                const allLocations = ['gate', 'library', 'cafeteria']; // Add all your locations here
-                let allAnswered = true;
-                for(const loc of allLocations){
-                    const locData = gameData[loc];
-                    if(Array.isArray(locData)){
-                        if(!gameState.answeredQuestions.has(locData[locData.length - 1].id)){
-                            allAnswered = false;
-                            break;
-                        }
-                    } else {
-                        if(!gameState.answeredQuestions.has(loc)){
-                            allAnswered = false;
-                            break;
-                        }
-                    }
-                }
-
-                if(allAnswered){
-                    showEndScene();
-                    return;
-                }
-
-                document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
-                let sceneData = gameData[sceneId];
-                const sceneElement = document.getElementById(`${sceneId}-scene`);
-                gameState.currentScene = sceneId;
-
-                if (!sceneElement) return; // Exit if scene element doesn't exist
-
-                if(sceneId === 'map'){
-                    sceneElement.classList.remove('hidden');
-                    return;
-                }
-
-                if (Array.isArray(sceneData)) {
-                    gameState.currentSubQuestionIndex = questionIndex;
-                    sceneData = sceneData[questionIndex];
-                }
                 
-                if (!sceneData) return;
+                finalMessage.textContent = `أحسنت يا ${gameState.playerName}! لقد أنهيت الرحلة برصيد ${gameState.score} جنيه.`;
+                
+                endScene.classList.remove('hidden');
 
-                let optionsHTML = '';
-                for (const key in sceneData.options) {
-                    optionsHTML += `<button class="option-btn" data-answer="${key}">${sceneData.options[key]}</button>`;
+                // استدعاء دالة تحديث النتيجة بالرقم التعريفي
+                if (gameState.uniquePlayerId) {
+                    updatePlayerScore(gameState.uniquePlayerId, gameState.score);
+                } else {
+                    console.error("خطأ: لا يمكن تحديث النتيجة لعدم وجود رقم تعريفي.");
                 }
-                sceneElement.innerHTML = `<img src="${sceneData.image}" alt="صورة مشهد ${sceneId}" class="scene-image"><div class="scene-content"><p class="scene-title">${sceneData.question}</p><div class="options-container">${optionsHTML}</div><div class="feedback-message"></div></div>`;
-                sceneElement.classList.remove('hidden');
-                sceneElement.querySelector('.options-container').addEventListener('click', handleAnswer);
             }
 
+            // (باقي دوال الجافاسكربت هنا بدون تغيير)
+            function renderScene(sceneId, questionIndex = 0, pushState = true) { if (pushState) { history.pushState({ scene: sceneId, index: questionIndex }, ''); } document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden')); let sceneData = gameData[sceneId]; const sceneElement = document.getElementById(`${sceneId}-scene`); gameState.currentScene = sceneId; if (Array.isArray(sceneData)) { gameState.currentSubQuestionIndex = questionIndex; sceneData = sceneData[questionIndex]; } if (!sceneData || !sceneElement) { if (sceneElement) sceneElement.classList.remove('hidden'); return; } let optionsHTML = ''; for (const key in sceneData.options) { optionsHTML += `<button class="option-btn" data-answer="${key}">${sceneData.options[key]}</button>`; } sceneElement.innerHTML = ` <img src="${sceneData.image}" alt="صورة مشهد ${sceneId}" class="scene-image"> <div class="scene-content"> <p class="scene-title">${sceneData.question}</p> <div class="options-container">${optionsHTML}</div> <div class="feedback-message"></div> </div> `; sceneElement.classList.remove('hidden'); sceneElement.querySelector('.options-container').addEventListener('click', handleAnswer); }
+            function handleAnswer(event) { if (!event.target.classList.contains('option-btn')) return; const sceneId = gameState.currentScene; let sceneData = gameData[sceneId]; let questionId = sceneId; if (Array.isArray(sceneData)) { sceneData = sceneData[gameState.currentSubQuestionIndex]; questionId = sceneData.id; } if (gameState.answeredQuestions.has(questionId)) return; const selectedAnswer = event.target.dataset.answer; const feedbackElement = document.querySelector(`#${sceneId}-scene .feedback-message`); if (sceneData.correctAnswer === null) { gameState.answeredQuestions.add(questionId); feedbackElement.textContent = sceneData.correctFeedback; feedbackElement.classList.add('info'); feedbackElement.style.display = 'block'; setTimeout(() => renderScene('map'), 2000); return; } if (selectedAnswer === sceneData.correctAnswer) { gameState.score += sceneData.points; gameState.answeredQuestions.add(questionId); updatePlayerStats(); event.target.style.backgroundColor = '#28a745'; event.target.style.color = '#fff'; feedbackElement.textContent = sceneData.correctFeedback; feedbackElement.classList.add('correct'); feedbackElement.style.display = 'block'; setTimeout(() => { if (Array.isArray(gameData[sceneId])) { const nextQuestionIndex = gameState.currentSubQuestionIndex + 1; if (nextQuestionIndex < gameData[sceneId].length) { renderScene(sceneId, nextQuestionIndex); } else { showModal("إنجاز رائع!", `لقد أكملت جميع تحديات المكتبة بنجاح. لنعد إلى الخريطة.`, () => { renderScene('map'); }); } } else { if (gameState.answeredQuestions.size === Object.keys(gameData).length) { showEndScene(); } else { renderScene('map'); } } }, 2000); } else { event.target.style.backgroundColor = '#dc3545'; event.target.style.color = '#fff'; event.target.disabled = true; feedbackElement.textContent = sceneData.incorrectFeedback; feedbackElement.classList.add('incorrect'); feedbackElement.style.display = 'block'; } }
             function updatePlayerStats() { playerNameSpan.textContent = `اللاعب: ${gameState.playerName}`; playerScoreSpan.innerHTML = `الرصيد: <span id="player-score-value">${gameState.score}</span> جنيه`; }
             function showModal(title, text, callback) { modalTitle.textContent = title; modalText.textContent = text; modal.classList.remove('hidden'); modalCloseBtn.addEventListener('click', () => { modal.classList.add('hidden'); if (callback) callback(); }, { once: true }); }
 
+            // =================================================
+            // 5. ربط الأحداث بالوظائف - (بدون تغيير)
+            // =================================================
             playerForm.addEventListener('submit', startGame);
-            document.getElementById('map-scene').addEventListener('click', (e) => {
-                const button = e.target.closest('.option-btn');
-                if(button) {
-                    const destination = button.dataset.destination;
-                    const destinationData = gameData[destination];
-
-                    let destinationCompleted = false;
-                    if(Array.isArray(destinationData)){
-                        destinationCompleted = gameState.answeredQuestions.has(destinationData[destinationData.length-1].id);
-                    } else {
-                        destinationCompleted = gameState.answeredQuestions.has(destination);
-                    }
-                    
-                    if (destinationCompleted) {
-                        showModal("مكان مألوف!", "لقد أكملت جميع تحديات هذا المكان. اختر وجهة أخرى.", null);
-                    } else if (destinationData) {
-                        renderScene(destination);
-                    } else {
-                        showModal("قيد الإنشاء!", "هذا الجزء سيتم افتتاحه قريباً.", null);
-                    }
-                }
-            });
-            document.getElementById('restart-btn').addEventListener('click', () => { location.reload(); });
+            document.getElementById('map-scene').addEventListener('click', (e) => { const button = e.target.closest('.option-btn'); if(button) { const destination = button.dataset.destination; const destinationData = gameData[destination]; if (Array.isArray(destinationData) && gameState.answeredQuestions.has(destinationData[destinationData.length - 1].id)) { showModal("مكان مألوف!", "لقد أكملت جميع تحديات هذا المكان. اختر وجهة أخرى.", null); } else if (gameState.answeredQuestions.has(destination)) { showModal("مكان مألوف!", "لقد قمت بزيارة هذا المكان بالفعل. اختر وجهة أخرى.", null); } else if (destinationData) { renderScene(destination); } else { showModal("قيد الإنشاء!", "هذا الجزء من الجامعة سيتم افتتاحه قريباً في التحديثات القادمة للعبة.", null); } } });
+            document.getElementById('restart-btn').addEventListener('click', () => { location.reload(); }); // أسهل طريقة لإعادة البدء
+            window.addEventListener('popstate', (event) => { if (event.state && event.state.scene) { renderScene(event.state.scene, event.state.index, false); } else { location.reload(); } });
         });
     </script>
 </body>

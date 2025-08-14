@@ -6,9 +6,9 @@
     <title>رحلتي في الإسلامية</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* كل كود الـ CSS الأصلي هنا بدون تغيير */
+        /* --- General Styles --- */
         body {
             font-family: 'Cairo', sans-serif;
             display: flex;
@@ -32,9 +32,10 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(240, 244, 248, 0.85);
+            background: linear-gradient(to top, rgba(0, 68, 34, 0.3), rgba(240, 244, 248, 0.85));
             z-index: -1;
         }
+
         .game-container {
             width: 100%;
             max-width: 800px;
@@ -42,31 +43,208 @@
             position: relative;
             z-index: 1;
         }
-        #start-screen {
-            background-color: white;
-            padding: 30px 40px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            animation: fadeInUp 0.6s ease-out; /* ⭐ تعديل الحركة */
+
+        .logo { 
+            max-width: 120px; 
+            margin-bottom: 15px; 
         }
-        .logo { max-width: 150px; margin-bottom: 20px; }
-        h1 { color: #004422; margin-bottom: 10px; }
-        p { font-size: 16px; color: #555; margin-bottom: 25px; }
-        .form-group { margin-bottom: 20px; text-align: right; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #004422; }
-        .form-group input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; font-family: 'Cairo', sans-serif; }
-        .action-button { width: 100%; padding: 15px; border: none; border-radius: 8px; background-color: #006633; color: white; font-size: 18px; font-weight: bold; font-family: 'Cairo', sans-serif; cursor: pointer; transition: background-color 0.3s; }
-        .action-button:hover { background-color: #004422; }
-        .action-button:disabled { background-color: #555; cursor: not-allowed; }
-        .hidden { display: none !important; }
-        #player-stats { position: fixed; top: 15px; left: 15px; background-color: rgba(0, 68, 34, 0.9); color: white; padding: 10px 15px; border-radius: 8px; font-size: 16px; font-weight: bold; z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,0.2); display: flex; gap: 15px; align-items: center; }
-        #player-score { background-color: #fdd835; color: #333; padding: 5px 10px; border-radius: 5px; }
-        .game-stage { background-color: #fff; padding: 0; border-radius: 15px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); text-align: center; width: 100%; box-sizing: border-box; overflow: hidden; animation: fadeInUp 0.6s ease-out; } /* ⭐ تعديل الحركة */
-        .scene-image { width: 100%; height: auto; display: block; }
-        .scene-content { padding: 25px; }
-        .scene-title { font-size: 24px; font-weight: bold; color: #004422; margin-bottom: 20px; }
-        .options-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
+
+        h1 { 
+            color: #004422; 
+            margin-bottom: 10px; 
+            font-weight: 900;
+            font-size: 28px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+
+        p { 
+            font-size: 16px; 
+            color: #555; 
+            margin-bottom: 25px; 
+            line-height: 1.7;
+        }
+
+        .action-button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background-color: #006633;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            font-family: 'Cairo', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 102, 51, 0.3);
+        }
+        .action-button:hover {
+            background-color: #004422;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 102, 51, 0.4);
+        }
+        .action-button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        .hidden { 
+            display: none !important; 
+        }
+
+        /* --- Page Styles (Landing, Start, Game) --- */
+        .page {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            text-align: center;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* --- New Professional Landing Page Styles --- */
+        #landing-page h1 {
+            font-size: 32px;
+        }
+        #landing-page ul {
+            list-style: none;
+            padding: 0;
+            margin: 30px 0;
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        #landing-page li {
+            font-size: 18px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            background-color: rgba(240, 244, 248, 0.7);
+            padding: 15px;
+            border-radius: 12px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        #landing-page li:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        #landing-page .feature-icon {
+            font-size: 28px;
+            margin-left: 20px;
+            background-color: #006633;
+            color: white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        #landing-page li p {
+            margin: 0;
+            font-size: 17px;
+            color: #004422;
+            font-weight: bold;
+        }
+        .tagline {
+            font-weight: bold;
+            color: #004422;
+            font-size: 20px;
+            margin-top: 20px;
+        }
+        .footer-line {
+            margin-top: 30px;
+            font-weight: bold;
+            font-size: 20px;
+            color: #006633;
+        }
+        #show-register-btn {
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        /* --- Start Screen (Registration) Specific Styles --- */
+        .form-group { 
+            margin-bottom: 20px; 
+            text-align: right; 
+        }
+        .form-group label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: bold; 
+            color: #004422; 
+        }
+        .form-group input { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ccc; 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            font-size: 16px; 
+            font-family: 'Cairo', sans-serif; 
+        }
+
+        /* --- Game Scene & Player Stats --- */
+        #player-stats { 
+            position: fixed; 
+            top: 15px; 
+            left: 15px; 
+            background-color: rgba(0, 68, 34, 0.9); 
+            color: white; 
+            padding: 10px 15px; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-weight: bold; 
+            z-index: 50; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2); 
+            display: flex; 
+            gap: 15px; 
+            align-items: center; 
+        }
+        #player-score { 
+            background-color: #fdd835; 
+            color: #333; 
+            padding: 5px 10px; 
+            border-radius: 5px; 
+        }
+        
+        .game-stage { 
+            background-color: #fff; 
+            padding: 0; 
+            border-radius: 15px; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
+            text-align: center; 
+            width: 100%; 
+            box-sizing: border-box; 
+            overflow: hidden; 
+            animation: fadeInUp 0.6s ease-out; 
+        }
+        .scene-image { 
+            width: 100%; 
+            height: auto;
+            display: block; 
+        }
+        .scene-content { 
+            padding: 25px; 
+        }
+        .scene-title { 
+            font-size: 24px; 
+            font-weight: bold; 
+            color: #004422; 
+            margin-bottom: 20px; 
+        }
+        .options-container { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+            margin-top: 25px; 
+        }
         .option-btn { 
             padding: 15px 10px; 
             border: 2px solid #006633; 
@@ -78,36 +256,135 @@
             cursor: pointer; 
             transition: all 0.3s ease; 
             height: 100%; 
-            opacity: 0; /* ⭐ تبدأ مخفية */
-            animation: fadeIn 0.5s ease-out forwards; /* ⭐ إضافة حركة للخيارات */
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out forwards;
         }
-        .option-btn:hover { background-color: #e6f3ee; transform: translateY(-2px); }
-        .feedback-message { margin-top: 20px; padding: 15px; border-radius: 10px; font-size: 18px; font-weight: bold; color: #fff; display: none; }
-        .feedback-message.correct { background-color: #28a745; }
-        .feedback-message.incorrect { background-color: #dc3545; }
-        .feedback-message.info { background-color: #17a2b8; }
-        .modal { position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; direction: rtl; }
-        .modal-content { background-color: #fff; padding: 30px; border-radius: 15px; text-align: center; width: 90%; max-width: 400px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); animation: slide-down 0.4s ease-out; }
-        @keyframes slide-down { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        /* ⭐ تعديل حركة الظهور لتكون انزلاق للأعلى */
-        @keyframes fadeInUp { from { opacity: 0; transform: translate3d(0, 30px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
-        /* ⭐ حركة ظهور الأزرار */
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .modal-content h2 { color: #006633; margin-bottom: 10px; }
-        .modal-content p { color: #555; font-size: 16px; }
-        #map-scene .options-container .option-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; font-size: 18px; padding: 25px 15px; }
-        .map-icon { font-size: 36px; margin-bottom: 5px; }
-        @media (max-width: 600px) { .options-container { grid-template-columns: 1fr; } #player-stats { font-size: 14px; gap: 10px; padding: 8px 12px; } }
+        .option-btn:hover { 
+            background-color: #e6f3ee; 
+            transform: translateY(-2px); 
+        }
+
+        /* --- Modal & Feedback --- */
+        .modal { 
+            position: fixed; 
+            z-index: 100; 
+            left: 0; 
+            top: 0; 
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(0, 0, 0, 0.6); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            direction: rtl; 
+        }
+        .modal-content { 
+            background-color: #fff; 
+            padding: 30px; 
+            border-radius: 15px; 
+            text-align: center; 
+            width: 90%; 
+            max-width: 400px; 
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); 
+            animation: slide-down 0.4s ease-out; 
+        }
+        .modal-content h2 { 
+            color: #006633; 
+            margin-bottom: 10px; 
+        }
+        .modal-content p { 
+            color: #555; 
+            font-size: 16px; 
+        }
+        
+        /* --- Map Scene Specific Styles --- */
+        #map-scene .options-container .option-btn { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px; 
+            font-size: 18px; 
+            padding: 25px 15px; 
+        }
+        .map-icon { 
+            font-size: 36px; 
+            margin-bottom: 5px; 
+        }
+
+        /* --- Animations --- */
+        @keyframes slide-down { 
+            from { transform: translateY(-50px); opacity: 0; } 
+            to { transform: translateY(0); opacity: 1; } 
+        }
+        @keyframes fadeInUp { 
+            from { opacity: 0; transform: translate3d(0, 30px, 0); } 
+            to { opacity: 1; transform: translate3d(0, 0, 0); } 
+        }
+        @keyframes fadeIn { 
+            from { opacity: 0; } 
+            to { opacity: 1; } 
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(0, 102, 51, 0.3);
+            }
+            50% {
+                transform: scale(1.03);
+                box-shadow: 0 6px 25px rgba(0, 102, 51, 0.4);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(0, 102, 51, 0.3);
+            }
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 600px) { 
+            .options-container { grid-template-columns: 1fr; } 
+            #player-stats { font-size: 14px; gap: 10px; padding: 8px 12px; } 
+            .page { padding: 20px; }
+            #landing-page h1 { font-size: 26px; }
+            #landing-page li { flex-direction: row; text-align: right; }
+            #landing-page .feature-icon { width: 40px; height: 40px; font-size: 22px; margin-left: 15px;}
+            #landing-page li p { font-size: 15px; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- ⭐ إضافة عناصر الصوت -->
-    <audio id="correct-sound" src="https://actions.google.com/sounds/v1/coins/coin_drop.ogg"></audio>
-    <audio id="incorrect-sound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg"></audio>
+    <!-- Audio Elements for Sound Effects -->
+    <audio id="correct-sound" src="https://actions.google.com/sounds/v1/coins/coin_drop.ogg" preload="auto"></audio>
+    <audio id="incorrect-sound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg" preload="auto"></audio>
 
     <div class="game-container">
-        <div id="start-screen">
+        
+        <!-- New Professional Landing Page -->
+        <div id="landing-page" class="page">
+            <img src="logo.png" alt="شعار الجامعة الإسلامية" class="logo">
+            <h1>الجامعة الإسلامية بغزة تطلق مسابقة تفاعلية مميزة لطلبة الثانوية</h1>
+            <ul>
+                <li>
+                    <span class="feature-icon">🏆</span>
+                    <p>أجب عن أسئلة شيقة وممتعة.</p>
+                </li>
+                <li>
+                    <span class="feature-icon">💰</span>
+                    <p>اربح "جنيهات فلسطينية" إلكترونية عن كل إجابة صحيحة.</p>
+                </li>
+                <li>
+                    <span class="feature-icon">🎓</span>
+                    <p>حوّل أرباحك إلى منحة مالية للفصل الدراسي الأول.</p>
+                </li>
+            </ul>
+            <p class="tagline">كل ما تعرفه... قد يصبح رصيدك الجامعي!</p>
+            <button id="show-register-btn" class="action-button">📅 لا تفوّت الفرصة – سجّل الآن</button>
+            <p class="footer-line">الجامعة الإسلامية – مستقبلك يبدأ من هنا 🌟</p>
+        </div>
+
+        <!-- Start Screen (Registration Form - Hidden by default) -->
+        <div id="start-screen" class="page hidden">
             <img src="logo.png" alt="شعار الجامعة الإسلامية" class="logo">
             <h1>أهلاً بك في رحلتك الافتراضية</h1>
             <p>استكشف الجامعة الإسلامية، أجب عن التحديات، واربح منحة دراسية حقيقية!</p>
@@ -129,12 +406,14 @@
             </form>
         </div>
 
+        <!-- Main Game Scene (Container for all stages) -->
         <div id="game-scene" class="hidden">
             <div id="player-stats" class="hidden">
                 <span id="player-name"></span>
                 <span id="player-score"></span>
             </div>
             
+            <!-- Dynamic Game Stages will be injected here by JS -->
             <div id="gate-scene" class="game-stage hidden"></div>
             <div id="map-scene" class="game-stage hidden">
                 <div class="scene-content">
@@ -162,17 +441,22 @@
             <div id="conference-scene" class="game-stage hidden"></div>
             <div id="stadium-scene" class="game-stage hidden"></div>
             <div id="exchange-scene" class="game-stage hidden"></div>
+            
+            <!-- End Scene -->
             <div id="end-scene" class="game-stage hidden">
                 <h2 class="scene-title">🎉 تهانينا! 🎉</h2>
                 <img src="https://placehold.co/400x250/28a745/FFFFFF?text=شهادة+شكر" alt="شهادة مشاركة" class="scene-image">
-                <p id="final-message"></p>
-                <p>يمكنك مشاركة هذه الشهادة مع أصدقائك!</p>
-                <button id="share-btn" class="action-button">مشاركة على وسائل التواصل</button>
-                <button id="restart-btn" class="action-button" style="margin-top: 10px; background-color: #555;">ابدأ من جديد</button>
+                <div class="scene-content">
+                    <p id="final-message"></p>
+                    <p>يمكنك مشاركة هذه الشهادة مع أصدقائك!</p>
+                    <button id="share-btn" class="action-button">مشاركة على وسائل التواصل</button>
+                    <button id="restart-btn" class="action-button" style="margin-top: 10px; background-color: #555;">ابدأ من جديد</button>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- Feedback Modal -->
     <div id="feedback-modal" class="modal hidden">
         <div class="modal-content">
             <h2 id="modal-title"></h2>
@@ -181,190 +465,249 @@
         </div>
     </div>
 
-    <script src="saveData.js"></script>
+    <!-- External JS for saving data (You need to have this file) -->
+    <!-- <script src="saveData.js"></script> -->
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const gameData = {
-                'gate': { image: 'hares 1.png', question: 'أهلاً بك في الجامعة الإسلامية! للدخول، أجب عن السؤال التالي: في أي عام تأسست الجامعة؟', options: { '1978': '1978', '1982': '1982', '1960': '1960', '1990': '1990' }, correctAnswer: '1978', points: 1, correctFeedback: 'رائع! لقد حصلت على 1 جنيه فلسطيني. البوابة الآن مفتوحة أمامك!', incorrectFeedback: 'إجابة غير صحيحة. حاول مرة أخرى!' },
-                'library': [ { id: 'library_q1', image: 'library_question.png', question: 'تضم مكتبتنا كنزاً معرفياً ضخماً. كم عدد المراجع الإلكترونية التي توفرها؟', options: { '100k': 'أكثر من 100 ألف مرجع الكتروني', '150k': 'أكثر من 150 ألف مرجع الكتروني', '50k': 'أقل من 50 ألف مرجع الكتروني', '200k': 'أكثر من 200 ألف مرجع الكتروني' }, correctAnswer: '150k', points: 2, correctFeedback: 'إجابة ممتازة! معرفتك دقيقة. لقد ربحت 2 جنيه. لننتقل للتحدي التالي.', incorrectFeedback: 'حاول مرة أخرى! المعرفة قوة.' }, { id: 'library_q2', image: 'library_question_2.png', question: 'هل توفر المكتبة قاعات هادئة ومخصصة للدراسة؟', options: { 'yes': 'نعم، توفر قاعات هادئة', 'no': 'لا، المكتبة للكتب فقط' }, correctAnswer: 'yes', points: 1, correctFeedback: 'بالتأكيد! راحتك أثناء الدراسة تهمنا. لقد ربحت 1 جنيه إضافي.', incorrectFeedback: 'إجابة غير صحيحة. المكتبة مكان مثالي للدراسة.' }, { id: 'library_q3', image: 'library_question_3.png', question: 'كيف تساعدك المكتبة في أبحاثك الجامعية؟', options: { 'resources': 'توفر مصادر ومراجع متنوعة', 'writes_for_you': 'تكتب البحث بدلاً عنك' }, correctAnswer: 'resources', points: 1, correctFeedback: 'صحيح! المكتبة هي شريكك الأول في البحث العلمي. ربحت 1 جنيه.', incorrectFeedback: 'إجابة غير دقيقة. المكتبة تدعمك بالمصادر لا بالقيام بالعمل عنك.' }, { id: 'library_q4', image: 'library_question_4.png', question: 'هل توفر المكتبة مواد رقمية يمكن الوصول إليها عن بعد؟', options: { 'yes_ebooks': 'نعم، توفر كتباً إلكترونية', 'no_digital': 'لا، كل المواد ورقية فقط' }, correctAnswer: 'yes_ebooks', points: 1, correctFeedback: 'أحسنت! يمكنك الوصول لكنز معرفي من أي مكان. لقد ربحت آخر جنيه في هذه المرحلة.', incorrectFeedback: 'إجابة غير صحيحة. العصر الرقمي في قلب مكتبتنا.' } ],
-                'cafeteria': { image: 'https://placehold.co/400x250/fd7e14/FFFFFF?text=كافتيريا+شهية', question: 'بعد يوم دراسي، ما هي وجبتك المفضلة من كافتيريا الجامعة؟ (هذا سؤال ترويحي بدون نقاط)', options: { 'shawarma': 'شاورما', 'burger': 'برجر', 'salad': 'سلطة صحية' }, correctAnswer: null, points: 0, correctFeedback: 'اختيار شهي! بالهناء والشفاء. لنكمل جولتنا.' }
-            };
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- GAME DATA ---
+        const gameData = {
+            'gate': { image: 'hares 1.png', question: 'أهلاً بك في الجامعة الإسلامية! للدخول، أجب عن السؤال التالي: في أي عام تأسست الجامعة؟', options: { '1978': '1978', '1982': '1982', '1960': '1960', '1990': '1990' }, correctAnswer: '1978', points: 1, correctFeedback: 'رائع! لقد حصلت على 1 جنيه فلسطيني. البوابة الآن مفتوحة أمامك!', incorrectFeedback: 'إجابة غير صحيحة. حاول مرة أخرى!' },
+            'library': [ 
+                { id: 'library_q1', image: 'library_question.png', question: 'تضم مكتبتنا كنزاً معرفياً ضخماً. كم عدد المراجع الإلكترونية التي توفرها؟', options: { '100k': 'أكثر من 100 ألف', '150k': 'أكثر من 150 ألف', '50k': 'أقل من 50 ألف', '200k': 'أكثر من 200 ألف' }, correctAnswer: '150k', points: 2, correctFeedback: 'إجابة ممتازة! معرفتك دقيقة. لقد ربحت 2 جنيه.', incorrectFeedback: 'حاول مرة أخرى! المعرفة قوة.' },
+                { id: 'library_q2', image: 'library_question_2.png', question: 'هل توفر المكتبة قاعات هادئة ومخصصة للدراسة؟', options: { 'yes': 'نعم، توفر قاعات هادئة', 'no': 'لا، المكتبة للكتب فقط' }, correctAnswer: 'yes', points: 1, correctFeedback: 'بالتأكيد! راحتك أثناء الدراسة تهمنا. لقد ربحت 1 جنيه إضافي.', incorrectFeedback: 'إجابة غير صحيحة. المكتبة مكان مثالي للدراسة.' }
+            ],
+            'cafeteria': { image: 'cafeteria.png', question: 'بعد يوم دراسي، ما هي وجبتك المفضلة من كافتيريا الجامعة؟ (هذا سؤال ترويحي بدون نقاط)', options: { 'shawarma': 'شاورما', 'burger': 'برجر', 'salad': 'سلطة صحية' }, correctAnswer: null, points: 0, correctFeedback: 'اختيار شهي! بالهناء والشفاء. لنكمل جولتنا.' }
+        };
 
-            const gameState = {
-                playerName: '',
-                playerPhone: '',
-                tawjihiYear: '',
-                uniquePlayerId: null,
-                score: 0,
-                currentScene: null,
-                currentSubQuestionIndex: 0,
-                answeredQuestions: new Set()
-            };
+        // --- GAME STATE ---
+        const gameState = {
+            playerName: '',
+            playerPhone: '',
+            tawjihiYear: '',
+            uniquePlayerId: null,
+            score: 0,
+            currentScene: null,
+            currentSubQuestionIndex: 0,
+            answeredQuestions: new Set(),
+            visitedDestinations: new Set()
+        };
 
-            const startScreen = document.getElementById('start-screen');
-            const gameSceneContainer = document.getElementById('game-scene');
-            const playerForm = document.getElementById('player-form');
-            const playerNameSpan = document.getElementById('player-name');
-            const playerScoreSpan = document.getElementById('player-score');
-            const playerStats = document.getElementById('player-stats');
-            const modal = document.getElementById('feedback-modal');
-            const modalTitle = document.getElementById('modal-title');
-            const modalText = document.getElementById('modal-text');
-            const modalCloseBtn = document.getElementById('modal-close-btn');
-            const correctSound = document.getElementById('correct-sound');
-            const incorrectSound = document.getElementById('incorrect-sound');
+        // --- DOM ELEMENTS ---
+        const landingPage = document.getElementById('landing-page');
+        const showRegisterBtn = document.getElementById('show-register-btn');
+        const startScreen = document.getElementById('start-screen');
+        const gameSceneContainer = document.getElementById('game-scene');
+        const playerForm = document.getElementById('player-form');
+        const playerNameSpan = document.getElementById('player-name');
+        const playerScoreSpan = document.getElementById('player-score');
+        const playerStats = document.getElementById('player-stats');
+        const modal = document.getElementById('feedback-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalText = document.getElementById('modal-text');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+        const correctSound = document.getElementById('correct-sound');
+        const incorrectSound = document.getElementById('incorrect-sound');
 
-            function startGame(event) {
-                event.preventDefault();
-                const nameInput = document.getElementById('name').value.trim();
-                const phoneInput = document.getElementById('phone').value.trim();
-                const tawjihiYearInput = document.getElementById('tawjihi-year').value.trim();
-                if (nameInput === '' || phoneInput === '' || tawjihiYearInput === '') {
-                    alert('الرجاء تعبئة جميع الحقول.');
-                    return;
-                }
-                const startButton = event.target.querySelector('.action-button');
-                startButton.disabled = true;
-                startButton.textContent = 'جاري التسجيل...';
-                registerPlayer(nameInput, phoneInput, tawjihiYearInput)
-                    .then(data => {
-                        if (data.result === 'success' && data.uniqueId) {
-                            gameState.playerName = nameInput;
-                            gameState.playerPhone = phoneInput;
-                            gameState.tawjihiYear = tawjihiYearInput;
-                            gameState.uniquePlayerId = data.uniqueId;
-                            updatePlayerStats();
-                            startScreen.classList.add('hidden');
-                            gameSceneContainer.classList.remove('hidden');
-                            playerStats.classList.remove('hidden');
-                            showModal(`أهلاً بك يا ${gameState.playerName}!`, 'تم تسجيلك بنجاح. هيا بنا نبدأ الرحلة.', () => {
-                                renderScene('gate');
-                            });
-                        } else {
-                            alert('حدث خطأ أثناء التسجيل. الرجاء المحاولة مرة أخرى. الخطأ: ' + (data.message || 'Unknown error'));
-                            startButton.disabled = false;
-                            startButton.textContent = 'ابدأ الرحلة!';
-                        }
-                    })
-                    .catch(error => {
-                        alert('فشل الاتصال بالخادم. الرجاء التحقق من اتصالك بالإنترنت.');
-                        startButton.disabled = false;
-                        startButton.textContent = 'ابدأ الرحلة!';
+        // --- CORE FUNCTIONS ---
+        function showRegistration() {
+            landingPage.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+        }
+
+        function startGame(event) {
+            event.preventDefault();
+            const nameInput = document.getElementById('name').value.trim();
+            const phoneInput = document.getElementById('phone').value.trim();
+            const tawjihiYearInput = document.getElementById('tawjihi-year').value.trim();
+            if (nameInput === '' || phoneInput === '' || tawjihiYearInput === '') {
+                showModal('خطأ', 'الرجاء تعبئة جميع الحقول.', null);
+                return;
+            }
+            
+            const mockRegistration = new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve({ result: 'success', uniqueId: `player_${Date.now()}` });
+                }, 500);
+            });
+
+            const startButton = event.target.querySelector('.action-button');
+            startButton.disabled = true;
+            startButton.textContent = 'جاري التسجيل...';
+
+            mockRegistration.then(data => {
+                if (data.result === 'success' && data.uniqueId) {
+                    gameState.playerName = nameInput;
+                    gameState.playerPhone = phoneInput;
+                    gameState.tawjihiYear = tawjihiYearInput;
+                    gameState.uniquePlayerId = data.uniqueId;
+                    updatePlayerStats();
+                    startScreen.classList.add('hidden');
+                    gameSceneContainer.classList.remove('hidden');
+                    playerStats.classList.remove('hidden');
+                    showModal(`أهلاً بك يا ${gameState.playerName}!`, 'تم تسجيلك بنجاح. هيا بنا نبدأ الرحلة.', () => {
+                        renderScene('gate');
                     });
+                } else {
+                    showModal('خطأ', 'حدث خطأ أثناء التسجيل. الرجاء المحاولة مرة أخرى.', null);
+                    startButton.disabled = false;
+                    startButton.textContent = 'ابدأ الرحلة!';
+                }
+            }).catch(error => {
+                showModal('خطأ في الاتصال', 'فشل الاتصال بالخادم. الرجاء التحقق من اتصالك بالإنترنت.', null);
+                startButton.disabled = false;
+                startButton.textContent = 'ابدأ الرحلة!';
+            });
+        }
+
+        function renderScene(sceneId, questionIndex = 0) {
+            document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
+            let sceneData = gameData[sceneId];
+            const sceneElement = document.getElementById(`${sceneId}-scene`);
+            gameState.currentScene = sceneId;
+
+            if (Array.isArray(sceneData)) {
+                gameState.currentSubQuestionIndex = questionIndex;
+                sceneData = sceneData[questionIndex];
             }
 
-            function showEndScene() {
-                document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
-                const endScene = document.getElementById('end-scene');
-                const finalMessage = document.getElementById('final-message');
-                finalMessage.textContent = `أحسنت يا ${gameState.playerName}! لقد أنهيت الرحلة برصيد ${gameState.score} جنيه.`;
-                endScene.classList.remove('hidden');
-                if (gameState.uniquePlayerId) {
-                    updatePlayerScore(gameState.uniquePlayerId, gameState.score);
+            if (!sceneData || !sceneElement) {
+                if (sceneElement) sceneElement.classList.remove('hidden');
+                return;
+            }
+
+            let optionsHTML = '';
+            let delay = 0;
+            for (const key in sceneData.options) {
+                optionsHTML += `<button class="option-btn" data-answer="${key}" style="animation-delay: ${delay}s">${sceneData.options[key]}</button>`;
+                delay += 0.1;
+            }
+            
+            sceneElement.innerHTML = `
+                <img src="${sceneData.image}" alt="صورة مشهد ${sceneId}" class="scene-image">
+                <div class="scene-content">
+                    <p class="scene-title">${sceneData.question}</p>
+                    <div class="options-container">${optionsHTML}</div>
+                </div>
+            `;
+            sceneElement.classList.remove('hidden');
+            sceneElement.querySelector('.options-container').addEventListener('click', handleAnswer);
+        }
+
+        function handleAnswer(event) {
+            if (!event.target.classList.contains('option-btn')) return;
+
+            const sceneId = gameState.currentScene;
+            let sceneData = gameData[sceneId];
+            let questionId = sceneId;
+
+            if (Array.isArray(sceneData)) {
+                sceneData = sceneData[gameState.currentSubQuestionIndex];
+                questionId = sceneData.id;
+            }
+
+            if (gameState.answeredQuestions.has(questionId)) return;
+
+            const selectedAnswer = event.target.dataset.answer;
+            const optionsContainer = event.target.parentElement;
+            
+            optionsContainer.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
+
+            if (sceneData.correctAnswer === null) {
+                gameState.answeredQuestions.add(questionId);
+                gameState.visitedDestinations.add(sceneId);
+                showModal('اختيار رائع!', sceneData.correctFeedback, () => renderScene('map'));
+                return;
+            }
+            
+            if (selectedAnswer === sceneData.correctAnswer) {
+                correctSound.play();
+                gameState.score += sceneData.points;
+                gameState.answeredQuestions.add(questionId);
+                updatePlayerStats();
+                
+                event.target.style.backgroundColor = '#28a745';
+                event.target.style.color = '#fff';
+
+                setTimeout(() => {
+                    if (Array.isArray(gameData[sceneId])) {
+                        const nextQuestionIndex = gameState.currentSubQuestionIndex + 1;
+                        if (nextQuestionIndex < gameData[sceneId].length) {
+                            renderScene(sceneId, nextQuestionIndex);
+                        } else {
+                            gameState.visitedDestinations.add(sceneId);
+                            showModal("إنجاز رائع!", `لقد أكملت جميع تحديات هذا المكان. لنعد إلى الخريطة.`, () => {
+                                renderScene('map');
+                            });
+                        }
+                    } else {
+                        gameState.visitedDestinations.add(sceneId);
+                        renderScene('map');
+                    }
+                }, 1500);
+            } else {
+                incorrectSound.play();
+                event.target.style.backgroundColor = '#dc3545';
+                event.target.style.color = '#fff';
+                
+                const correctButton = optionsContainer.querySelector(`[data-answer="${sceneData.correctAnswer}"]`);
+                if(correctButton) {
+                    correctButton.style.backgroundColor = '#28a745';
+                    correctButton.style.color = '#fff';
+                }
+
+                setTimeout(() => {
+                    showModal('للأسف!', sceneData.incorrectFeedback, () => {
+                        optionsContainer.querySelectorAll('.option-btn').forEach(btn => {
+                            btn.disabled = false;
+                            btn.style.backgroundColor = '';
+                            btn.style.color = '';
+                        });
+                    });
+                }, 2000);
+            }
+        }
+
+        function updatePlayerStats() {
+            playerNameSpan.textContent = `اللاعب: ${gameState.playerName}`;
+            playerScoreSpan.innerHTML = `الرصيد: <span id="player-score-value">${gameState.score}</span> جنيه`;
+        }
+
+        function showModal(title, text, callback) {
+            modalTitle.textContent = title;
+            modalText.textContent = text;
+            modal.classList.remove('hidden');
+            
+            const closeHandler = () => {
+                modal.classList.add('hidden');
+                if (callback) callback();
+                modalCloseBtn.removeEventListener('click', closeHandler);
+            };
+            modalCloseBtn.addEventListener('click', closeHandler);
+        }
+        
+        // --- EVENT LISTENERS ---
+        showRegisterBtn.addEventListener('click', showRegistration);
+        playerForm.addEventListener('submit', startGame);
+        
+        document.getElementById('map-scene').addEventListener('click', (e) => {
+            const button = e.target.closest('.option-btn');
+            if(button) {
+                const destination = button.dataset.destination;
+                if (gameState.visitedDestinations.has(destination)) {
+                    showModal("مكان مألوف!", "لقد أكملت جميع تحديات هذا المكان. اختر وجهة أخرى.", null);
+                } else if (gameData[destination]) {
+                    renderScene(destination);
                 } else {
-                    console.error("خطأ: لا يمكن تحديث النتيجة لعدم وجود رقم تعريفي.");
+                    showModal("قيد الإنشاء!", "هذا الجزء من الجامعة سيتم افتتاحه قريباً في التحديثات القادمة للعبة.", null);
                 }
             }
-            
-            function renderScene(sceneId, questionIndex = 0, pushState = true) { 
-                if (pushState) { 
-                    history.pushState({ scene: sceneId, index: questionIndex }, ''); 
-                } 
-                document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden')); 
-                let sceneData = gameData[sceneId]; 
-                const sceneElement = document.getElementById(`${sceneId}-scene`); 
-                gameState.currentScene = sceneId; 
-                if (Array.isArray(sceneData)) { 
-                    gameState.currentSubQuestionIndex = questionIndex; 
-                    sceneData = sceneData[questionIndex]; 
-                } 
-                if (!sceneData || !sceneElement) { 
-                    if (sceneElement) sceneElement.classList.remove('hidden'); 
-                    return; 
-                } 
-                let optionsHTML = ''; 
-                let delay = 0;
-                for (const key in sceneData.options) { 
-                    optionsHTML += `<button class="option-btn" data-answer="${key}" style="animation-delay: ${delay}s">${sceneData.options[key]}</button>`; 
-                    delay += 0.1;
-                } 
-                sceneElement.innerHTML = ` <img src="${sceneData.image}" alt="صورة مشهد ${sceneId}" class="scene-image"> <div class="scene-content"> <p class="scene-title">${sceneData.question}</p> <div class="options-container">${optionsHTML}</div> <div class="feedback-message"></div> </div> `; 
-                sceneElement.classList.remove('hidden'); 
-                sceneElement.querySelector('.options-container').addEventListener('click', handleAnswer); 
-            }
-            
-            function handleAnswer(event) { 
-                if (!event.target.classList.contains('option-btn')) return; 
-                const sceneId = gameState.currentScene; 
-                let sceneData = gameData[sceneId]; 
-                let questionId = sceneId; 
-                if (Array.isArray(sceneData)) { 
-                    sceneData = sceneData[gameState.currentSubQuestionIndex]; 
-                    questionId = sceneData.id; 
-                } 
-                if (gameState.answeredQuestions.has(questionId)) return; 
-                const selectedAnswer = event.target.dataset.answer; 
-                const feedbackElement = document.querySelector(`#${sceneId}-scene .feedback-message`); 
-                
-                if (sceneData.correctAnswer === null) { 
-                    gameState.answeredQuestions.add(questionId); 
-                    feedbackElement.textContent = sceneData.correctFeedback; 
-                    feedbackElement.classList.add('info'); 
-                    feedbackElement.style.display = 'block'; 
-                    setTimeout(() => renderScene('map'), 2000); 
-                    return; 
-                } 
-                
-                if (selectedAnswer === sceneData.correctAnswer) { 
-                    correctSound.play();
-                    gameState.score += sceneData.points; 
-                    gameState.answeredQuestions.add(questionId); 
-                    updatePlayerStats(); 
-                    
-                    if (gameState.uniquePlayerId) {
-                        updatePlayerScore(gameState.uniquePlayerId, gameState.score);
-                    }
-
-                    event.target.style.backgroundColor = '#28a745'; 
-                    event.target.style.color = '#fff'; 
-                    feedbackElement.textContent = sceneData.correctFeedback; 
-                    feedbackElement.classList.add('correct'); 
-                    feedbackElement.style.display = 'block'; 
-                    
-                    setTimeout(() => { 
-                        if (Array.isArray(gameData[sceneId])) { 
-                            const nextQuestionIndex = gameState.currentSubQuestionIndex + 1; 
-                            if (nextQuestionIndex < gameData[sceneId].length) { 
-                                renderScene(sceneId, nextQuestionIndex); 
-                            } else { 
-                                showModal("إنجاز رائع!", `لقد أكملت جميع تحديات المكتبة بنجاح. لنعد إلى الخريطة.`, () => { 
-                                    renderScene('map'); 
-                                }); 
-                            } 
-                        } else { 
-                           renderScene('map'); 
-                        } 
-                    }, 2000); 
-                } else { 
-                    incorrectSound.play();
-                    event.target.style.backgroundColor = '#dc3545'; 
-                    event.target.style.color = '#fff'; 
-                    event.target.disabled = true; 
-                    feedbackElement.textContent = sceneData.incorrectFeedback; 
-                    feedbackElement.classList.add('incorrect'); 
-                    feedbackElement.style.display = 'block'; 
-                } 
-            }
-
-            function updatePlayerStats() { playerNameSpan.textContent = `اللاعب: ${gameState.playerName}`; playerScoreSpan.innerHTML = `الرصيد: <span id="player-score-value">${gameState.score}</span> جنيه`; }
-            function showModal(title, text, callback) { modalTitle.textContent = title; modalText.textContent = text; modal.classList.remove('hidden'); modalCloseBtn.addEventListener('click', () => { modal.classList.add('hidden'); if (callback) callback(); }, { once: true }); }
-
-            playerForm.addEventListener('submit', startGame);
-            document.getElementById('map-scene').addEventListener('click', (e) => { const button = e.target.closest('.option-btn'); if(button) { const destination = button.dataset.destination; const destinationData = gameData[destination]; if (Array.isArray(destinationData) && gameState.answeredQuestions.has(destinationData[destinationData.length - 1].id)) { showModal("مكان مألوف!", "لقد أكملت جميع تحديات هذا المكان. اختر وجهة أخرى.", null); } else if (gameState.answeredQuestions.has(destination)) { showModal("مكان مألوف!", "لقد قمت بزيارة هذا المكان بالفعل. اختر وجهة أخرى.", null); } else if (destinationData) { renderScene(destination); } else { showModal("قيد الإنشاء!", "هذا الجزء من الجامعة سيتم افتتاحه قريباً في التحديثات القادمة للعبة.", null); } } });
-            document.getElementById('restart-btn').addEventListener('click', () => { location.reload(); });
-            window.addEventListener('popstate', (event) => { if (event.state && event.state.scene) { renderScene(event.state.scene, event.state.index, false); } else { location.reload(); } });
         });
+        
+        document.getElementById('restart-btn').addEventListener('click', () => {
+            location.reload();
+        });
+    });
     </script>
 </body>
 </html>

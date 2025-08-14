@@ -465,11 +465,52 @@
         </div>
     </div>
 
-    <!-- External JS for saving data (You need to have this file) -->
-    <!-- <script src="saveData.js"></script> -->
-
     <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // --- SCRIPT URL FOR GOOGLE SHEETS ---
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-lE41eY0lEWEOxZevGyTMxNbpY2zTmRzWa3DEAd5Dc6O72GgtMA/exec';
+
+        // --- DATA SAVING FUNCTIONS ---
+        function registerPlayer(name, phone, year) {
+            const formData = new FormData();
+            formData.append('action', 'register');
+            formData.append('name', name);
+            formData.append('phone', phone);
+            formData.append('year', year);
+
+            return fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData,
+            }).then(response => response.json());
+        }
+
+        function updatePlayerScore(uniqueId, score) {
+            if (!uniqueId) {
+                console.error("Attempted to update score without a uniqueId.");
+                return; 
+            }
+            
+            const formData = new FormData();
+            formData.append('action', 'updateScore');
+            formData.append('uniqueId', uniqueId);
+            formData.append('score', score);
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.result === 'success') {
+                    console.log(`Score updated to: ${score}`);
+                } else {
+                    console.error('Error updating score:', data.message);
+                }
+            })
+            .catch(error => console.error('Error in update fetch:', error));
+        }
+
+
         // --- GAME DATA ---
         const gameData = {
             'gate': { image: 'hares 1.png', question: 'أهلاً بك في الجامعة الإسلامية! للدخول، أجب عن السؤال التالي: في أي عام تأسست الجامعة؟', options: { '1978': '1978', '1982': '1982', '1960': '1960', '1990': '1990' }, correctAnswer: '1978', points: 1, correctFeedback: 'رائع! لقد حصلت على 1 جنيه فلسطيني. البوابة الآن مفتوحة أمامك!', incorrectFeedback: 'إجابة غير صحيحة. حاول مرة أخرى!' },
@@ -512,7 +553,11 @@
         const incorrectSound = document.getElementById('incorrect-sound');
 
         // --- CORE FUNCTIONS ---
+        
+        history.replaceState({ page: 'landing' }, 'الصفحة الرئيسية');
+
         function showRegistration() {
+            history.pushState({ page: 'register' }, 'التسجيل');
             landingPage.classList.add('hidden');
             startScreen.classList.remove('hidden');
         }
@@ -527,42 +572,42 @@
                 return;
             }
             
-            const mockRegistration = new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve({ result: 'success', uniqueId: `player_${Date.now()}` });
-                }, 500);
-            });
-
             const startButton = event.target.querySelector('.action-button');
             startButton.disabled = true;
             startButton.textContent = 'جاري التسجيل...';
 
-            mockRegistration.then(data => {
-                if (data.result === 'success' && data.uniqueId) {
-                    gameState.playerName = nameInput;
-                    gameState.playerPhone = phoneInput;
-                    gameState.tawjihiYear = tawjihiYearInput;
-                    gameState.uniquePlayerId = data.uniqueId;
-                    updatePlayerStats();
-                    startScreen.classList.add('hidden');
-                    gameSceneContainer.classList.remove('hidden');
-                    playerStats.classList.remove('hidden');
-                    showModal(`أهلاً بك يا ${gameState.playerName}!`, 'تم تسجيلك بنجاح. هيا بنا نبدأ الرحلة.', () => {
-                        renderScene('gate');
-                    });
-                } else {
-                    showModal('خطأ', 'حدث خطأ أثناء التسجيل. الرجاء المحاولة مرة أخرى.', null);
+            registerPlayer(nameInput, phoneInput, tawjihiYearInput)
+                .then(data => {
+                    if (data.result === 'success' && data.uniqueId) {
+                        gameState.playerName = nameInput;
+                        gameState.playerPhone = phoneInput;
+                        gameState.tawjihiYear = tawjihiYearInput;
+                        gameState.uniquePlayerId = data.uniqueId; // Save the unique ID
+                        updatePlayerStats();
+                        startScreen.classList.add('hidden');
+                        gameSceneContainer.classList.remove('hidden');
+                        playerStats.classList.remove('hidden');
+                        showModal(`أهلاً بك يا ${gameState.playerName}!`, 'تم تسجيلك بنجاح. هيا بنا نبدأ الرحلة.', () => {
+                            renderScene('gate');
+                        });
+                    } else {
+                        showModal('خطأ', 'حدث خطأ أثناء التسجيل: ' + (data.message || 'خطأ غير معروف'), null);
+                        startButton.disabled = false;
+                        startButton.textContent = 'ابدأ الرحلة!';
+                    }
+                })
+                .catch(error => {
+                    showModal('خطأ في الاتصال', 'فشل الاتصال بالخادم. الرجاء التحقق من اتصالك بالإنترنت.', null);
                     startButton.disabled = false;
                     startButton.textContent = 'ابدأ الرحلة!';
-                }
-            }).catch(error => {
-                showModal('خطأ في الاتصال', 'فشل الاتصال بالخادم. الرجاء التحقق من اتصالك بالإنترنت.', null);
-                startButton.disabled = false;
-                startButton.textContent = 'ابدأ الرحلة!';
-            });
+                });
         }
 
-        function renderScene(sceneId, questionIndex = 0) {
+        function renderScene(sceneId, questionIndex = 0, pushState = true) {
+            if (pushState) {
+                history.pushState({ scene: sceneId, index: questionIndex }, `مشهد ${sceneId}`);
+            }
+            
             document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
             let sceneData = gameData[sceneId];
             const sceneElement = document.getElementById(`${sceneId}-scene`);
@@ -627,6 +672,11 @@
                 gameState.score += sceneData.points;
                 gameState.answeredQuestions.add(questionId);
                 updatePlayerStats();
+                
+                // Update score in the backend
+                if (gameState.uniquePlayerId) {
+                    updatePlayerScore(gameState.uniquePlayerId, gameState.score);
+                }
                 
                 event.target.style.backgroundColor = '#28a745';
                 event.target.style.color = '#fff';
@@ -708,6 +758,27 @@
         
         document.getElementById('restart-btn').addEventListener('click', () => {
             location.reload();
+        });
+
+        window.addEventListener('popstate', (event) => {
+            landingPage.classList.add('hidden');
+            startScreen.classList.add('hidden');
+            gameSceneContainer.classList.add('hidden');
+            playerStats.classList.add('hidden');
+
+            if (event.state) {
+                if (event.state.scene) {
+                    gameSceneContainer.classList.remove('hidden');
+                    playerStats.classList.remove('hidden');
+                    renderScene(event.state.scene, event.state.index, false);
+                } else if (event.state.page === 'register') {
+                    startScreen.classList.remove('hidden');
+                } else { 
+                    landingPage.classList.remove('hidden');
+                }
+            } else {
+                landingPage.classList.remove('hidden');
+            }
         });
     });
     </script>

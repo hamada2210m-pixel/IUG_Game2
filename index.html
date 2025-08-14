@@ -312,6 +312,30 @@
             margin-bottom: 5px; 
         }
 
+        /* --- Music Control Button --- */
+        #mute-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0, 68, 34, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        #mute-btn:hover {
+            background-color: #004422;
+            transform: scale(1.1);
+        }
+
         /* --- Animations --- */
         @keyframes slide-down { 
             from { transform: translateY(-50px); opacity: 0; } 
@@ -357,6 +381,10 @@
     <!-- Audio Elements for Sound Effects -->
     <audio id="correct-sound" src="https://actions.google.com/sounds/v1/coins/coin_drop.ogg" preload="auto"></audio>
     <audio id="incorrect-sound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg" preload="auto"></audio>
+
+    <!-- Background Music -->
+    <audio id="background-music" src="nashed.mp3" loop></audio>
+    <button id="mute-btn">🔊</button>
 
     <div class="game-container">
         
@@ -551,6 +579,28 @@
         const modalCloseBtn = document.getElementById('modal-close-btn');
         const correctSound = document.getElementById('correct-sound');
         const incorrectSound = document.getElementById('incorrect-sound');
+        const music = document.getElementById('background-music');
+        const muteBtn = document.getElementById('mute-btn');
+
+        // --- MUSIC HANDLING ---
+        let musicStarted = false;
+        function playMusic() {
+            if (music.paused && !musicStarted) {
+                music.play().then(() => {
+                    musicStarted = true;
+                }).catch(() => {
+                    // Autoplay was blocked. Wait for user interaction.
+                    document.body.addEventListener('click', playMusic, { once: true });
+                    document.body.addEventListener('touchstart', playMusic, { once: true });
+                });
+            }
+        }
+
+        muteBtn.addEventListener('click', () => {
+            music.muted = !music.muted;
+            muteBtn.textContent = music.muted ? '🔇' : '�';
+        });
+
 
         // --- CORE FUNCTIONS ---
         
@@ -780,7 +830,11 @@
                 landingPage.classList.remove('hidden');
             }
         });
+
+        // Initial music play attempt
+        playMusic();
     });
     </script>
 </body>
 </html>
+�

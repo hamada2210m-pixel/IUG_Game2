@@ -6,9 +6,9 @@
     <title>رحلتي في الإسلامية</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* --- General Styles --- */
+        /* كل كود الـ CSS الأصلي الذي كتبته أنت */
         body {
             font-family: 'Cairo', sans-serif;
             display: flex;
@@ -19,7 +19,7 @@
             color: #333;
             padding: 10px;
             box-sizing: border-box;
-            background-image: url('Ferst.png');
+            background-image: url('Ferst.png'); /* تأكد من وجود هذا الملف */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -28,14 +28,10 @@
         body::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(to top, rgba(0, 68, 34, 0.3), rgba(240, 244, 248, 0.85));
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(240, 244, 248, 0.85);
             z-index: -1;
         }
-
         .game-container {
             width: 100%;
             max-width: 800px;
@@ -43,405 +39,101 @@
             position: relative;
             z-index: 1;
         }
-
-        .logo { 
-            max-width: 120px; 
-            margin-bottom: 15px; 
-        }
-
-        h1, h2, h3 { 
-            color: #004422; 
-            font-weight: 900;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
-        }
-        h1 { font-size: 28px; margin-bottom: 10px; }
-        h2 { font-size: 24px; }
-        h3 { font-size: 20px; }
-
-
-        p { 
-            font-size: 16px; 
-            color: #555; 
-            margin-bottom: 25px; 
-            line-height: 1.7;
-        }
-
-        .action-button {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 12px;
-            background-color: #006633;
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            font-family: 'Cairo', sans-serif;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-            box-shadow: 0 4px 15px rgba(0, 102, 51, 0.3);
-        }
-        .action-button:hover {
-            background-color: #004422;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 102, 51, 0.4);
-        }
-        .action-button:disabled {
-            background-color: #555;
-            cursor: not-allowed;
-            transform: translateY(0);
-            box-shadow: none;
-        }
-
-        .hidden { 
-            display: none !important; 
-        }
-
-        /* --- Page Styles (Landing, Start, Game) --- */
-        .page {
-            background: rgba(255, 255, 255, 0.9);
+        
+        #landing-screen, #start-screen {
+            background-color: white;
             padding: 30px 40px;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
             animation: fadeInUp 0.6s ease-out;
         }
-
-        /* --- New Professional Landing Page Styles --- */
-        #landing-page h1 {
-            font-size: 32px;
-        }
-        #landing-page ul {
+        #landing-screen .features-list {
             list-style: none;
             padding: 0;
-            margin: 30px 0;
+            margin: 25px 0;
             text-align: right;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            display: inline-block;
         }
-        #landing-page li {
+        #landing-screen .features-list li {
             font-size: 18px;
-            color: #333;
-            display: flex;
-            align-items: center;
-            background-color: rgba(240, 244, 248, 0.7);
-            padding: 15px;
-            border-radius: 12px;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        #landing-page li:hover {
-            transform: scale(1.03);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        }
-        #landing-page .feature-icon {
-            font-size: 28px;
-            margin-left: 20px;
-            background-color: #006633;
-            color: white;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-shrink: 0;
-        }
-        #landing-page li p {
-            margin: 0;
-            font-size: 17px;
-            color: #004422;
-            font-weight: bold;
-        }
-        .tagline {
-            font-weight: bold;
-            color: #004422;
-            font-size: 20px;
-            margin-top: 20px;
-        }
-        .footer-line {
-            margin-top: 30px;
-            font-weight: bold;
-            font-size: 20px;
-            color: #006633;
-        }
-        #show-register-btn {
-            animation: pulse 2s infinite ease-in-out;
+            margin-bottom: 15px;
         }
 
-        /* --- Start Screen (Registration) Specific Styles --- */
-        .form-group { 
-            margin-bottom: 20px; 
-            text-align: right; 
-        }
-        .form-group label { 
-            display: block; 
-            margin-bottom: 8px; 
-            font-weight: bold; 
-            color: #004422; 
-        }
-        .form-group input { 
-            width: 100%; 
-            padding: 12px; 
-            border: 1px solid #ccc; 
-            border-radius: 8px; 
-            box-sizing: border-box; 
-            font-size: 16px; 
-            font-family: 'Cairo', sans-serif; 
-        }
-
-        /* --- Game Scene & Player Stats --- */
-        #player-stats { 
-            position: fixed; 
-            top: 15px; 
-            left: 15px; 
-            background-color: rgba(0, 68, 34, 0.9); 
-            color: white; 
-            padding: 10px 15px; 
-            border-radius: 8px; 
-            font-size: 16px; 
-            font-weight: bold; 
-            z-index: 50; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2); 
-            display: flex; 
-            gap: 15px; 
-            align-items: center; 
-        }
-        #player-score { 
-            background-color: #fdd835; 
-            color: #333; 
-            padding: 5px 10px; 
-            border-radius: 5px; 
-        }
+        .logo { max-width: 150px; margin-bottom: 20px; }
+        h1 { color: #004422; margin-bottom: 10px; }
+        p { font-size: 16px; color: #555; margin-bottom: 25px; }
+        .form-group { margin-bottom: 20px; text-align: right; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #004422; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; font-family: 'Cairo', sans-serif; }
+        .action-button { width: 100%; padding: 15px; border: none; border-radius: 8px; background-color: #006633; color: white; font-size: 18px; font-weight: bold; font-family: 'Cairo', sans-serif; cursor: pointer; transition: background-color 0.3s; }
+        .action-button:hover { background-color: #004422; }
+        .action-button:disabled { background-color: #999; cursor: not-allowed; }
+        .hidden { display: none !important; }
+        #player-stats { position: fixed; top: 15px; left: 15px; background-color: rgba(0, 68, 34, 0.9); color: white; padding: 10px 15px; border-radius: 8px; font-size: 16px; font-weight: bold; z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,0.2); display: flex; gap: 15px; align-items: center; }
+        #player-score { background-color: #fdd835; color: #333; padding: 5px 10px; border-radius: 5px; }
+        .game-stage { background-color: #fff; padding: 0; border-radius: 15px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); text-align: center; width: 100%; box-sizing: border-box; overflow: hidden; animation: fadeInUp 0.6s ease-out; }
+        .scene-image { width: 100%; height: 250px; object-fit: cover; display: block; }
+        .scene-content { padding: 25px; }
+        .scene-title { font-size: 24px; font-weight: bold; color: #004422; margin-bottom: 20px; }
+        .options-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
+        .option-btn {  padding: 15px 10px;  border: 2px solid #006633;  background-color: #fff;  color: #006633;  font-size: 16px;  font-weight: bold;  border-radius: 10px;  cursor: pointer;  transition: all 0.3s ease;  height: 100%;  opacity: 0; animation: fadeIn 0.5s ease-out forwards; }
+        .option-btn:hover { background-color: #e6f3ee; transform: translateY(-2px); }
+        .feedback-message { margin-top: 20px; padding: 15px; border-radius: 10px; font-size: 18px; font-weight: bold; color: #fff; display: none; }
+        .feedback-message.correct { background-color: #28a745; }
+        .feedback-message.incorrect { background-color: #dc3545; }
+        .feedback-message.info { background-color: #17a2b8; }
+        .modal { position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; direction: rtl; }
+        .modal-content { background-color: #fff; padding: 30px; border-radius: 15px; text-align: center; width: 90%; max-width: 400px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); animation: slide-down 0.4s ease-out; }
+        @keyframes slide-down { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translate3d(0, 30px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal-content h2 { color: #006633; margin-bottom: 10px; }
+        .modal-content p { color: #555; font-size: 16px; }
+        #map-scene .options-container .option-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; font-size: 18px; padding: 25px 15px; }
+        .map-icon { font-size: 36px; margin-bottom: 5px; }
         
-        .game-stage { 
-            background-color: #fff; 
-            padding: 0; 
-            border-radius: 15px; 
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
-            text-align: center; 
-            width: 100%; 
-            box-sizing: border-box; 
-            overflow: hidden; 
-            animation: fadeInUp 0.6s ease-out; 
-        }
-        .scene-image { 
-            width: 100%; 
-            height: auto;
-            display: block; 
-        }
-        .scene-content { 
-            padding: 25px; 
-        }
-        .scene-title { 
-            font-size: 24px; 
-            font-weight: bold; 
-            color: #004422; 
-            margin-bottom: 20px; 
-        }
-        .options-container { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 15px; 
-            margin-top: 25px; 
-        }
-        .option-btn { 
-            padding: 15px 10px; 
-            border: 2px solid #006633; 
-            background-color: #fff; 
-            color: #006633; 
-            font-size: 16px; 
-            font-weight: bold; 
-            border-radius: 10px; 
-            cursor: pointer; 
-            transition: all 0.3s ease; 
-            height: 100%; 
-            opacity: 0;
-            animation: fadeIn 0.5s ease-out forwards;
-        }
-        .option-btn:hover { 
-            background-color: #e6f3ee; 
-            transform: translateY(-2px); 
-        }
+        /* ⭐ --- CSS جديد للعبة المطابقة --- ⭐ */
+        #faculties-scene .matching-container { display: flex; flex-direction: column; gap: 20px; margin-top: 20px; }
+        #faculties-scene .matching-area { display: flex; justify-content: space-around; gap: 20px; }
+        #faculties-scene .matching-column { flex: 1; padding: 10px; border: 2px dashed #ccc; border-radius: 10px; min-height: 200px; transition: background-color 0.3s; }
+        #faculties-scene .draggable { background-color: #e6f3ee; padding: 10px; margin-bottom: 10px; border-radius: 8px; cursor: grab; border: 1px solid #006633; user-select: none; }
+        #faculties-scene .draggable:active { cursor: grabbing; opacity: 0.7; }
+        #faculties-scene .drop-target.over { background-color: #d1e7dd; border-style: solid; }
+        /* ⭐ --- CSS جديد للأماكن التي تمت زيارتها --- ⭐ */
+        .option-btn.visited { background-color: #e9ecef; color: #6c757d; border-color: #ced4da; cursor: not-allowed; }
+        .option-btn.visited:hover { transform: none; }
 
-        /* --- Modal & Feedback --- */
-        .modal { 
-            position: fixed; 
-            z-index: 100; 
-            left: 0; 
-            top: 0; 
-            width: 100%; 
-            height: 100%; 
-            background-color: rgba(0, 0, 0, 0.6); 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            direction: rtl; 
-        }
-        .modal-content { 
-            background-color: #fff; 
-            padding: 30px; 
-            border-radius: 15px; 
-            text-align: center; 
-            width: 90%; 
-            max-width: 400px; 
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); 
-            animation: slide-down 0.4s ease-out; 
-        }
-        .modal-content h2 { 
-            color: #006633; 
-            margin-bottom: 10px; 
-        }
-        .modal-content p { 
-            color: #555; 
-            font-size: 16px; 
-            word-wrap: break-word;
-        }
-        
-        /* --- Map Scene Specific Styles --- */
-        #map-scene .options-container .option-btn { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 10px; 
-            font-size: 18px; 
-            padding: 25px 15px; 
-        }
-        .map-icon { 
-            font-size: 36px; 
-            margin-bottom: 5px; 
-        }
-
-        /* --- Faculties Choice Scene Styles --- */
-        #faculties-choice-scene .scene-content {
-            background: url('https://www.iugaza.edu.ps/wp-content/uploads/2020/07/main-gate.jpg') no-repeat center center;
-            background-size: cover;
-            position: relative;
-            border-radius: 15px;
-            padding: 40px;
-        }
-        #faculties-choice-scene .scene-content::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(255, 255, 255, 0.85);
-            border-radius: 15px;
-        }
-        #faculties-choice-scene .choice-container {
-            position: relative;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 20px;
-        }
-        .choice-btn {
-            background-color: rgba(255, 255, 255, 0.8);
-            border: 2px solid #006633;
-            border-radius: 15px;
-            padding: 20px;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            backdrop-filter: blur(5px);
-        }
-        .choice-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-        }
-        .choice-icon {
-            font-size: 48px;
-            margin-bottom: 10px;
-        }
-        .choice-btn h3 {
-            margin: 10px 0 5px 0;
-            color: #004422;
-        }
-        .choice-btn p {
-            font-size: 14px;
-            color: #333;
-            margin-bottom: 0;
-        }
-
-
-        /* --- Animations --- */
-        @keyframes slide-down { 
-            from { transform: translateY(-50px); opacity: 0; } 
-            to { transform: translateY(0); opacity: 1; } 
-        }
-        @keyframes fadeInUp { 
-            from { opacity: 0; transform: translate3d(0, 30px, 0); } 
-            to { opacity: 1; transform: translate3d(0, 0, 0); } 
-        }
-        @keyframes fadeIn { 
-            from { opacity: 0; } 
-            to { opacity: 1; } 
-        }
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-                box-shadow: 0 4px 15px rgba(0, 102, 51, 0.3);
-            }
-            50% {
-                transform: scale(1.03);
-                box-shadow: 0 6px 25px rgba(0, 102, 51, 0.4);
-            }
-            100% {
-                transform: scale(1);
-                box-shadow: 0 4px 15px rgba(0, 102, 51, 0.3);
-            }
-        }
-
-        /* --- Responsive Design --- */
         @media (max-width: 600px) { 
-            .options-container, #faculties-choice-scene .choice-container { grid-template-columns: 1fr; } 
+            .options-container { grid-template-columns: 1fr; } 
             #player-stats { font-size: 14px; gap: 10px; padding: 8px 12px; } 
-            .page { padding: 20px; }
-            #landing-page h1 { font-size: 26px; }
-            #landing-page li { flex-direction: row; text-align: right; }
-            #landing-page .feature-icon { width: 40px; height: 40px; font-size: 22px; margin-left: 15px;}
-            #landing-page li p { font-size: 15px; }
+            #faculties-scene .matching-area { flex-direction: column; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Audio Elements for Sound Effects -->
     <audio id="correct-sound" src="https://actions.google.com/sounds/v1/coins/coin_drop.ogg" preload="auto"></audio>
     <audio id="incorrect-sound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg" preload="auto"></audio>
 
     <div class="game-container">
-        
-        <!-- New Professional Landing Page -->
-        <div id="landing-page" class="page">
-            <img src="logo.png" alt="شعار الجامعة الإسلامية" class="logo">
-            <h1>الجامعة الإسلامية بغزة تطلق مسابقة تفاعلية مميزة لطلبة الثانوية</h1>
-            <ul>
-                <li>
-                    <span class="feature-icon">🏆</span>
-                    <p>أجب عن أسئلة شيقة وممتعة.</p>
-                </li>
-                <li>
-                    <span class="feature-icon">💰</span>
-                    <p>اربح "جنيهات فلسطينية" إلكترونية عن كل إجابة صحيحة.</p>
-                </li>
-                <li>
-                    <span class="feature-icon">🎓</span>
-                    <p>حوّل أرباحك إلى منحة مالية للفصل الدراسي الأول.</p>
-                </li>
-            </ul>
-            <p class="tagline">كل ما تعرفه... قد يصبح رصيدك الجامعي!</p>
-            <button id="show-register-btn" class="action-button">📅 لا تفوّت الفرصة – سجّل الآن</button>
-            <p class="footer-line">الجامعة الإسلامية – مستقبلك يبدأ من هنا 🌟</p>
+        <div id="landing-screen">
+             <img src="logo.png" alt="شعار الجامعة الإسلامية" class="logo" onerror="this.onerror=null;this.src='https://placehold.co/150x150/004422/FFFFFF?text=IUG';">
+             <h1>الجامعة الإسلامية بغزة تطلق مسابقة تفاعلية مميزة لطلبة الثانوية:</h1>
+             <ul class="features-list">
+                 <li>🏆 أجب عن أسئلة شيقة وممتعة.</li>
+                 <li>💰 اربح "جنيهات فلسطينية" إلكترونية عن كل إجابة صحيحة.</li>
+                 <li>🎓 حوّل أرباحك إلى منحة مالية للفصل الدراسي الأول عند التحاقك بالجامعة الإسلامية.</li>
+             </ul>
+             <p><strong>كل ما تعرفه... قد يصبح رصيدك الجامعي!</strong></p>
+             <button id="show-register-btn" class="action-button">📅 لا تفوّت الفرصة – سجّل الآن وابدأ المسابقة</button>
+             <p style="margin-top: 20px;">الجامعة الإسلامية – مستقبلك يبدأ من هنا 🌟</p>
         </div>
-
-        <!-- Start Screen (Registration Form - Hidden by default) -->
-        <div id="start-screen" class="page hidden">
-            <img src="logo.png" alt="شعار الجامعة الإسلامية" class="logo">
+        
+        <div id="start-screen" class="hidden">
+            <img src="logo.png" alt="شعار الجامعة الإسلامية" class="logo" onerror="this.onerror=null;this.src='https://placehold.co/150x150/004422/FFFFFF?text=IUG';">
             <h1>أهلاً بك في رحلتك الافتراضية</h1>
             <p>استكشف الجامعة الإسلامية، أجب عن التحديات، واربح منحة دراسية حقيقية!</p>
-
             <form id="player-form">
                 <div class="form-group">
                     <label for="name">الاسم الكامل:</label>
@@ -459,78 +151,37 @@
             </form>
         </div>
 
-        <!-- Main Game Scene (Container for all stages) -->
         <div id="game-scene" class="hidden">
             <div id="player-stats" class="hidden">
                 <span id="player-name"></span>
                 <span id="player-score"></span>
             </div>
             
-            <!-- Dynamic Game Stages will be injected here by JS -->
             <div id="gate-scene" class="game-stage hidden"></div>
-            <div id="map-scene" class="game-stage hidden">
-                <div class="scene-content">
-                    <h2 class="scene-title">خريطة الجامعة</h2>
-                    <p>لقد دخلت الحرم الجامعي! اختر وجهتك التالية لاستكمال رحلتك.</p>
-                    <div class="options-container">
-                         <button class="option-btn" data-destination="library"><span class="map-icon">📚</span> المكتبة المركزية</button>
-                         <button class="option-btn" data-destination="cafeteria"><span class="map-icon">☕</span> الكافتيريا</button>
-                         <button class="option-btn" data-destination="faculties"><span class="map-icon">🏢</span> الكليات</button>
-                         <button class="option-btn" data-destination="grants"><span class="map-icon">💰</span> المنح والمساعدات</button>
-                         <button class="option-btn" data-destination="hospital"><span class="map-icon">🏥</span> المستشفى الجامعي</button>
-                         <button class="option-btn" data-destination="admission"><span class="map-icon">📝</span> القبول والتسجيل</button>
-                         <button class="option-btn" data-destination="conference"><span class="map-icon">🏛️</span> قاعة المؤتمرات</button>
-                         <button class="option-btn" data-destination="stadium"><span class="map-icon">🏟️</span> ملعب الجامعة</button>
-                         <button class="option-btn" data-destination="exchange"><span class="map-icon">🌍</span> التبادل الأكاديمي</button>
-                    </div>
-                </div>
-            </div>
+            <div id="map-scene" class="game-stage hidden"></div>
             <div id="library-scene" class="game-stage hidden"></div>
             <div id="cafeteria-scene" class="game-stage hidden"></div>
-            
-            <!-- New Scene for Faculties Challenge Choice -->
-            <div id="faculties-choice-scene" class="game-stage hidden">
-                <div class="scene-content">
-                    <h2 class="scene-title">تحدي الكليات</h2>
-                    <p>اختر طريقة التحدي التي تفضلها لاختبار معلوماتك عن كليات الجامعة!</p>
-                    <div class="choice-container">
-                        <button class="choice-btn" data-type="mcq">
-                            <span class="choice-icon">📝</span>
-                            <h3>اختيار من متعدد</h3>
-                            <p>أسئلة كلاسيكية مع عدة خيارات.</p>
-                        </button>
-                        <button class="choice-btn" data-type="tf">
-                            <span class="choice-icon">⚖️</span>
-                            <h3>صح أم خطأ</h3>
-                            <p>حدد مدى صحة المعلومة بسرعة.</p>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
             <div id="faculties-scene" class="game-stage hidden"></div>
             <div id="grants-scene" class="game-stage hidden"></div>
+            <div id="stadium-scene" class="game-stage hidden"></div>
+            <!-- ⭐ إضافة العناصر الفارغة للمراحل الجديدة -->
             <div id="hospital-scene" class="game-stage hidden"></div>
             <div id="admission-scene" class="game-stage hidden"></div>
             <div id="conference-scene" class="game-stage hidden"></div>
-            <div id="stadium-scene" class="game-stage hidden"></div>
             <div id="exchange-scene" class="game-stage hidden"></div>
+            <div id="student_affairs-scene" class="game-stage hidden"></div>
             
-            <!-- End Scene -->
             <div id="end-scene" class="game-stage hidden">
                 <h2 class="scene-title">🎉 تهانينا! 🎉</h2>
                 <img src="https://placehold.co/400x250/28a745/FFFFFF?text=شهادة+شكر" alt="شهادة مشاركة" class="scene-image">
-                <div class="scene-content">
-                    <p id="final-message"></p>
-                    <p>يمكنك مشاركة هذه الشهادة مع أصدقائك!</p>
-                    <button id="share-btn" class="action-button">مشاركة على وسائل التواصل</button>
-                    <button id="restart-btn" class="action-button" style="margin-top: 10px; background-color: #555;">ابدأ من جديد</button>
-                </div>
+                <p id="final-message"></p>
+                <p>يمكنك مشاركة هذه الشهادة مع أصدقائك!</p>
+                <button id="share-btn" class="action-button">مشاركة على وسائل التواصل</button>
+                <button id="restart-btn" class="action-button" style="margin-top: 10px; background-color: #555;">ابدأ من جديد</button>
             </div>
         </div>
     </div>
 
-    <!-- Feedback Modal -->
     <div id="feedback-modal" class="modal hidden">
         <div class="modal-content">
             <h2 id="modal-title"></h2>
@@ -540,312 +191,408 @@
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // --- SCRIPT URL FOR GOOGLE SHEETS ---
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-lE41eY0lEWEOxZevGyTMxNbpY2zTmRzWa3DEAd5Dc6O72GgtMA/exec';
+    // --- دمج محتوى ملف saveData.js هنا ---
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-lE41eY0lEWEOxZevGyTMxNbpY2zTmRzWa3DEAd5Dc6O72GgtMA/exec';
 
-        // --- DATA SAVING FUNCTIONS ---
-        function registerPlayer(name, phone, year) {
-            const formData = new FormData();
-            formData.append('action', 'register');
-            formData.append('name', name);
-            formData.append('phone', phone);
-            formData.append('year', year);
-            return fetch(SCRIPT_URL, { method: 'POST', body: formData }).then(response => response.json());
+    function registerPlayer(name, phone, year) {
+        const formData = new FormData();
+        formData.append('action', 'register');
+        formData.append('name', name);
+        formData.append('phone', phone);
+        formData.append('year', year);
+        return fetch(SCRIPT_URL, { method: 'POST', body: formData }).then(response => response.json());
+    }
+
+    function updatePlayerScore(uniqueId, score) {
+        if (!uniqueId) {
+            console.error("Attempted to update score without a uniqueId.");
+            return; 
         }
-
-        function updatePlayerScore(uniqueId, score) {
-            if (!uniqueId) return; 
-            const formData = new FormData();
-            formData.append('action', 'updateScore');
-            formData.append('uniqueId', uniqueId);
-            formData.append('score', score);
-            fetch(SCRIPT_URL, { method: 'POST', body: formData })
+        const formData = new FormData();
+        formData.append('action', 'updateScore');
+        formData.append('uniqueId', uniqueId);
+        formData.append('score', score);
+        fetch(SCRIPT_URL, { method: 'POST', body: formData })
             .then(response => response.json())
             .then(data => {
-                if (data.result === 'success') console.log(`Score updated to: ${score}`);
-                else console.error('Error updating score:', data.message);
+                if (data.result === 'success') {
+                    console.log(`Score updated to: ${score}`);
+                } else {
+                    console.error('Error updating score:', data.message);
+                }
             })
             .catch(error => console.error('Error in update fetch:', error));
-        }
+    }
 
-        // --- GAME DATA ---
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- بيانات اللعبة ---
         const gameData = {
-            'gate': { image: 'hares 1.png', question: 'أهلاً بك في الجامعة الإسلامية! للدخول، أجب عن السؤال التالي: في أي عام تأسست الجامعة؟', options: { '1978': '1978', '1982': '1982', '1960': '1960', '1990': '1990' }, correctAnswer: '1978', points: 1, correctFeedback: 'رائع! لقد حصلت على 1 جنيه فلسطيني.', incorrectFeedback: 'إجابة غير صحيحة. حاول مرة أخرى!' },
-            'library': [ 
-                { id: 'library_q1', image: 'library_question.png', question: 'كم عدد المراجع الإلكترونية التي توفرها مكتبة الجامعة؟', options: { '100k': '100 ألف', '150k': '150 ألف', '50k': '50 ألف', '200k': '200 ألف' }, correctAnswer: '150k', points: 2, correctFeedback: 'إجابة ممتازة!', incorrectFeedback: 'حاول مرة أخرى!' },
-                { id: 'library_q2', image: 'library_question_2.png', question: 'هل توفر المكتبة قاعات هادئة للدراسة؟', options: { 'yes': 'نعم', 'no': 'لا' }, correctAnswer: 'yes', points: 1, correctFeedback: 'بالتأكيد! راحتك تهمنا.', incorrectFeedback: 'إجابة غير صحيحة.' },
-            ],
-            'faculties': {
-                mcq: [
-                    { id: 'faculties_mcq1', image: 'faculties.png', question: 'أي من التخصصات التالية يتبع لكلية الهندسة؟', options: { 'a': 'هندسة الحاسوب', 'b': 'التمريض', 'c': 'المحاسبة' }, correctAnswer: 'a', points: 2, correctFeedback: 'صحيح! هندسة الحاسوب من أقسام كلية الهندسة.', incorrectFeedback: 'إجابة غير دقيقة.' },
-                    { id: 'faculties_mcq2', image: 'faculties_it.png', question: 'تخصص "الأمن السيبراني" هو أحد تخصصات كلية...', options: { 'a': 'الآداب', 'b': 'تكنولوجيا المعلومات', 'c': 'العلوم' }, correctAnswer: 'b', points: 2, correctFeedback: 'ممتاز! الأمن السيبراني يتبع لكلية تكنولوجيا المعلومات.', incorrectFeedback: 'حاول مجدداً.' }
+            'gate': { type: 'mcq', image: 'hares 1.png', question: 'أهلاً بك في الجامعة الإسلامية! للدخول، أجب عن السؤال التالي: في أي عام تأسست الجامعة؟', options: { '1978': '1978', '1982': '1982', '1960': '1960', '1990': '1990' }, correctAnswer: '1978', points: 1, correctFeedback: 'رائع! لقد حصلت على 1 جنيه فلسطيني. البوابة الآن مفتوحة أمامك!', incorrectFeedback: 'إجابة غير صحيحة. حاول مرة أخرى!' },
+            'library': { type: 'mcq-multi', image: 'library_question.png', questions: [ { id: 'library_q1', question: 'تضم مكتبتنا كنزاً معرفياً ضخماً. كم عدد المراجع الإلكترونية التي توفرها؟', options: { '100k': 'أكثر من 100 ألف', '150k': 'أكثر من 150 ألف', '50k': 'أقل من 50 ألف', '200k': 'أكثر من 200 ألف' }, correctAnswer: '150k', points: 2, correctFeedback: 'إجابة ممتازة! لقد ربحت 2 جنيه.', incorrectFeedback: 'حاول مرة أخرى! المعرفة قوة.' }, { id: 'library_q2', question: 'هل توفر المكتبة قاعات هادئة ومخصصة للدراسة؟', options: { 'yes': 'نعم، توفر قاعات هادئة', 'no': 'لا، المكتبة للكتب فقط' }, correctAnswer: 'yes', points: 1, correctFeedback: 'بالتأكيد! راحتك تهمنا. لقد ربحت 1 جنيه.', incorrectFeedback: 'إجابة غير صحيحة.' } ] },
+            'cafeteria': { type: 'mcq', image: 'https://placehold.co/800x250/fd7e14/FFFFFF?text=كافتيريا+شهية', question: 'بعد يوم دراسي، ما هي وجبتك المفضلة؟ (سؤال ترويحي)', options: { 'shawarma': 'شاورما', 'burger': 'برجر', 'salad': 'سلطة صحية' }, correctAnswer: null, points: 0, correctFeedback: 'اختيار شهي! لنكمل جولتنا.' },
+            'faculties': { 
+                type: 'matching', 
+                image: 'https://placehold.co/800x250/17a2b8/FFFFFF?text=الكليات+الجامعية', 
+                question: 'لعبة المطابقة: اسحب كل تخصص إلى الكلية الصحيحة!',
+                points: 5,
+                correctFeedback: 'عمل رائع! لقد قمت بمطابقة جميع التخصصات بشكل صحيح وربحت 5 جنيهات!',
+                items: [
+                    { id: 'item1', text: 'الهندسة المدنية', category: 'eng' },
+                    { id: 'item2', text: 'الأمن السيبراني', category: 'it' },
+                    { id: 'item3', text: 'هندسة الحاسوب', category: 'eng' },
+                    { id: 'item4', text: 'الذكاء الاصطناعي', category: 'it' }
                 ],
-                tf: [
-                    { id: 'faculties_tf1', image: 'faculties_sharia.png', question: 'كلية الشريعة والقانون تمنح درجة البكالوريوس فقط.', options: { 'true': 'صح', 'false': 'خطأ' }, correctAnswer: 'false', points: 2, correctFeedback: 'أحسنت! الكلية تمنح أيضاً درجتي الماجستير والدكتوراه.', incorrectFeedback: 'خطأ! الكلية تقدم برامج دراسات عليا أيضاً.' },
-                    { id: 'faculties_tf2', image: 'faculties_medicine.png', question: 'تأسست كلية الطب في الجامعة الإسلامية عام 2006.', options: { 'true': 'صح', 'false': 'خطأ' }, correctAnswer: 'true', points: 2, correctFeedback: 'معلومة دقيقة! بالفعل تأسست عام 2006.', incorrectFeedback: 'إجابة غير صحيحة.' }
+                categories: [
+                    { id: 'eng', title: 'كلية الهندسة' },
+                    { id: 'it', title: 'كلية تكنولوجيا المعلومات' }
                 ]
-            },
-            'cafeteria': { image: 'cafeteria.png', question: 'ما هي وجبتك المفضلة من الكافتيريا؟ (سؤال ترويحي)', options: { 'shawarma': 'شاورما', 'burger': 'برجر', 'salad': 'سلطة' }, correctAnswer: null, points: 0, correctFeedback: 'اختيار شهي! بالهناء.' }
+            }
         };
 
-        // --- GAME STATE ---
-        const gameState = {
-            playerName: '', playerPhone: '', tawjihiYear: '', uniquePlayerId: null,
-            score: 0, currentScene: null, currentSubQuestionIndex: 0,
-            currentQuestionType: null, // To store 'mcq' or 'tf'
-            answeredQuestions: new Set(), visitedDestinations: new Set()
-        };
-
-        // --- DOM ELEMENTS ---
-        const allElements = {
-            landingPage: document.getElementById('landing-page'),
-            showRegisterBtn: document.getElementById('show-register-btn'),
-            startScreen: document.getElementById('start-screen'),
-            gameSceneContainer: document.getElementById('game-scene'),
-            playerForm: document.getElementById('player-form'),
-            playerNameSpan: document.getElementById('player-name'),
-            playerScoreSpan: document.getElementById('player-score'),
-            playerStats: document.getElementById('player-stats'),
-            modal: document.getElementById('feedback-modal'),
-            modalTitle: document.getElementById('modal-title'),
-            modalText: document.getElementById('modal-text'),
-            modalCloseBtn: document.getElementById('modal-close-btn'),
-            correctSound: document.getElementById('correct-sound'),
-            incorrectSound: document.getElementById('incorrect-sound'),
-            facultiesChoiceScene: document.getElementById('faculties-choice-scene')
+        // --- حالة اللعبة ---
+        const gameState = { 
+            playerName: '', playerPhone: '', tawjihiYear: '', uniquePlayerId: null, 
+            score: 0, currentScene: null, currentSubQuestionIndex: 0, 
+            answeredQuestions: new Set(),
+            visitedScenes: new Set() 
         };
         
-        // --- CORE FUNCTIONS ---
-        history.replaceState({ page: 'landing' }, 'الصفحة الرئيسية');
+        // --- عناصر الواجهة ---
+        const landingScreen = document.getElementById('landing-screen');
+        const showRegisterBtn = document.getElementById('show-register-btn');
+        const startScreen = document.getElementById('start-screen');
+        const gameSceneContainer = document.getElementById('game-scene');
+        const playerForm = document.getElementById('player-form');
+        const playerNameSpan = document.getElementById('player-name');
+        const playerScoreSpan = document.getElementById('player-score');
+        const playerStats = document.getElementById('player-stats');
+        const modal = document.getElementById('feedback-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalText = document.getElementById('modal-text');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+        const correctSound = document.getElementById('correct-sound');
+        const incorrectSound = document.getElementById('incorrect-sound');
 
-        function showPage(pageToShow) {
-            Object.values(allElements).forEach(el => {
-                if (el && el.classList && !el.id.includes('player-stats')) el.classList.add('hidden');
-            });
-            if (pageToShow) pageToShow.classList.remove('hidden');
-        }
-
-        function showRegistration() {
-            history.pushState({ page: 'register' }, 'التسجيل');
-            showPage(allElements.startScreen);
-        }
+        // --- بدء اللعبة ---
+        showRegisterBtn.addEventListener('click', () => {
+            landingScreen.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+        });
+        
+        playerForm.addEventListener('submit', startGame);
 
         function startGame(event) {
             event.preventDefault();
             const nameInput = document.getElementById('name').value.trim();
             const phoneInput = document.getElementById('phone').value.trim();
             const tawjihiYearInput = document.getElementById('tawjihi-year').value.trim();
-            if (!nameInput || !phoneInput || !tawjihiYearInput) {
-                showModal('خطأ', 'الرجاء تعبئة جميع الحقول.'); return;
+            if (nameInput === '' || phoneInput === '' || tawjihiYearInput === '') {
+                showModal('خطأ', 'الرجاء تعبئة جميع الحقول.', null);
+                return;
             }
-            
             const startButton = event.target.querySelector('.action-button');
             startButton.disabled = true;
             startButton.textContent = 'جاري التسجيل...';
-
             registerPlayer(nameInput, phoneInput, tawjihiYearInput)
                 .then(data => {
-                    if (data && data.result === 'success' && data.uniqueId) {
-                        Object.assign(gameState, { playerName: nameInput, playerPhone: phoneInput, tawjihiYear: tawjihiYearInput, uniquePlayerId: data.uniqueId });
+                    if (data.result === 'success' && data.uniqueId) {
+                        gameState.playerName = nameInput;
+                        gameState.uniquePlayerId = data.uniqueId;
                         updatePlayerStats();
-                        showPage(allElements.gameSceneContainer);
-                        allElements.playerStats.classList.remove('hidden');
-                        showModal(`أهلاً بك يا ${gameState.playerName}!`, 'تم تسجيلك بنجاح. هيا بنا نبدأ الرحلة.', () => renderScene('gate'));
+                        startScreen.classList.add('hidden');
+                        gameSceneContainer.classList.remove('hidden');
+                        playerStats.classList.remove('hidden');
+                        showModal(`أهلاً بك يا ${gameState.playerName}!`, 'تم تسجيلك بنجاح. هيا بنا نبدأ الرحلة.', () => {
+                            renderScene('gate');
+                        });
                     } else {
-                        throw new Error(data.message || 'خطأ غير معروف من الخادم');
+                        throw new Error(data.message || 'Unknown registration error');
                     }
                 })
                 .catch(error => {
-                    showModal('خطأ في التسجيل', `فشل الاتصال بالخادم. يرجى التأكد من اتصالك بالإنترنت والمحاولة مرة أخرى. (${error.message})`);
+                    showModal('خطأ', 'فشل الاتصال بالخادم. الرجاء التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.', null);
                     startButton.disabled = false;
                     startButton.textContent = 'ابدأ الرحلة!';
                 });
         }
 
-        function renderScene(sceneId, questionIndex = 0, pushState = true) {
-            if (pushState) {
-                history.pushState({ scene: sceneId, index: questionIndex, type: gameState.currentQuestionType }, `مشهد ${sceneId}`);
-            }
-            
+        // --- عرض المشاهد ---
+        function renderScene(sceneId) {
             document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
-            
-            let sceneData;
-            let questionSet = gameData[sceneId];
+            const sceneData = gameData[sceneId];
             const sceneElement = document.getElementById(`${sceneId}-scene`);
-            gameState.currentScene = sceneId;
-            gameState.currentSubQuestionIndex = questionIndex;
-
-            if (gameState.currentQuestionType && questionSet[gameState.currentQuestionType]) {
-                sceneData = questionSet[gameState.currentQuestionType][questionIndex];
-            } else if (Array.isArray(questionSet)) {
-                sceneData = questionSet[questionIndex];
-            } else {
-                sceneData = questionSet;
+            if (!sceneElement) {
+                console.error(`Scene element not found for id: ${sceneId}`);
+                return;
             }
+            gameState.currentScene = sceneId;
 
-            if (!sceneData || !sceneElement) return;
+            if (sceneId === 'map') {
+                renderMapScene(sceneElement);
+            } else if (sceneData && sceneData.type === 'mcq') {
+                renderMCQScene(sceneElement, sceneData);
+            } else if (sceneData && sceneData.type === 'mcq-multi') {
+                renderMultiMCQScene(sceneElement, sceneData, 0);
+            } else if (sceneData && sceneData.type === 'matching') {
+                renderMatchingScene(sceneElement, sceneData);
+            } else {
+                 if (sceneElement) sceneElement.classList.remove('hidden');
+            }
+             sceneElement.classList.remove('hidden');
+        }
 
+        function renderMapScene(sceneElement) {
+            // ⭐ --- تحديث قائمة الوجهات والأسماء والأيقونات --- ⭐
+            const destinations = ['library', 'cafeteria', 'faculties', 'grants', 'stadium', 'hospital', 'admission', 'conference', 'exchange', 'student_affairs'];
+            const icons = {
+                'library': '📚', 'cafeteria': '☕', 'faculties': '🏢', 'grants': '💰', 
+                'stadium': '🏟️', 'hospital': '🏥', 'admission': '📝', 'conference': '🏛️', 
+                'exchange': '🌍', 'student_affairs': '🧑‍🎓'
+            };
+            const names = {
+                'library': 'المكتبة المركزية', 'cafeteria': 'الكافتيريا', 'faculties': 'الكليات', 
+                'grants': 'المنح والمساعدات', 'stadium': 'ملعب الجامعة', 'hospital': 'المستشفى الجامعي', 
+                'admission': 'القبول والتسجيل', 'conference': 'قاعة المؤتمرات', 'exchange': 'التبادل الأكاديمي', 
+                'student_affairs': 'شؤون الطلبة'
+            };
+            
+            let optionsHTML = '';
+            destinations.forEach(dest => {
+                const visitedClass = gameState.visitedScenes.has(dest) ? 'visited' : '';
+                const buttonHTML = `<button class="option-btn ${visitedClass}" data-destination="${dest}">
+                                        <span class="map-icon">${icons[dest] || '📍'}</span> ${names[dest] || dest}
+                                    </button>`;
+                optionsHTML += buttonHTML;
+            });
+
+            sceneElement.innerHTML = `
+                <div class="scene-content">
+                    <h2 class="scene-title">خريطة الجامعة</h2>
+                    <p>لقد أكملت المرحلة السابقة بنجاح! اختر وجهتك التالية.</p>
+                    <div class="options-container">${optionsHTML}</div>
+                </div>`;
+        }
+
+        function renderMCQScene(sceneElement, sceneData) {
             let optionsHTML = '';
             let delay = 0;
             for (const key in sceneData.options) {
                 optionsHTML += `<button class="option-btn" data-answer="${key}" style="animation-delay: ${delay}s">${sceneData.options[key]}</button>`;
                 delay += 0.1;
             }
-            
             sceneElement.innerHTML = `
-                <img src="${sceneData.image}" alt="صورة مشهد" class="scene-image" onerror="this.src='https://placehold.co/800x400/cccccc/FFFFFF?text=Image+Not+Found'">
+                <img src="${sceneData.image}" alt="صورة المشهد" class="scene-image" onerror="this.onerror=null;this.src='https://placehold.co/800x250/cccccc/FFFFFF?text=Image+Not+Found';">
                 <div class="scene-content">
                     <p class="scene-title">${sceneData.question}</p>
                     <div class="options-container">${optionsHTML}</div>
-                </div>
-            `;
-            sceneElement.classList.remove('hidden');
+                    <div class="feedback-message"></div>
+                </div>`;
             sceneElement.querySelector('.options-container').addEventListener('click', handleAnswer);
         }
 
+        function renderMultiMCQScene(sceneElement, sceneData, questionIndex) {
+            gameState.currentSubQuestionIndex = questionIndex;
+            const questionData = sceneData.questions[questionIndex];
+            if (!questionData) {
+                showModal("إنجاز رائع!", `لقد أكملت جميع تحديات هذا المكان بنجاح. لنعد إلى الخريطة.`, () => {
+                    gameState.visitedScenes.add(gameState.currentScene);
+                    renderScene('map');
+                });
+                return;
+            }
+            let optionsHTML = '';
+            for (const key in questionData.options) {
+                optionsHTML += `<button class="option-btn" data-answer="${key}">${questionData.options[key]}</button>`;
+            }
+            sceneElement.innerHTML = `
+                <img src="${sceneData.image}" alt="صورة المشهد" class="scene-image" onerror="this.onerror=null;this.src='https://placehold.co/800x250/cccccc/FFFFFF?text=Image+Not+Found';">
+                <div class="scene-content">
+                    <p class="scene-title">${questionData.question}</p>
+                    <div class="options-container">${optionsHTML}</div>
+                    <div class="feedback-message"></div>
+                </div>`;
+            sceneElement.querySelector('.options-container').addEventListener('click', handleAnswer);
+        }
+        
+        function renderMatchingScene(sceneElement, sceneData) {
+            let itemsHTML = '';
+            const shuffledItems = [...sceneData.items].sort(() => Math.random() - 0.5);
+            shuffledItems.forEach(item => {
+                itemsHTML += `<div class="draggable" draggable="true" id="${item.id}" data-category="${item.category}">${item.text}</div>`;
+            });
+
+            let categoriesHTML = '';
+            sceneData.categories.forEach(cat => {
+                categoriesHTML += `<div class="matching-column drop-target" data-category="${cat.id}"><h3>${cat.title}</h3></div>`;
+            });
+
+            sceneElement.innerHTML = `
+                <img src="${sceneData.image}" alt="صورة المشهد" class="scene-image" onerror="this.onerror=null;this.src='https://placehold.co/800x250/cccccc/FFFFFF?text=Image+Not+Found';">
+                <div class="scene-content">
+                    <p class="scene-title">${sceneData.question}</p>
+                    <div class="matching-container">
+                        <div class="matching-column" id="source-column"><h3>التخصصات</h3>${itemsHTML}</div>
+                        <div class="matching-area">${categoriesHTML}</div>
+                    </div>
+                    <button id="check-match-btn" class="action-button" style="margin-top:20px;">تحقق من الإجابة</button>
+                </div>`;
+            
+            const draggables = sceneElement.querySelectorAll('.draggable');
+            const columns = sceneElement.querySelectorAll('.matching-column');
+            let draggedItem = null;
+
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', (e) => {
+                    draggedItem = e.target;
+                    setTimeout(() => e.target.style.display = 'none', 0);
+                });
+                draggable.addEventListener('dragend', () => {
+                    setTimeout(() => {
+                        if (draggedItem) draggedItem.style.display = 'block';
+                        draggedItem = null;
+                    }, 0);
+                });
+            });
+
+            columns.forEach(column => {
+                column.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    if (column.classList.contains('drop-target') || column.id === 'source-column') {
+                        column.classList.add('over');
+                    }
+                });
+                column.addEventListener('dragleave', () => column.classList.remove('over'));
+                column.addEventListener('drop', e => {
+                    e.preventDefault();
+                    column.classList.remove('over');
+                    if (draggedItem) {
+                        column.appendChild(draggedItem);
+                    }
+                });
+            });
+
+            sceneElement.getElementById('check-match-btn').addEventListener('click', () => {
+                let allCorrect = true;
+                const dropTargets = sceneElement.querySelectorAll('.drop-target');
+                dropTargets.forEach(target => {
+                    const targetCategory = target.dataset.category;
+                    const itemsInTarget = target.querySelectorAll('.draggable');
+                    if (itemsInTarget.length === 0) allCorrect = false; 
+                    itemsInTarget.forEach(item => {
+                        if (item.dataset.category !== targetCategory) {
+                            allCorrect = false;
+                        }
+                    });
+                });
+                
+                if (sceneElement.querySelector('#source-column .draggable')) {
+                    allCorrect = false; 
+                }
+
+                if (allCorrect) {
+                    correctSound.play();
+                    gameState.score += sceneData.points;
+                    updatePlayerStats();
+                    updatePlayerScore(gameState.uniquePlayerId, gameState.score);
+                    gameState.visitedScenes.add('faculties');
+                    showModal("إجابة صحيحة!", sceneData.correctFeedback, () => renderScene('map'));
+                } else {
+                    incorrectSound.play();
+                    showModal("هناك خطأ!", "بعض التخصصات ليست في مكانها الصحيح أو لم تقم بتوزيعها كلها. حاول مرة أخرى!", null);
+                }
+            });
+        }
+        
+        // --- معالجة الإجابات ---
         function handleAnswer(event) {
             if (!event.target.classList.contains('option-btn')) return;
-
             const sceneId = gameState.currentScene;
-            let questionSet = gameData[sceneId];
-            let sceneData;
-            let questionId;
+            let sceneData = gameData[sceneId];
+            let questionData = sceneData;
 
-            if (gameState.currentQuestionType && questionSet[gameState.currentQuestionType]) {
-                sceneData = questionSet[gameState.currentQuestionType][gameState.currentSubQuestionIndex];
-            } else if (Array.isArray(questionSet)) {
-                sceneData = questionSet[gameState.currentSubQuestionIndex];
-            } else {
-                sceneData = questionSet;
+            if (sceneData.type === 'mcq-multi') {
+                questionData = sceneData.questions[gameState.currentSubQuestionIndex];
             }
-            questionId = sceneData.id || sceneId;
 
-            if (gameState.answeredQuestions.has(questionId)) return;
-
-            const selectedAnswer = event.target.dataset.answer;
-            const optionsContainer = event.target.parentElement;
+            if (gameState.answeredQuestions.has(questionData.id)) return;
             
-            optionsContainer.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
+            const selectedAnswer = event.target.dataset.answer;
+            
+            document.querySelectorAll(`#${sceneId}-scene .option-btn`).forEach(btn => btn.disabled = true);
 
-            if (sceneData.correctAnswer === null) {
-                gameState.visitedDestinations.add(sceneId);
-                showModal('اختيار رائع!', sceneData.correctFeedback, () => renderScene('map'));
+            if (questionData.correctAnswer === null) {
+                gameState.visitedScenes.add(sceneId);
+                showModal("شكراً لك!", questionData.correctFeedback, () => renderScene('map'));
                 return;
             }
             
-            if (selectedAnswer === sceneData.correctAnswer) {
-                allElements.correctSound.play();
-                gameState.score += sceneData.points;
-                gameState.answeredQuestions.add(questionId);
+            if (selectedAnswer === questionData.correctAnswer) {
+                correctSound.play();
+                gameState.score += questionData.points;
+                gameState.answeredQuestions.add(questionData.id);
                 updatePlayerStats();
-                if (gameState.uniquePlayerId) updatePlayerScore(gameState.uniquePlayerId, gameState.score);
+                updatePlayerScore(gameState.uniquePlayerId, gameState.score);
                 
-                event.target.style.cssText = 'background-color: #28a745; color: #fff;';
-
-                setTimeout(() => {
-                    const currentSet = (gameState.currentQuestionType && questionSet[gameState.currentQuestionType]) || (Array.isArray(questionSet) ? questionSet : null);
-                    if (currentSet) {
-                        const nextQuestionIndex = gameState.currentSubQuestionIndex + 1;
-                        if (nextQuestionIndex < currentSet.length) {
-                            renderScene(sceneId, nextQuestionIndex);
-                        } else {
-                            gameState.visitedDestinations.add(sceneId);
-                            showModal("إنجاز رائع!", `أكملت تحديات هذا المكان. عدنا إلى الخريطة.`, () => renderScene('map'));
-                        }
+                event.target.style.backgroundColor = '#28a745';
+                event.target.style.color = '#fff';
+                
+                showModal("إجابة صحيحة!", questionData.correctFeedback, () => {
+                    if (sceneData.type === 'mcq-multi') {
+                        renderMultiMCQScene(document.getElementById(`${sceneId}-scene`), sceneData, gameState.currentSubQuestionIndex + 1);
                     } else {
-                        gameState.visitedDestinations.add(sceneId);
+                        gameState.visitedScenes.add(sceneId);
                         renderScene('map');
                     }
-                }, 1500);
+                });
             } else {
-                allElements.incorrectSound.play();
-                event.target.style.cssText = 'background-color: #dc3545; color: #fff;';
-                const correctButton = optionsContainer.querySelector(`[data-answer="${sceneData.correctAnswer}"]`);
-                if(correctButton) correctButton.style.cssText = 'background-color: #28a745; color: #fff;';
-
+                incorrectSound.play();
+                event.target.style.backgroundColor = '#dc3545';
+                event.target.style.color = '#fff';
+                showModal("إجابة خاطئة", questionData.incorrectFeedback, null);
                 setTimeout(() => {
-                    showModal('للأسف!', sceneData.incorrectFeedback, () => {
-                        optionsContainer.querySelectorAll('.option-btn').forEach(btn => {
-                            btn.disabled = false;
-                            btn.style.cssText = '';
-                        });
-                    });
+                     document.querySelectorAll(`#${sceneId}-scene .option-btn`).forEach(btn => {
+                        btn.disabled = false;
+                        btn.style.backgroundColor = '';
+                        btn.style.color = '';
+                     });
                 }, 2000);
             }
         }
 
+        // --- دوال مساعدة ---
         function updatePlayerStats() {
-            allElements.playerNameSpan.textContent = `اللاعب: ${gameState.playerName}`;
-            allElements.playerScoreSpan.innerHTML = `الرصيد: <span id="player-score-value">${gameState.score}</span> جنيه`;
+            playerNameSpan.textContent = `اللاعب: ${gameState.playerName}`;
+            playerScoreSpan.innerHTML = `الرصيد: <span id="player-score-value">${gameState.score}</span> جنيه`;
+        }
+        function showModal(title, text, callback) {
+            modalTitle.textContent = title;
+            modalText.textContent = text;
+            modal.classList.remove('hidden');
+            const closeHandler = () => {
+                modal.classList.add('hidden');
+                if (callback) callback();
+            };
+            modalCloseBtn.addEventListener('click', closeHandler, { once: true });
         }
 
-        function showModal(title, text, callback) {
-            allElements.modalTitle.textContent = title;
-            allElements.modalText.textContent = text;
-            allElements.modal.classList.remove('hidden');
-            const closeHandler = () => {
-                allElements.modal.classList.add('hidden');
-                if (callback) callback();
-                allElements.modalCloseBtn.removeEventListener('click', closeHandler);
-            };
-            allElements.modalCloseBtn.addEventListener('click', closeHandler);
-        }
-        
-        // --- EVENT LISTENERS ---
-        allElements.showRegisterBtn.addEventListener('click', showRegistration);
-        allElements.playerForm.addEventListener('submit', startGame);
-        
+        // --- مستمعي الأحداث ---
         document.getElementById('map-scene').addEventListener('click', (e) => {
             const button = e.target.closest('.option-btn');
-            if(!button) return;
-            const destination = button.dataset.destination;
-
-            if (gameState.visitedDestinations.has(destination)) {
-                showModal("مكان مألوف!", "لقد أكملت جميع تحديات هذا المكان. اختر وجهة أخرى.");
-            } else if (destination === 'faculties') {
-                history.pushState({ page: 'faculties_choice' }, 'اختيار تحدي الكليات');
-                showPage(allElements.gameSceneContainer);
-                document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
-                allElements.facultiesChoiceScene.classList.remove('hidden');
-            } else if (gameData[destination]) {
-                renderScene(destination);
-            } else {
-                showModal("قيد الإنشاء!", "هذا الجزء من الجامعة سيتم افتتاحه قريباً.");
+            if(button) {
+                if (button.classList.contains('visited')) {
+                    showModal("مكان مألوف!", "لقد أكملت جميع تحديات هذا المكان. اختر وجهة أخرى.", null);
+                    return;
+                }
+                const destination = button.dataset.destination;
+                const destinationData = gameData[destination];
+                if (destinationData) {
+                    renderScene(destination);
+                } else {
+                    showModal("قيد الإنشاء!", "هذا الجزء من الجامعة سيتم افتتاحه قريباً في التحديثات القادمة للعبة.", null);
+                }
             }
         });
-
-        allElements.facultiesChoiceScene.addEventListener('click', (e) => {
-            const choiceBtn = e.target.closest('.choice-btn');
-            if (choiceBtn) {
-                gameState.currentQuestionType = choiceBtn.dataset.type;
-                renderScene('faculties', 0);
-            }
-        });
-        
         document.getElementById('restart-btn').addEventListener('click', () => location.reload());
-
-        window.addEventListener('popstate', (event) => {
-            const state = event.state || { page: 'landing' };
-            showPage(null); // Hide all
-            allElements.gameSceneContainer.classList.add('hidden');
-            
-            if (state.scene) {
-                allElements.gameSceneContainer.classList.remove('hidden');
-                allElements.playerStats.classList.remove('hidden');
-                gameState.currentQuestionType = state.type;
-                renderScene(state.scene, state.index, false);
-            } else if (state.page === 'faculties_choice') {
-                allElements.gameSceneContainer.classList.remove('hidden');
-                allElements.playerStats.classList.remove('hidden');
-                allElements.facultiesChoiceScene.classList.remove('hidden');
-            } else if (state.page === 'register') {
-                showPage(allElements.startScreen);
-            } else { 
-                showPage(allElements.landingPage);
-            }
-        });
-
     });
     </script>
 </body>

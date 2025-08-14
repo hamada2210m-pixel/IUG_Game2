@@ -503,6 +503,7 @@
                         <button class="option-btn" data-destination="conference"><span class="map-icon">🏛️</span> قاعة المؤتمرات</button>
                         <button class="option-btn" data-destination="stadium"><span class="map-icon">🏟️</span> ملعب الجامعة</button>
                         <button class="option-btn" data-destination="exchange"><span class="map-icon">🌍</span> التبادل الأكاديمي</button>
+                        <button class="option-btn" data-destination="certificate" style="grid-column: 1 / -1;"><span class="map-icon">📜</span> الحصول على الشهادة</button>
                     </div>
                 </div>
             </div>
@@ -522,11 +523,13 @@
             <div id="conference-scene" class="game-stage hidden"></div>
             <div id="stadium-scene" class="game-stage hidden"></div>
             <div id="end-scene" class="game-stage hidden">
-                <h2 class="scene-title">🎉 تهانينا! 🎉</h2>
-                <img src="https://placehold.co/400x250/28a745/FFFFFF?text=شهادة+شكر" alt="شهادة مشاركة" class="scene-image">
-                <p id="final-message"></p>
-                <button id="share-btn" class="action-button">مشاركة على وسائل التواصل</button>
-                <button id="restart-btn" class="action-button" style="margin-top: 10px; background-color: #555;">ابدأ من جديد</button>
+                <div class="scene-content">
+                    <h2 class="scene-title">🎉 تهانينا! 🎉</h2>
+                    <img src="https://placehold.co/400x250/28a745/FFFFFF?text=شهادة+شكر" alt="شهادة مشاركة" class="scene-image" style="max-width: 100%; border-radius: 10px; margin-bottom: 20px;">
+                    <p id="final-message" style="font-size: 18px; line-height: 1.6;"></p>
+                    <button id="share-btn" class="action-button">مشاركة على وسائل التواصل</button>
+                    <button id="restart-btn" class="action-button" style="margin-top: 10px; background-color: #555;">ابدأ من جديد</button>
+                </div>
             </div>
         </div>
     </div>
@@ -630,7 +633,8 @@
                     { id: 'mc_q10', image: 'all_q.png', question: 'ما الترتيب العربي للجامعة حسب Webometrics؟', options: { '50': '50', '77': '77', '100': '100', '125': '125' }, correctAnswer: '77', points: 1, correctFeedback: 'أحسنت! الترتيب هو 77. لقد ربحت جنيهًا واحدًا.', incorrectFeedback: 'إجابة خاطئة، حاول مرة أخرى.' },
                     { id: 'mc_q11', image: 'all_q.png', question: 'الجامعة توصّلت إلى شراكة بحثية مع...؟', options: { 'جامعة هارفارد': 'جامعة هارفارد', 'جامعة لندن للعلوم': 'جامعة لندن للعلوم', 'معهد التربية بجامعة UCL': 'معهد التربية بجامعة UCL', 'جامعة كامبريدج': 'جامعة كامبريدج' }, correctAnswer: 'معهد التربية بجامعة UCL', points: 1, correctFeedback: 'صحيح! كانت الشراكة مع معهد التربية بجامعة UCL. لقد ربحت جنيهًا واحدًا.', incorrectFeedback: 'إجابة خاطئة، حاول مرة أخرى.' },
                     { id: 'mc_q12', image: 'all_q.png', question: 'أي من التالي يشكّل جزءًا من أهداف كلية الطب؟', options: { 'إعداد أطباء تلبية لاحتياجات المجتمع': 'إعداد أطباء تلبية لاحتياجات المجتمع', 'إعداد مهندسين مدنيين': 'إعداد مهندسين مدنيين', 'تطوير برامج الإدارة فقط': 'تطوير برامج الإدارة فقط', 'نشر الفكر الفلسفي فقط': 'نشر الفكر الفلسفي فقط' }, correctAnswer: 'إعداد أطباء تلبية لاحتياجات المجتمع', points: 1, correctFeedback: 'أحسنت! هذا هو الهدف الرئيسي للكلية. لقد ربحت جنيهًا واحدًا.', incorrectFeedback: 'إجابة خاطئة، حاول مرة أخرى.' },
-                    { id: 'mc_q13', image: 'all_q.png', question: 'من كان أول عميد لكلية الطب في الجامعة الإسلامية بغزة؟', options: { 'د. مفيد المخللاتي': 'د. مفيد المخلالاتي', 'د. فاضل نعيم': 'د. فاضل نعيم', 'د. أنور شيخ خليل': 'د. أنور شيخ خليل', 'د. نصر المزين': 'د. نصر المزين' }, correctAnswer: 'د. مفيد المخلالاتي', points: 1, correctFeedback: 'صحيح! د. مفيد المخللاتي كان أول عميد للكلية. لقد ربحت جنيهًا واحدًا.', incorrectFeedback: 'إجابة خاطئة، حاول مرة أخرى.' },
+                    // -- السؤال الذي تم تصحيحه --
+                    { id: 'mc_q13', image: 'all_q.png', question: 'من كان أول عميد لكلية الطب في الجامعة الإسلامية بغزة؟', options: { 'د. مفيد المخللاتي': 'د. مفيد المخللاتي', 'د. فاضل نعيم': 'د. فاضل نعيم', 'د. أنور شيخ خليل': 'د. أنور شيخ خليل', 'د. نصر المزين': 'د. نصر المزين' }, correctAnswer: 'د. مفيد المخللاتي', points: 1, correctFeedback: 'صحيح! د. مفيد المخللاتي كان أول عميد للكلية. لقد ربحت جنيهًا واحدًا.', incorrectFeedback: 'إجابة خاطئة، حاول مرة أخرى.' },
                     { id: 'mc_q14', image: 'all_q.png', question: 'أي من التالي يعبّر عن وصف الجامعة بأنها "بيت الطالب الفلسطيني"؟', options: { 'جامعة فلسطينية خاصة': 'جامعة فلسطينية خاصة', 'جامعة مستقلة عريقة في خدمة الطلبة الفلسطينيين': 'جامعة مستقلة عريقة في خدمة الطلبة الفلسطينيين', 'مؤسسة تعليمية فقط': 'مؤسسة تعليمية فقط', 'كلية تقنية فقط': 'كلية تقنية فقط' }, correctAnswer: 'جامعة مستقلة عريقة في خدمة الطلبة الفلسطينيين', points: 1, correctFeedback: 'أحسنت! هذا الوصف يعكس دور الجامعة. لقد ربحت جنيهًا واحدًا.', incorrectFeedback: 'إجابة خاطئة، حاول مرة أخرى.' },
                     { id: 'mc_q15', image: 'all_q.png', question: 'أي كلية تضم برنامج "هندسة النظم الذكية"؟', options: { 'كلية تكنولوجيا المعلومات': 'كلية تكنولوجيا المعلومات', 'كلية الهندسة': 'كلية الهندسة', 'كلية العلوم': 'كلية العلوم', 'كلية الآداب': 'كلية الآداب' }, correctAnswer: 'كلية الهندسة', points: 1, correctFeedback: 'صحيح! هذا البرنامج تابع لكلية الهندسة. لقد ربحت جنيهًا واحدًا.', incorrectFeedback: 'إجابة خاطئة، حاول مرة أخرى.' },
                     { id: 'mc_q16', image: 'all_q.png', question: 'أي المسارات التالية موجود ضمن "هندسة النظم الذكية"؟', options: { 'أنظمة الطاقة الذكية': 'أنظمة الطاقة الذكية', 'هندسة الطيران': 'هندسة الطيران', 'هندسة البترول': 'هندسة البترول', 'هندسة الطب الحيوي': 'هندسة الطب الحيوي' }, correctAnswer: 'أنظمة الطاقة الذكية', points: 1, correctFeedback: 'أحسنت! هذا أحد مسارات البرنامج. لقد ربحت جنيهًا واحدًا.', incorrectFeedback: 'إجابة خاطئة، حاول مرة أخرى.' },
@@ -765,7 +769,7 @@
                 document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
                 const endScene = document.getElementById('end-scene');
                 const finalMessage = document.getElementById('final-message');
-                finalMessage.textContent = `أحسنت يا ${gameState.playerName}! لقد أنهيت الرحلة برصيد ${gameState.score} جنيه.`;
+                finalMessage.textContent = `أحسنت يا ${gameState.playerName}! لقد أتممت رحلتك بنجاح وأظهرت معرفة ممتازة بالجامعة الإسلامية. رصيدك النهائي هو ${gameState.score} جنيهًا، ويمكنك الآن الحصول على شهادة المشاركة.`;
                 endScene.classList.remove('hidden');
                 if (gameState.uniquePlayerId) {
                     updatePlayerScore(gameState.uniquePlayerId, gameState.score);
@@ -888,13 +892,9 @@
                             if (nextQuestionIndex < gameData[sceneId].length) {
                                 renderScene(sceneId, nextQuestionIndex);
                             } else {
-                                // العودة إلى شاشة الاختيار بعد الانتهاء من الأسئلة
-                                showModal("إنجاز رائع!", `لقد أكملت جميع تحديات هذا القسم بنجاح. لنعد إلى شاشة اختيار التحدي.`, () => {
-                                    if(sceneId.startsWith('exchange')) {
-                                        renderScene('exchange');
-                                    } else {
-                                        renderScene('faculties');
-                                    }
+                                // العودة إلى الخريطة بعد إكمال مرحلة متعددة الأسئلة
+                                showModal("إنجاز رائع!", `لقد أكملت جميع تحديات هذا القسم بنجاح. لنعد إلى الخريطة لاختيار وجهة جديدة.`, () => {
+                                    renderScene('map');
                                 });
                             }
                         } else {
@@ -919,7 +919,7 @@
             // دالة لعرض المودال
             function showModal(title, text, callback) {
                 modalTitle.textContent = title;
-                modalText.textContent = text;
+                modalText.innerHTML = text; // Use innerHTML to allow for line breaks
                 modal.classList.remove('hidden');
                 modalCloseBtn.addEventListener('click', () => {
                     modal.classList.add('hidden');
@@ -933,6 +933,31 @@
                 const button = e.target.closest('.option-btn');
                 if(button) {
                     const destination = button.dataset.destination;
+                    
+                    // -- المنطق الجديد لزر الشهادة --
+                    if (destination === 'certificate') {
+                        // تعريف ما يعنيه إكمال جميع المراحل الرئيسية
+                        const allStagesComplete = 
+                            gameState.answeredQuestions.has('library_q4') &&
+                            gameState.answeredQuestions.has('tf_q13') &&
+                            gameState.answeredQuestions.has('mc_q33') &&
+                            gameState.answeredQuestions.has('ex_tf_q6') &&
+                            gameState.answeredQuestions.has('ex_mc_q8');
+
+                        const scoreSufficient = gameState.score >= 50;
+
+                        if (allStagesComplete && scoreSufficient) {
+                            showEndScene();
+                        } else {
+                            let message = "الطريق إلى الشهادة لم يكتمل بعد!<br><br>للحصول عليها، يجب عليك تحقيق شرطين:<br>";
+                            message += `1. إكمال جميع التحديات في الأقسام الرئيسية. (${allStagesComplete ? '✔️' : '❌'})<br>`;
+                            message += `2. الحصول على 50 جنيهًا على الأقل (رصيدك الحالي: ${gameState.score}). (${scoreSufficient ? '✔️' : '❌'})<br><br>استمر في رحلتك!`;
+                            showModal("شروط الحصول على الشهادة", message, null);
+                        }
+                        return; // نوقف التنفيذ هنا لعدم الانتقال للكود التالي
+                    }
+
+
                     const destinationData = gameData[destination];
 
                     let isCompleted = false;

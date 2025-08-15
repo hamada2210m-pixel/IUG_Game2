@@ -227,7 +227,7 @@
             z-index: 50;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             display: flex;
-            gap: 10px; /* ✅ تعديل: تقليل المسافة قليلًا */
+            gap: 10px;
             align-items: center;
         }
 
@@ -238,7 +238,6 @@
             border-radius: 5px;
         }
         
-        /* ✅ تعديل: تنسيقات مشتركة للأزرار العلوية */
         #logout-btn, #back-to-map-btn {
             background-color: rgba(255, 255, 255, 0.15);
             color: #fff;
@@ -257,7 +256,6 @@
             background-color: var(--incorrect-color);
             border-color: var(--incorrect-color);
         }
-        /* ✅ جديد: تنسيق زر الخريطة */
         #back-to-map-btn:hover {
             background-color: var(--info-color);
             border-color: var(--info-color);
@@ -472,7 +470,8 @@
             font-size: 30px;
         }
 
-        #grants-info-scene .scene-content {
+        #grants-info-scene .scene-content,
+        #faculties-info-scene .scene-content { /* تطبيق النمط على الشاشة الجديدة */
             padding: 0;
         }
 
@@ -554,6 +553,48 @@
             border-top: 1px solid #eee;
         }
         
+        /* --- ✅ CSS جديد: خاص بشاشة عرض الكليات --- */
+        #faculties-info-scene .info-scene-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            text-align: center;
+        }
+
+        .college-card {
+            background-color: #f9f9f9;
+            border-top: 5px solid var(--primary-color);
+            border-radius: var(--border-radius-main);
+            padding: 25px 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .college-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        .college-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+        }
+        
+        .college-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 20px;
+            color: var(--primary-color);
+        }
+
+        .college-card p {
+            font-size: 15px;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin: 0;
+        }
+        /* --- نهاية CSS الجديد --- */
+        
         @media (max-width: 600px) {
             .options-container {
                 grid-template-columns: 1fr;
@@ -562,7 +603,7 @@
                 font-size: 14px;
                 gap: 8px;
                 padding: 8px 10px;
-                flex-wrap: wrap; /* للسماح بالتفاف العناصر */
+                flex-wrap: wrap;
             }
             .features-grid {
                 flex-direction: column;
@@ -658,7 +699,55 @@
                     </div>
                 </div>
             </div>
+            
+            <div id="faculties-info-scene" class="game-stage hidden">
+                <div class="scene-content">
+                    <div class="info-header">
+                        <h2 class="scene-title">تعرّف على كليات الجامعة</h2>
+                        <p>لكل كلية رؤية ورسالة تشكل مستقبل طلبتها. اكتشف عوالم المعرفة المختلفة التي تنتظرك قبل أن تبدأ تحدي المعلومات.</p>
+                    </div>
+                    
+                    <div class="info-scene-container">
+                        <div class="college-card">
+                            <div class="college-icon">⚕️</div>
+                            <h3>كلية الطب</h3>
+                            <p>الطب وعلومه وطبيبٌ للمستقبل</p>
+                        </div>
+                        <div class="college-card">
+                            <div class="college-icon">🔬</div>
+                            <h3>كلية الهندسة</h3>
+                            <p>هندسة المستقبل بكافة مجالات الحياة</p>
+                        </div>
+                        <div class="college-card">
+                            <div class="college-icon">💻</div>
+                            <h3>كلية تكنولوجيا المعلومات</h3>
+                            <p>عصر التكنولوجيا والمعلوماتية وأمن المعلومات والبيانات</p>
+                        </div>
+                        <div class="college-card">
+                            <div class="college-icon">⚖️</div>
+                            <h3>كلية الشريعة والقانون</h3>
+                            <p>صرح العدالة والفقه، وبناء العقول القانونية</p>
+                        </div>
+                         <div class="college-card">
+                            <div class="college-icon">🎨</div>
+                            <h3>كلية الآداب</h3>
+                            <p>منارة الفكر الإنساني واللغات والثقافات</p>
+                        </div>
+                         <div class="college-card">
+                            <div class="college-icon">🧪</div>
+                            <h3>كلية العلوم</h3>
+                            <p>استكشاف أسرار الكون من الذرة إلى المجرة</p>
+                        </div>
+                    </div>
 
+                    <div class="info-footer">
+                        <button id="start-faculties-quiz-btn" class="action-button">
+                            أنا جاهز... ابدأ التحدي!
+                            <span class="btn-icon">🧠</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
             <div id="faculties-scene" class="game-stage hidden"></div>
             <div id="tf_questions-scene" class="game-stage hidden"></div>
             <div id="mc_questions-scene" class="game-stage hidden"></div>
@@ -1005,9 +1094,10 @@
                         'أهلاً بعودتك!', 
                         `مرحباً ${gameState.playerName}، يسعدنا رؤيتك مجدداً! سنكمل من حيث توقفنا.`, 
                         () => {
-                            // ✅ تعديل: لا تعرض شاشة المعلومات عند استعادة الجلسة إذا كان قد بدأ الأسئلة بالفعل
                             if (sceneToRender === 'grants' || (sceneParentMap[sceneToRender] === 'grants')) {
                                 renderScene('grants', indexToRender, false);
+                            } else if (sceneToRender === 'faculties' || (sceneParentMap[sceneToRender] === 'faculties')) {
+                                renderScene('faculties', indexToRender, false);
                             } else if (sceneToRender) {
                                 renderScene(sceneToRender, indexToRender, false);
                             } else {
@@ -1191,8 +1281,6 @@
                     document.querySelectorAll(`#${sceneId}-scene .option-btn`).forEach(btn => btn.disabled = true);
                     correctSound.play();
 
-                    // ✅ --- تعديل منطق إضافة النقاط ---
-                    // يتم إضافة النقاط فقط إذا لم يتم الإجابة على السؤال من قبل
                     if (!gameState.answeredQuestions.has(questionId)) {
                         gameState.score += sceneData.points;
                         gameState.answeredQuestions.add(questionId);
@@ -1202,7 +1290,6 @@
                             updatePlayerScore(gameState.uniquePlayerId, gameState.score);
                         }
                     }
-                    // --- نهاية التعديل ---
                     
                     targetButton.classList.add('correct');
                     feedbackElement.textContent = sceneData.correctFeedback || 'إجابة صحيحة!';
@@ -1301,6 +1388,18 @@
                     return; 
                 }
 
+                // --- ✅ تعديل: إضافة منطق شاشة معلومات الكليات ---
+                if (destination === 'faculties') {
+                    if (isStageCompleted(destination)) {
+                        showModal("مكان مألوف!", "لقد أكملت جميع تحديات هذا المكان. اختر وجهة أخرى.", null);
+                    } else {
+                        document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
+                        document.getElementById('faculties-info-scene').classList.remove('hidden');
+                    }
+                    return; 
+                }
+                // --- نهاية التعديل ---
+
                 if (destination === 'certificate') {
                     const libraryComplete = isStageCompleted('library');
                     const facultiesComplete = isStageCompleted('faculties');
@@ -1340,8 +1439,12 @@
             document.getElementById('start-grants-quiz-btn').addEventListener('click', () => {
                 renderScene('grants');
             });
+            
+            // --- ✅ جديد: زر بدء تحدي الكليات ---
+            document.getElementById('start-faculties-quiz-btn').addEventListener('click', () => {
+                renderScene('faculties');
+            });
 
-            // ✅ جديد: معالجة حدث النقر على الأزرار العلوية
             document.addEventListener('click', function(event) {
                 if (event.target.id === 'logout-btn' || event.target.closest('#logout-btn')) {
                     event.preventDefault();
@@ -1364,7 +1467,6 @@
                 if (event.state && event.state.scene) {
                     renderScene(event.state.scene, event.state.index, false);
                 } else {
-                    // الرجوع إلى ما قبل شاشة اللعبة يعيد تحميل الصفحة
                     if (gameState.uniquePlayerId) {
                        renderScene('map', 0, false);
                     } else {

@@ -593,7 +593,6 @@
             margin: 0;
         }
         
-        /* --- CSS جديد: خاص بشاشة قائمة الكليات --- */
         #faculties-list-scene .info-scene-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -630,12 +629,12 @@
             margin: 0;
         }
 
-        /* --- CSS جديد: خاص بشاشة عرض موقع الكلية --- */
         #college-website-scene .scene-content {
             padding: 20px;
             height: 85vh;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .website-view-header {
@@ -644,12 +643,47 @@
             justify-content: flex-end;
         }
 
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            color: var(--text-light);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         #college-website-iframe {
             width: 100%;
             height: 100%;
             border: 1px solid #ddd;
             border-radius: 10px;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
         }
+
+        #college-website-iframe.loaded {
+            opacity: 1;
+        }
+
 
         @media (max-width: 600px) {
             .options-container {
@@ -1581,7 +1615,6 @@
                 preloadImages(Array.from(allImageUrls));
             });
 
-            // دالة لإنشاء قائمة الكليات مع الإيموجي
             function populateFacultiesList() {
                 const container = document.getElementById('faculties-grid-container');
                 let content = '';
@@ -1596,7 +1629,6 @@
                 container.innerHTML = content;
             }
             
-            // معالج حدث الضغط على بطاقة كلية
             document.getElementById('faculties-grid-container').addEventListener('click', (e) => {
                 const card = e.target.closest('.college-info-card');
                 if (!card) return;
@@ -1612,28 +1644,43 @@
                                 <span class="btn-icon">➡️</span> رجوع لقائمة الكليات
                             </button>
                         </div>
-                        <iframe id="college-website-iframe" src="${url}" title="${name}"></iframe>
+                        <div class="loader-container" id="loader-container">
+                            <div class="loader"></div>
+                            <p>جاري تحميل صفحة الكلية...</p>
+                        </div>
                     </div>
                 `;
+
+                document.getElementById('back-to-list-btn').addEventListener('click', () => {
+                    websiteScene.classList.add('hidden');
+                    websiteScene.innerHTML = ''; 
+                    document.getElementById('faculties-list-scene').classList.remove('hidden');
+                });
                 
                 document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
                 websiteScene.classList.remove('hidden');
 
-                // معالج حدث زر الرجوع
-                document.getElementById('back-to-list-btn').addEventListener('click', () => {
-                    websiteScene.classList.add('hidden');
-                    websiteScene.innerHTML = ''; // إفراغ المحتوى لتخفيف الضغط
-                    document.getElementById('faculties-list-scene').classList.remove('hidden');
-                });
+                const iframe = document.createElement('iframe');
+                iframe.id = 'college-website-iframe';
+                iframe.src = url;
+                iframe.title = name;
+
+                iframe.onload = () => {
+                    const loaderContainer = document.getElementById('loader-container');
+                    if (loaderContainer) {
+                        loaderContainer.remove();
+                    }
+                    iframe.classList.add('loaded');
+                };
+                
+                websiteScene.querySelector('.scene-content').appendChild(iframe);
             });
 
-            // معالج حدث زر الانتقال إلى تحدي الكليات
             document.getElementById('proceed-to-faculties-quiz-btn').addEventListener('click', () => {
                  document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
                  document.getElementById('faculties-info-scene').classList.remove('hidden');
             });
 
-            // استدعاء الدالة عند تحميل اللعبة
             populateFacultiesList();
             
             restoreGameSession();

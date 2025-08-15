@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS stays exactly the same */
+        /* CSS remains unchanged */
         :root {
             --primary-color: #006633;
             --primary-dark: #004422;
@@ -459,7 +459,9 @@
 
     <audio id="correct-sound" src="correct.mp3"></audio>
     <audio id="incorrect-sound" src="funny.mp3"></audio>
-    <audio id="transition-sound" src="turning.mp3"></audio> <div class="game-container">
+    <audio id="transition-sound" src="turning.mp3"></audio>
+
+    <div class="game-container">
         <div id="landing-screen">
             <img src="logo.png" alt="شعار الجامعة الإسلامية" class="logo">
             <h1>رحلتك نحو المعرفة والتميز تبدأ الآن</h1>
@@ -562,6 +564,7 @@
     </div>
 
     <script>
+        // JS remains the same until the event listener
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-lE41eY0lEWEOxZevGyTMxNbpY2zTmRzWa3DEAd5Dc6O72GgtMA/exec';
         function registerPlayer(name, phone, year) {
             const formData = new FormData();
@@ -613,6 +616,14 @@
             };
 
             const gameState = { playerName: '', playerPhone: '', tawjihiYear: '', uniquePlayerId: null, score: 0, currentScene: null, currentSubQuestionIndex: 0, answeredQuestions: new Set() };
+            
+            // ✅ تم إضافة هذا الكائن لتحديد علاقة المراحل
+            const sceneParentMap = {
+                'tf_questions': 'faculties',
+                'mc_questions': 'faculties',
+                'exchange_tf_questions': 'exchange',
+                'exchange_mc_questions': 'exchange'
+            };
 
             const landingScreen = document.getElementById('landing-screen');
             const showRegisterBtn = document.getElementById('show-register-btn');
@@ -628,7 +639,7 @@
             const modalCloseBtn = document.getElementById('modal-close-btn');
             const correctSound = document.getElementById('correct-sound');
             const incorrectSound = document.getElementById('incorrect-sound');
-            const transitionSound = document.getElementById('transition-sound'); // ✅ تم ربط الصوت هنا
+            const transitionSound = document.getElementById('transition-sound');
 
             showRegisterBtn.addEventListener('click', () => {
                 landingScreen.classList.add('hidden');
@@ -705,7 +716,7 @@
 
             function renderScene(sceneId, questionIndex = 0, pushState = true) {
                 if (transitionSound) {
-                    transitionSound.play(); // ✅ تم تشغيل الصوت هنا
+                    transitionSound.play();
                 }
                 
                 if (pushState) {
@@ -812,7 +823,25 @@
                             if (nextQuestionIndex < gameData[sceneId].length) {
                                 renderScene(sceneId, nextQuestionIndex);
                             } else {
-                                showModal("إنجاز رائع!", `لقد أكملت جميع تحديات هذا القسم بنجاح. لنعد إلى الخريطة.`, () => renderScene('map'));
+                                // ✅ --- بداية الكود المعدل ---
+                                const parentScene = sceneParentMap[sceneId];
+
+                                if (parentScene) { // إذا كانت هذه المرحلة تابعة لمرحلة اختيار أخرى
+                                    const siblingScenes = Object.values(gameData[parentScene].nextScene);
+                                    const allSiblingsCompleted = siblingScenes.every(siblingId => isStageCompleted(siblingId));
+
+                                    if (allSiblingsCompleted) {
+                                        // أنهى اللاعب كل أنواع الأسئلة، الآن يمكنه العودة للخريطة
+                                        showModal("إنجاز مذهل!", `لقد أكملت كل تحديات هذا القسم بنجاح. لنعد إلى الخريطة.`, () => renderScene('map'));
+                                    } else {
+                                        // أنهى نوعاً واحداً فقط، نرجعه لصفحة الاختيار
+                                        showModal("رائع!", `لقد أتممت هذا التحدي. يمكنك الآن تجربة النوع الآخر من الأسئلة.`, () => renderScene(parentScene));
+                                    }
+                                } else {
+                                    // إذا كانت مرحلة عادية (مثل المكتبة)، نرجعه للخريطة مباشرة
+                                    showModal("إنجاز رائع!", `لقد أكملت جميع تحديات هذا القسم بنجاح. لنعد إلى الخريطة.`, () => renderScene('map'));
+                                }
+                                // --- نهاية الكود المعدل ---
                             }
                         } else {
                             renderScene('map');
@@ -853,6 +882,15 @@
             function isStageCompleted(stageId) {
                 const stageData = gameData[stageId];
                 if (!stageData || !Array.isArray(stageData)) {
+                    // This handles cases where a scene might not be an array of questions,
+                    // for the purpose of our check, we can consider it "not completable" in this manner.
+                    // A more robust check might be needed if game structure changes, but this is fine for now.
+                    if(gameData[stageId]){
+                         const subScenes = Object.values(gameData[stageId].nextScene || {});
+                         if(subScenes.length > 0){
+                            return subScenes.every(s => isStageCompleted(s));
+                         }
+                    }
                     return false;
                 }
                 return stageData.every(q => gameState.answeredQuestions.has(q.id));
@@ -869,8 +907,8 @@
 
                 if (destination === 'certificate') {
                     const libraryComplete = isStageCompleted('library');
-                    const facultiesComplete = isStageCompleted('tf_questions') || isStageCompleted('mc_questions');
-                    const exchangeComplete = isStageCompleted('exchange_tf_questions') || isStageCompleted('exchange_mc_questions');
+                    const facultiesComplete = isStageCompleted('faculties'); // Check parent stage
+                    const exchangeComplete = isStageCompleted('exchange'); // Check parent stage
                     
                     const allKeyStagesComplete = libraryComplete && facultiesComplete && exchangeComplete;
                     const scoreSufficient = gameState.score >= 50;
@@ -879,7 +917,7 @@
                         showEndScene();
                     } else {
                         let message = "الطريق إلى الشهادة لم يكتمل بعد!<br><br>للحصول عليها، يجب عليك تحقيق شرطين:<br>";
-                        message += `1. إكمال تحديات المكتبة، والكليات (مسار واحد)، والتبادل (مسار واحد).<br>`;
+                        message += `1. إكمال تحديات المكتبة، والكليات (كلا المسارين)، والتبادل (كلا المسارين).<br>`;
                         message += `(${libraryComplete ? '✔️' : '❌'} المكتبة) | `;
                         message += `(${facultiesComplete ? '✔️' : '❌'} الكليات) | `;
                         message += `(${exchangeComplete ? '✔️' : '❌'} التبادل)<br>`;
@@ -894,13 +932,8 @@
                     return;
                 }
 
-                let isCompleted = false;
-                if (destination === 'library') isCompleted = isStageCompleted('library');
-                else if (destination === 'faculties') isCompleted = isStageCompleted('tf_questions') && isStageCompleted('mc_questions');
-                else if (destination === 'exchange') isCompleted = isStageCompleted('exchange_tf_questions') && isStageCompleted('exchange_mc_questions');
-
-                if (isCompleted) {
-                    showModal("مكان مألوف!", "لقد أكملت جميع تحديات هذا المكان. اختر وجهة أخرى.", null);
+                if (isStageCompleted(destination)) {
+                     showModal("مكان مألوف!", "لقد أكملت جميع تحديات هذا المكان. اختر وجهة أخرى.", null);
                 } else if (destinationData) {
                     renderScene(destination);
                 } else {

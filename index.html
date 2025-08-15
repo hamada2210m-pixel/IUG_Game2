@@ -553,7 +553,7 @@
             border-top: 1px solid #eee;
         }
         
-        /* --- ✅ CSS جديد: خاص بشاشة عرض الكليات --- */
+        /* --- ✅ CSS قديم: خاص بشاشة عرض الكليات --- */
         #faculties-info-scene .info-scene-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -593,8 +593,65 @@
             line-height: 1.6;
             margin: 0;
         }
-        /* --- نهاية CSS الجديد --- */
         
+        /* --- ✅ CSS جديد: خاص بشاشة قائمة الكليات --- */
+        #faculties-list-scene .info-scene-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            text-align: right;
+        }
+
+        .college-info-card {
+            background-color: #f9f9f9;
+            border-right: 5px solid var(--primary-color);
+            border-radius: var(--border-radius-main);
+            padding: 25px 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .college-info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            border-right-color: var(--secondary-color);
+        }
+
+        .college-info-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 20px;
+            color: var(--primary-dark);
+        }
+
+        .college-info-card p {
+            font-size: 15px;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* --- ✅ CSS جديد: خاص بشاشة عرض موقع الكلية --- */
+        #college-website-scene .scene-content {
+            padding: 20px;
+            height: 85vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .website-view-header {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        #college-website-iframe {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
         @media (max-width: 600px) {
             .options-container {
                 grid-template-columns: 1fr;
@@ -748,6 +805,29 @@
                     </div>
                 </div>
             </div>
+
+            <div id="faculties-list-scene" class="game-stage hidden">
+                <div class="scene-content">
+                    <div class="info-header">
+                        <h2 class="scene-title">🏢 استكشف كليات الجامعة</h2>
+                        <p>تعرّف على عالم كل كلية! اضغط على أي بطاقة لتصفح موقعها الرسمي، أو ابدأ تحدي المعلومات مباشرة.</p>
+                    </div>
+                    
+                    <div class="info-scene-container" id="faculties-grid-container">
+                        </div>
+
+                    <div class="info-footer">
+                        <button id="proceed-to-faculties-quiz-btn" class="action-button">
+                            أنا جاهز... ابدأ تحدي الكليات!
+                            <span class="btn-icon">🧠</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="college-website-scene" class="game-stage hidden">
+                </div>
+
             <div id="faculties-scene" class="game-stage hidden"></div>
             <div id="tf_questions-scene" class="game-stage hidden"></div>
             <div id="mc_questions-scene" class="game-stage hidden"></div>
@@ -915,6 +995,21 @@
 
 
         document.addEventListener('DOMContentLoaded', () => {
+            // ✅ (جديد) بيانات الكليات
+            const collegesData = [
+                { name: 'كلية الطب', description: 'الطب وعلومه وطبيبٌ للمستقبل', url: 'https://medicine.iugaza.edu.ps/' },
+                { name: 'كلية الهندسة', description: 'هندسة المستقبل بكافة مجالات الحياة', url: 'https://eng.iugaza.edu.ps/' },
+                { name: 'كلية تكنولوجيا المعلومات', description: 'عصر التكنولوجيا والمعلوماتية وأمن المعلومات والبيانات', url: 'https://fit.iugaza.edu.ps/' },
+                { name: 'كلية التمريض', description: 'بذلٌ وعطاءٌ وتفانٍ لكل مريض وفي كل مكان', url: 'https://nursing.iugaza.edu.ps/' },
+                { name: 'كلية العلوم الصحية', description: 'العلاج السليم يبدأ من هنا', url: 'https://healthscience.iugaza.edu.ps/' },
+                { name: 'كلية العلوم', description: 'علوم الطبيعة وأسرار الكون', url: 'https://science.iugaza.edu.ps/' },
+                { name: 'كلية الآداب', description: 'علمٌ ولغاتٌ وأدبٌ وثقافة الأمم المختلفة قديماً وحديثاً', url: 'https://arts.iugaza.edu.ps/' },
+                { name: 'كلية الشريعة والقانون', description: 'دراسة للشريعة الاسلامية والمحاماة على مبادئ الشريعة السمحة', url: 'https://sharea.iugaza.edu.ps/' },
+                { name: 'كلية أصول الدين', description: 'الدين الإسلامي ، أصوله وأحكامه', url: 'https://osool.iugaza.edu.ps/' },
+                { name: 'كلية التربية', description: 'معلمٌ .. يربي أجيال المستقبل المستنيرة', url: 'https://education.iugaza.edu.ps/' },
+                { name: 'كلية الاقتصاد والعلوم الإدارية', description: 'بناء الاقتصاد والإدارة السليمة والمال', url: 'https://commerce.iugaza.edu.ps/' }
+            ];
+
             const gameData = {
                 'gate': { id: 'gate_q1', image: 'hares 1.webp', question: 'أهلاً بك في الجامعة الإسلامية! للدخول، أجب عن السؤال التالي: في أي عام تأسست الجامعة؟', options: { '1978': '1978', '1982': '1982', '1960': '1960', '1990': '1990' }, correctAnswer: '1978', points: 1, correctFeedback: 'رائع! لقد حصلت على جنيه واحد. البوابة الآن مفتوحة أمامك!', incorrectFeedback: 'إجابة غير صحيحة. حاول مرة أخرى!' },
                 'library': [ { id: 'library_q1', image: 'library_question.webp', question: 'تضم مكتبتنا كنزاً معرفياً ضخماً. كم عدد المراجع الإلكترونية التي توفرها؟', options: { '100k': 'أكثر من 100 ألف مرجع الكتروني', '150k': 'أكثر من 150 ألف مرجع الكتروني', '50k': 'أقل من 50 ألف مرجع الكتروني', '200k': 'أكثر من 200 ألف مرجع الكتروني' }, correctAnswer: '150k', points: 1, correctFeedback: 'إجابة ممتازة! معرفتك دقيقة. لقد ربحت جنيهًا واحدًا. لننتقل للتحدي التالي.', incorrectFeedback: 'حاول مرة أخرى! المعرفة قوة.' }, { id: 'library_q2', image: 'library_question_2.webp', question: 'هل توفر المكتبة قاعات هادئة ومخصصة للدراسة؟', options: { 'yes': 'نعم، توفر قاعات هادئة', 'no': 'لا، المكتبة للكتب فقط' }, correctAnswer: 'yes', points: 1, correctFeedback: 'بالتأكيد! راحتك أثناء الدراسة تهمنا. لقد ربحت جنيهًا واحدًا إضافيًا.', incorrectFeedback: 'إجابة غير صحيحة. المكتبة مكان مثالي للدراسة.' }, { id: 'library_q3', image: 'library_question_3.webp', question: 'كيف تساعدك المكتبة في أبحاثك الجامعية؟', options: { 'resources': 'توفر مصادر ومراجع متنوعة', 'writes_for_you': 'تكتب البحث بدلاً عنك' }, correctAnswer: 'resources', points: 1, correctFeedback: 'صحيح! المكتبة هي شريكك الأول في البحث العلمي. ربحت جنيهًا واحدًا.', incorrectFeedback: 'إجابة غير دقيقة. المكتبة تدعمك بالمصادر لا بالقيام بالعمل عنك.' }, { id: 'library_q4', image: 'library_question_4.webp', question: 'هل توفر المكتبة مواد رقمية يمكن الوصول إليها عن بعد؟', options: { 'yes_ebooks': 'نعم، توفر كتباً إلكترونية', 'no_digital': 'لا، كل المواد ورقية فقط' }, correctAnswer: 'yes_ebooks', points: 1, correctFeedback: 'أحسنت! يمكنك الوصول لكنز معرفي من أي مكان. لقد ربحت آخر جنيه في هذه المرحلة.', incorrectFeedback: 'إجابة غير صحيحة. العصر الرقمي في قلب مكتبتنا.' } ],
@@ -1388,13 +1483,13 @@
                     return; 
                 }
 
-                // --- ✅ تعديل: إضافة منطق شاشة معلومات الكليات ---
+                // --- ✅ تعديل: تغيير سلوك زر الكليات ليفتح القائمة الجديدة ---
                 if (destination === 'faculties') {
                     if (isStageCompleted(destination)) {
                         showModal("مكان مألوف!", "لقد أكملت جميع تحديات هذا المكان. اختر وجهة أخرى.", null);
                     } else {
                         document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
-                        document.getElementById('faculties-info-scene').classList.remove('hidden');
+                        document.getElementById('faculties-list-scene').classList.remove('hidden'); // عرض قائمة الكليات
                     }
                     return; 
                 }
@@ -1440,7 +1535,7 @@
                 renderScene('grants');
             });
             
-            // --- ✅ جديد: زر بدء تحدي الكليات ---
+            // --- ✅ قديم: زر بدء تحدي الكليات (من شاشة المعلومات القديمة) ---
             document.getElementById('start-faculties-quiz-btn').addEventListener('click', () => {
                 renderScene('faculties');
             });
@@ -1489,6 +1584,63 @@
             window.addEventListener('load', () => {
                 preloadImages(Array.from(allImageUrls));
             });
+
+            // ✅ (جديد) دالة لإنشاء قائمة الكليات
+            function populateFacultiesList() {
+                const container = document.getElementById('faculties-grid-container');
+                let content = '';
+                collegesData.forEach(college => {
+                    content += `
+                        <div class="college-info-card" data-url="${college.url}" data-name="${college.name}">
+                            <h3>${college.name}</h3>
+                            <p>${college.description}</p>
+                        </div>
+                    `;
+                });
+                container.innerHTML = content;
+            }
+            
+            // ✅ (جديد) معالج حدث الضغط على بطاقة كلية
+            document.getElementById('faculties-grid-container').addEventListener('click', (e) => {
+                const card = e.target.closest('.college-info-card');
+                if (!card) return;
+
+                const url = card.dataset.url;
+                const name = card.dataset.name;
+                const websiteScene = document.getElementById('college-website-scene');
+
+                websiteScene.innerHTML = `
+                    <div class="scene-content">
+                        <div class="website-view-header">
+                            <button id="back-to-list-btn" class="action-button" style="width: auto; padding: 10px 20px;">
+                                <span class="btn-icon">➡️</span> رجوع لقائمة الكليات
+                            </button>
+                        </div>
+                        <iframe id="college-website-iframe" src="${url}" title="${name}"></iframe>
+                    </div>
+                `;
+                
+                document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
+                websiteScene.classList.remove('hidden');
+
+                // معالج حدث زر الرجوع
+                document.getElementById('back-to-list-btn').addEventListener('click', () => {
+                    websiteScene.classList.add('hidden');
+                    websiteScene.innerHTML = ''; // إفراغ المحتوى لتخفيف الضغط
+                    document.getElementById('faculties-list-scene').classList.remove('hidden');
+                });
+            });
+
+            // ✅ (جديد) معالج حدث زر الانتقال إلى تحدي الكليات
+            document.getElementById('proceed-to-faculties-quiz-btn').addEventListener('click', () => {
+                 // هذا الزر يعرض شاشة المعلومات القديمة التي تسبق اختيار نوع الأسئلة
+                 document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
+                 document.getElementById('faculties-info-scene').classList.remove('hidden');
+            });
+
+
+            // ✅ (جديد) استدعاء الدالة عند تحميل اللعبة
+            populateFacultiesList();
             
             restoreGameSession();
         });

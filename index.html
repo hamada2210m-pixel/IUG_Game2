@@ -704,6 +704,106 @@
                 margin-bottom: 15px;
             }
         }
+
+        /* --- تصميم مرحلة القبول والتسجيل الجديدة --- */
+        #admission-scene {
+            background-color: #e6f3ee;
+            color: var(--text-dark);
+        }
+        
+        #admission-scene .scene-content {
+            padding: 0;
+        }
+
+        #admission-header {
+            padding: 30px 20px;
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            text-align: center;
+        }
+
+        #admission-header h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        #progress-bar-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0 30px;
+        }
+
+        .step-icon {
+            width: 35px;
+            height: 35px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .step-icon.active {
+            background-color: var(--secondary-color);
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .step-icon img {
+            width: 20px;
+            height: 20px;
+        }
+
+        #card-container {
+            padding: 0 25px 25px;
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #admission-card {
+            background-color: var(--white-color);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: right;
+            transition: transform 0.5s ease;
+        }
+        #admission-card h3 {
+            font-size: 24px;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+        }
+        #admission-card p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-light);
+        }
+
+        #navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 0 25px 25px;
+        }
+
+        #navigation-buttons .action-button {
+            flex-grow: 1;
+        }
+        #navigation-buttons .action-button.hidden {
+            visibility: hidden;
+        }
+
+        #admission-quiz-scene .info-header {
+            padding: 25px;
+        }
+
     </style>
 </head>
 <body>
@@ -819,6 +919,28 @@
             <div id="exchange_tf_questions-scene" class="game-stage hidden"></div>
             <div id="exchange_mc_questions-scene" class="game-stage hidden"></div>
             <div id="library-scene" class="game-stage hidden"></div>
+
+            <div id="admission-scene" class="game-stage hidden">
+                <div class="scene-content">
+                    <div class="info-header">
+                        <h2 class="scene-title">خطوات التحاق الطلبة الجدد</h2>
+                        <div class="progress-bar-container" id="admission-progress-bar"></div>
+                    </div>
+                    
+                    <div class="info-scene-container">
+                        <div id="admission-step-card">
+                            <h3 id="admission-step-title"></h3>
+                            <p id="admission-step-text"></p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-footer" id="admission-navigation">
+                        <button id="admission-prev-btn" class="action-button">السابق</button>
+                        <button id="admission-next-btn" class="action-button">التالي</button>
+                    </div>
+                </div>
+            </div>
+            <div id="admission-quiz-scene" class="game-stage hidden"></div>
             
             <div id="grants-info-scene" class="game-stage hidden">
                 <div class="scene-content">
@@ -1045,11 +1167,11 @@
                         id: 'grants_q5', 
                         image: 'all_q.webp', 
                         question: 'سؤال للمحترفين: إذا كان معدل أحد الأشقاء في كلية الطب 72%، هل يستمر في الاستفادة منحة الأسرة؟', 
-                        options: { 'yes': 'نعم، يستمر', 'no': 'لا، تتوقف عنه المنحة' }, 
-                        correctAnswer: 'no', 
+                        options: { 'yes_continue': 'نعم، ستستمر', 'no_stop': 'لا، ستتوقف' }, 
+                        correctAnswer: 'no_stop', 
                         points: 1,
                         correctFeedback: 'ملاحظة مهمة! شرط المعدل أساسي، حيث يجب أن يحافظ طالب الطب على معدل 75% فأكثر. فهمك للشروط يستحق مكافأة.',
-                        incorrectFeedback: 'الإجابة الصحيحة هي "لا". شرط المعدل لطلبة الطب هو 75% فأكثر للاستفادة من منحة الأسرة.'
+                        incorrectFeedback: 'الإجابة الصحيحة هي "لا". معظم المنح تتوقف إذا لم يتم الحفاظ على المعدل المطلوب.'
                     },
                     { 
                         id: 'grants_q6', 
@@ -1089,9 +1211,29 @@
                         incorrectFeedback: 'الإجابة الصحيحة هي "لا". معظم المنح تتوقف إذا لم يتم الحفاظ على المعدل المطلوب.'
                     }
                 ],
+                // تحديث بيانات مرحلة "القبول والتسجيل"
+                'admission': {
+                    isInteractiveGuide: true,
+                    guideData: [
+                        { title: 'الدخول من البوابات', text: 'أولاً، عليك الدخول من بوابات الجامعة والتوجه إلى محطة استقبال الطلبة الجدد ومراجعة المختصين.', icon: 'icons/gate.png' },
+                        { title: 'دفع رسوم الالتحاق', text: 'الخطوة التالية هي التوجه إلى الدائرة المالية لدفع رسوم طلب الالتحاق، والتي تبلغ 20 دينار أردني.', icon: 'icons/money.png' },
+                        { title: 'تعبئة طلب الالتحاق', text: 'يمكنك تعبئة طلب الالتحاق إلكترونياً من خلال أجهزة مخصصة في قاعة الاستقبال أو عبر موقع الجامعة الرسمي.', icon: 'icons/form.png' },
+                        { title: 'إدخال البيانات', text: 'ستقوم بإدخال رقم الطالب ورقم إيصال الدفع، ومن ثم تعبئة كافة بيانات الطلب المطلوبة منك بدقة.', icon: 'icons/data.png' },
+                        { title: 'مراجعة واعتماد الطلب', text: 'بعد إتمام تعبئة الطلب، سيتم مراجعته واعتماده من قبل الموظف المختص حتى تتم عملية قبولك.', icon: 'icons/check.png' },
+                        { title: 'استلام كلمة المرور', text: 'سيتم إرسال كلمة المرور الخاصة بحسابك على صفحة الطالب في رسالة نصية قصيرة إلى رقم جوالك الذي سجلته.', icon: 'icons/sms.png' },
+                        { title: 'دفع الرسوم الدراسية', text: 'حان الوقت للتوجه إلى الدائرة المالية لدفع الرسوم الدراسية الخاصة بالمساقات التي سجلتها.', icon: 'icons/tuition.png' },
+                        { title: 'استلام الجدول الدراسي', text: 'توجه إلى عمادة القبول والتسجيل لاستلام الجدول الدراسي الخاص بك، بالإضافة إلى حقيبتك الجامعية.', icon: 'icons/schedule.png' },
+                        { title: 'تسليم الأوراق الثبوتية', text: 'أخيراً، قم بتسليم الأوراق الثبوتية المطلوبة عند المسجلين، وهي: صورة مصدقة عن شهادة الثانوية العامة، وصورة الهوية أو جواز السفر.', icon: 'icons/docs.png' }
+                    ],
+                    nextScene: 'admission_quiz'
+                },
+                'admission_quiz': [
+                    { id: 'ad_q1', image: 'all_q.webp', question: 'ما هي أول خطوة يجب عليك القيام بها في حرم الجامعة للالتحاق؟', options: { 'دفع الرسوم الدراسية': 'دفع الرسوم الدراسية', 'استلام الحقيبة الجامعية': 'استلام الحقيبة الجامعية', 'الدخول من البوابات ومراجعة المختصين': 'الدخول من البوابات ومراجعة المختصين', 'تسليم الأوراق الثبوتية': 'تسليم الأوراق الثبوتية' }, correctAnswer: 'الدخول من البوابات ومراجعة المختصين', points: 1 },
+                    { id: 'ad_q2', image: 'all_q.webp', question: 'كم تبلغ قيمة رسوم طلب الالتحاق التي يتم دفعها في الدائرة المالية؟', options: { '10 دنانير': '10 دنانير', '20 ديناراً': '20 ديناراً', '30 ديناراً': '30 ديناراً', '15 ديناراً': '15 ديناراً' }, correctAnswer: '20 ديناراً', points: 1 },
+                    { id: 'ad_q3', image: 'all_q.webp', question: 'بناءً على الخطوات، أين يتم تسليم الأوراق الثبوتية للطالب؟', options: { 'في محطة الاستقبال': 'في محطة الاستقبال', 'عند المسجلين': 'عند المسجلين', 'في الدائرة المالية': 'في الدائرة المالية', 'في الكافتيريا': 'في الكافتيريا' }, correctAnswer: 'عند المسجلين', points: 1 }
+                ],
                 'cafeteria': { isUnderConstruction: true },
                 'hospital': { isUnderConstruction: true },
-                'admission': { isUnderConstruction: true },
                 'studentaffairs': { isUnderConstruction: true },
                 'conference': { isUnderConstruction: true },
                 'stadium': { isUnderConstruction: true }
@@ -1103,7 +1245,8 @@
                 'tf_questions': 'faculties',
                 'mc_questions': 'faculties',
                 'exchange_tf_questions': 'exchange',
-                'exchange_mc_questions': 'exchange'
+                'exchange_mc_questions': 'exchange',
+                'admission_quiz': 'admission'
             };
             
             const landingScreen = document.getElementById('landing-screen');
@@ -1120,13 +1263,16 @@
             const modalCloseBtn = document.getElementById('modal-close-btn');
             const correctSound = document.getElementById('correct-sound');
             const incorrectSound = document.getElementById('incorrect-sound');
-            const transitionSound = document.getElementById('transition-sound');
+            const transitionSound = document.getElementById('turning.mp3');
+
+            let admissionCurrentStep = 0;
 
             function saveGameState() {
                 try {
                     const stateToSave = {
                         ...gameState,
-                        answeredQuestions: Array.from(gameState.answeredQuestions)
+                        answeredQuestions: Array.from(gameState.answeredQuestions),
+                        admissionCurrentStep: admissionCurrentStep
                     };
                     localStorage.setItem('iugGameProgress', JSON.stringify(stateToSave));
                 } catch (e) {
@@ -1141,6 +1287,9 @@
                         const savedState = JSON.parse(savedStateJSON);
                         Object.assign(gameState, savedState);
                         gameState.answeredQuestions = new Set(savedState.answeredQuestions);
+                        if (savedState.admissionCurrentStep !== undefined) {
+                            admissionCurrentStep = savedState.admissionCurrentStep;
+                        }
                         return true;
                     }
                     return false;
@@ -1173,7 +1322,9 @@
                         'أهلاً بعودتك!', 
                         `مرحباً ${gameState.playerName}، يسعدنا رؤيتك مجدداً! سنكمل من حيث توقفنا.`, 
                         () => {
-                            if (sceneToRender === 'grants' || (sceneParentMap[sceneToRender] === 'grants')) {
+                            if (sceneToRender === 'admission') {
+                                renderAdmissionScene(admissionCurrentStep, false);
+                            } else if (sceneToRender === 'grants' || (sceneParentMap[sceneToRender] === 'grants')) {
                                 renderScene('grants', indexToRender, false);
                             } else if (sceneToRender === 'faculties' || (sceneParentMap[sceneToRender] === 'faculties')) {
                                 renderScene('faculties', indexToRender, false);
@@ -1331,6 +1482,67 @@
                 sceneElement.querySelector('.options-container').addEventListener('click', handleAnswer);
             }
 
+            function renderAdmissionScene(stepIndex, pushState = true) {
+                if (transitionSound) {
+                    transitionSound.play();
+                }
+                
+                if (pushState) {
+                    history.pushState({ scene: 'admission', step: stepIndex }, '');
+                }
+
+                document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
+                const admissionScene = document.getElementById('admission-scene');
+                admissionScene.classList.remove('hidden');
+
+                const stepData = gameData.admission.guideData[stepIndex];
+                document.getElementById('admission-step-title').textContent = stepData.title;
+                document.getElementById('admission-step-text').textContent = stepData.text;
+
+                const navBtns = document.getElementById('admission-navigation');
+                navBtns.innerHTML = '';
+                
+                if (stepIndex > 0) {
+                    const prevBtn = document.createElement('button');
+                    prevBtn.id = 'admission-prev-btn';
+                    prevBtn.className = 'action-button';
+                    prevBtn.textContent = 'السابق';
+                    navBtns.appendChild(prevBtn);
+                    prevBtn.onclick = () => renderAdmissionScene(stepIndex - 1);
+                }
+
+                if (stepIndex < gameData.admission.guideData.length - 1) {
+                    const nextBtn = document.createElement('button');
+                    nextBtn.id = 'admission-next-btn';
+                    nextBtn.className = 'action-button';
+                    nextBtn.textContent = 'التالي';
+                    navBtns.appendChild(nextBtn);
+                    nextBtn.onclick = () => renderAdmissionScene(stepIndex + 1);
+                } else {
+                    const startQuizBtn = document.createElement('button');
+                    startQuizBtn.id = 'admission-start-quiz-btn';
+                    startQuizBtn.className = 'action-button';
+                    startQuizBtn.textContent = 'أنا جاهز... ابدأ التحدي!';
+                    navBtns.appendChild(startQuizBtn);
+                    startQuizBtn.onclick = () => {
+                         renderScene('admission_quiz');
+                    };
+                }
+
+                const progressBar = document.getElementById('admission-progress-bar');
+                progressBar.innerHTML = '';
+                gameData.admission.guideData.forEach((_, index) => {
+                    const stepIcon = document.createElement('div');
+                    stepIcon.className = `step-icon${index === stepIndex ? ' active' : ''}`;
+                    stepIcon.textContent = index + 1;
+                    stepIcon.onclick = () => renderAdmissionScene(index);
+                    progressBar.appendChild(stepIcon);
+                });
+
+                admissionCurrentStep = stepIndex;
+                saveGameState();
+            }
+
             function handleAnswer(event) {
                 const targetButton = event.target.closest('.option-btn');
                 if (!targetButton || targetButton.disabled) return;
@@ -1436,6 +1648,10 @@
                 const stageData = gameData[stageId];
                 if (!stageData) return false;
 
+                if (stageData.isInteractiveGuide) {
+                    return gameState.answeredQuestions.has(stageData.nextScene);
+                }
+
                 if (Array.isArray(stageData)) {
                     return stageData.every(q => gameState.answeredQuestions.has(q.id));
                 }
@@ -1476,23 +1692,33 @@
                     }
                     return;  
                 }
+                 if (destination === 'admission') {
+                    if (isStageCompleted(destination)) {
+                        showModal("مكان مألوف!", "لقد أكملت جميع تحديات هذا المكان. اختر وجهة أخرى.", null);
+                    } else {
+                        renderAdmissionScene(0); // ابدأ من الخطوة الأولى
+                    }
+                    return;
+                }
 
                 if (destination === 'certificate') {
                     const libraryComplete = isStageCompleted('library');
                     const facultiesComplete = isStageCompleted('faculties');
                     const exchangeComplete = isStageCompleted('exchange');
+                    const admissionComplete = isStageCompleted('admission');
                     
-                    const allKeyStagesComplete = libraryComplete && facultiesComplete && exchangeComplete;
+                    const allKeyStagesComplete = libraryComplete && facultiesComplete && exchangeComplete && admissionComplete;
                     const scoreSufficient = gameState.score >= 50;
 
                     if (allKeyStagesComplete && scoreSufficient) {
                         showEndScene();
                     } else {
                         let message = "الطريق إلى الشهادة لم يكتمل بعد!<br><br>للحصول عليها، يجب عليك تحقيق شرطين:<br>";
-                        message += `1. إكمال تحديات المكتبة، والكليات (كلا المسارين)، والتبادل (كلا المسارين).<br>`;
+                        message += `1. إكمال تحديات المكتبة، والكليات (كلا المسارين)، والتبادل (كلا المسارين)، والقبول والتسجيل.<br>`;
                         message += `(${libraryComplete ? '✔️' : '❌'} المكتبة) | `;
                         message += `(${facultiesComplete ? '✔️' : '❌'} الكليات) | `;
-                        message += `(${exchangeComplete ? '✔️' : '❌'} التبادل)<br>`;
+                        message += `(${exchangeComplete ? '✔️' : '❌'} التبادل) | `;
+                        message += `(${admissionComplete ? '✔️' : '❌'} القبول والتسجيل)<br>`;
                         message += `2. الحصول على 50 جنيهًا على الأقل (رصيدك: ${gameState.score}). (${scoreSufficient ? '✔️' : '❌'})<br><br>استمر في رحلتك!`;
                         showModal("شروط الحصول على الشهادة", message, null);
                     }
@@ -1517,11 +1743,6 @@
                 renderScene('grants');
             });
             
-            // تم حذف هذا الزر بالكامل من HTML فلم يعد هناك حاجة لكود الاستماع الخاص به
-            // document.getElementById('start-faculties-quiz-btn').addEventListener('click', () => {
-            //     renderScene('faculties');
-            // });
-
             document.addEventListener('click', function(event) {
                 if (event.target.id === 'logout-btn' || event.target.closest('#logout-btn')) {
                     event.preventDefault();
@@ -1542,7 +1763,11 @@
             
             window.addEventListener('popstate', (event) => {
                 if (event.state && event.state.scene) {
-                    renderScene(event.state.scene, event.state.index, false);
+                    if (event.state.scene === 'admission') {
+                        renderAdmissionScene(event.state.step, false);
+                    } else {
+                        renderScene(event.state.scene, event.state.index, false);
+                    }
                 } else {
                     if (gameState.uniquePlayerId) {
                        renderScene('map', 0, false);
@@ -1628,10 +1853,8 @@
                 websiteScene.querySelector('.scene-content').appendChild(iframe);
             });
 
-            // *** تم تعديل كود هذا الزر للانتقال مباشرة إلى صفحة التحدي ***
             document.getElementById('proceed-to-faculties-quiz-btn').addEventListener('click', () => {
                 document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
-                // تم تغيير الوجهة من 'faculties-info-scene' إلى 'faculties' مباشرة
                 renderScene('faculties');
             });
 

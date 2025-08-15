@@ -440,14 +440,16 @@
         }
 
         #faculties-scene .options-container,
-        #exchange-scene .options-container {
+        #exchange-scene .options-container,
+        #admission-scene .options-container {
             grid-template-columns: 1fr;
             max-width: 400px;
             margin: 25px auto 0;
         }
 
         #faculties-scene .option-btn,
-        #exchange-scene .option-btn {
+        #exchange-scene .option-btn,
+        #admission-scene .option-btn {
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -459,14 +461,16 @@
         }
 
         #faculties-scene .option-btn:hover,
-        #exchange-scene .option-btn:hover {
+        #exchange-scene .option-btn:hover,
+        #admission-scene .option-btn:hover {
             transform: scale(1.03);
             background-color: var(--primary-color);
             color: var(--white-color);
         }
 
         #faculties-scene .option-btn span,
-        #exchange-scene .option-btn span {
+        #exchange-scene .option-btn span,
+        #admission-scene .option-btn span {
             font-size: 30px;
         }
 
@@ -888,7 +892,10 @@
                     </div>
                 </div>
             </div>
-            <div id="admission-quiz-scene" class="game-stage hidden"></div>
+
+            <div id="admission-scene" class="game-stage hidden"></div>
+            <div id="admission_tf_questions-scene" class="game-stage hidden"></div>
+            <div id="admission_mc_questions-scene" class="game-stage hidden"></div>
             
             <div id="grants-info-scene" class="game-stage hidden">
                 <div class="scene-content">
@@ -998,7 +1005,7 @@
                                 <ul>
                                     <li>حصلت الجامعة على تمويل لـ 6 مشاريع.</li>
                                     <li>بالشراكة مع 70 جامعة محلية وإقليمية ودولية.</li>
-                                    <li>تم تنفيذها خلال الفترة من 2012 حتى 2017.</li>
+                                    <li>تم تنفيذها خلال الفترة من 2012 وحتى 2017.</li>
                                 </ul>
                             </div>
                         </div>
@@ -1231,12 +1238,23 @@
                 // تحديث بيانات مرحلة "القبول والتسجيل"
                 'admission-info': {
                     isInfoScreen: true,
-                    nextScene: 'admission_quiz'
+                    nextScene: 'admission'
                 },
-                'admission_quiz': [
-                    { id: 'ad_q1', image: 'all_q.webp', question: 'ما هي أول خطوة يجب عليك القيام بها في حرم الجامعة للالتحاق؟', options: { 'دفع الرسوم الدراسية': 'دفع الرسوم الدراسية', 'استلام الحقيبة الجامعية': 'استلام الحقيبة الجامعية', 'الدخول من البوابات ومراجعة المختصين': 'الدخول من البوابات ومراجعة المختصين', 'تسليم الأوراق الثبوتية': 'تسليم الأوراق الثبوتية' }, correctAnswer: 'الدخول من البوابات ومراجعة المختصين', points: 1 },
-                    { id: 'ad_q2', image: 'all_q.webp', question: 'كم تبلغ قيمة رسوم طلب الالتحاق التي يتم دفعها في الدائرة المالية؟', options: { '10 دنانير': '10 دنانير', '20 ديناراً': '20 ديناراً', '30 ديناراً': '30 ديناراً', '15 ديناراً': '15 ديناراً' }, correctAnswer: '20 ديناراً', points: 1 },
-                    { id: 'ad_q3', image: 'all_q.webp', question: 'بناءً على الخطوات، أين يتم تسليم الأوراق الثبوتية للطالب؟', options: { 'في محطة الاستقبال': 'في محطة الاستقبال', 'عند المسجلين': 'عند المسجلين', 'في الدائرة المالية': 'في الدائرة المالية', 'في الكافتيريا': 'في الكافتيريا' }, correctAnswer: 'عند المسجلين', points: 1 }
+                'admission': { image: 'all_q.webp', question: 'اختر نوع التحدي الذي تود خوضه هنا:', options: { 'admission_tf_questions': '<span class="icon">✔️❌</span> أسئلة صح وخطأ', 'admission_mc_questions': '<span class="icon">❓</span> أسئلة اختيار من متعدد' }, correctAnswer: null, points: 0, nextScene: { 'admission_tf_questions': 'admission_tf_questions', 'admission_mc_questions': 'admission_mc_questions' } },
+
+                'admission_tf_questions': [
+                    { id: 'ad_tf_q1', image: 'all_q.webp', question: 'تهتم عمادة القبول والتسجيل بإجراءات قبول الطلبة الجدد في الجامعة.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1 },
+                    { id: 'ad_tf_q2', image: 'all_q.webp', question: 'العمادة مسؤولة فقط عن تسجيل الطلاب الجدد وليس عن تسجيل المواد الدراسية للفصول الحالية.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'incorrect', points: 1, correctFeedback: 'خطأ! العمادة تشرف على تسجيل المواد أيضاً.' },
+                    { id: 'ad_tf_q3', image: 'all_q.webp', question: 'يمكن للطلبة تعديل جدول المواد الدراسية خلال فترة التسجيل المرنة التي تحددها العمادة.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1 },
+                    { id: 'ad_tf_q4', image: 'all_q.webp', question: 'إصدار الشهادات الأكاديمية يتم من خلال عمادة القبول والتسجيل فقط بعد إنهاء جميع متطلبات التخرج.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1 },
+                    { id: 'ad_tf_q5', image: 'all_q.webp', question: 'العمادة لا تتعامل مع معاملات التحويل الداخلي بين الكليات.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'incorrect', points: 1, correctFeedback: 'خطأ! العمادة تشرف على جميع معاملات التحويل بين الكليات.' }
+                ],
+                'admission_mc_questions': [
+                    { id: 'ad_mc_q1', image: 'all_q.webp', question: 'أي من المهام التالية تقع ضمن مسؤوليات عمادة القبول والتسجيل؟', options: { 'تنظيم الأنشطة الطلابية': 'تنظيم الأنشطة الطلابية', 'تسجيل المواد الدراسية للفصل الدراسي': 'تسجيل المواد الدراسية للفصل الدراسي', 'إدارة مكتبة الجامعة': 'إدارة مكتبة الجامعة', 'تقديم الدعم النفسي للطلبة': 'تقديم الدعم النفسي للطلبة' }, correctAnswer: 'تسجيل المواد الدراسية للفصل الدراسي', points: 1 },
+                    { id: 'ad_mc_q2', image: 'all_q.webp', question: 'متى يقوم الطلاب عادةً بتسجيل المواد الدراسية للفصل الجديد؟', options: { 'قبل بدء الفصل الدراسي بوقت محدد': 'قبل بدء الفصل الدراسي بوقت محدد', 'بعد نهاية الفصل الدراسي': 'بعد نهاية الفصل الدراسي', 'أثناء العطلة الصيفية فقط': 'أثناء العطلة الصيفية فقط', 'في أي وقت دون جدول محدد': 'في أي وقت دون جدول محدد' }, correctAnswer: 'قبل بدء الفصل الدراسي بوقت محدد', points: 1 },
+                    { id: 'ad_mc_q3', image: 'all_q.webp', question: 'إذا أراد طالب تعديل جدول مواد الفصل الدراسي، يجب عليه:', options: { 'التوجه مباشرة إلى كلية أخرى': 'التوجه مباشرة إلى كلية أخرى', 'التواصل مع عمادة القبول والتسجيل': 'التواصل مع عمادة القبول والتسجيل', 'انتظار نهاية الفصل الدراسي': 'انتظار نهاية الفصل الدراسي', 'تقديم طلب للجامعة عبر البريد الإلكتروني فقط': 'تقديم طلب للجامعة عبر البريد الإلكتروني فقط' }, correctAnswer: 'التواصل مع عمادة القبول والتسجيل', points: 1 },
+                    { id: 'ad_mc_q4', image: 'all_q.webp', question: 'إصدار الشهادات الأكاديمية يتم بعد:', options: { 'حضور جميع المحاضرات': 'حضور جميع المحاضرات', 'إنهاء جميع متطلبات التخرج': 'إنهاء جميع متطلبات التخرج', 'اجتياز امتحان اللغة الإنجليزية فقط': 'اجتياز امتحان اللغة الإنجليزية فقط', 'دفع الرسوم الدراسية فقط': 'دفع الرسوم الدراسية فقط' }, correctAnswer: 'إنهاء جميع متطلبات التخرج', points: 1 },
+                    { id: 'ad_mc_q5', image: 'all_q.webp', question: 'التحويل بين الكليات في الجامعة يتم عن طريق:', options: { 'طلب مباشر للكليّة': 'طلب مباشر للكليّة', 'عمادة القبول والتسجيل': 'عمادة القبول والتسجيل', 'الطلاب بأنفسهم دون إشراف': 'الطلاب بأنفسهم دون إشراف', 'مكتب العلاقات العامة': 'مكتب العلاقات العامة' }, correctAnswer: 'عمادة القبول والتسجيل', points: 1 }
                 ],
                 'cafeteria': { isUnderConstruction: true },
                 'hospital': { isUnderConstruction: true },
@@ -1265,7 +1283,8 @@
                 'mc_questions': 'faculties',
                 'exchange_tf_questions': 'exchange',
                 'exchange_mc_questions': 'exchange',
-                'admission_quiz': 'admission-info'
+                'admission_tf_questions': 'admission',
+                'admission_mc_questions': 'admission',
             };
             
             const landingScreen = document.getElementById('landing-screen');
@@ -1349,6 +1368,8 @@
                                 renderScene('faculties', indexToRender, false);
                             } else if (sceneToRender === 'exchange' || (sceneParentMap[sceneToRender] === 'exchange')) {
                                 renderScene('exchange', indexToRender, false);
+                            } else if (sceneToRender === 'admission' || (sceneParentMap[sceneToRender] === 'admission')) {
+                                renderScene('admission', indexToRender, false);
                             } else if (sceneToRender) {
                                 renderScene(sceneToRender, indexToRender, false);
                             } else {
@@ -1471,7 +1492,6 @@
                     return;
                 }
 
-
                 const sceneElementId = `${sceneId}-scene`;
                 const sceneElement = document.getElementById(sceneElementId);
                 let sceneData = gameData[sceneId];
@@ -1545,7 +1565,7 @@
                 });
                 
                 document.getElementById('start-admission-quiz-btn').onclick = () => {
-                    renderScene('admission_quiz');
+                    renderScene('admission'); // الانتقال إلى شاشة اختيار نوع الأسئلة الجديدة
                 };
             }
 
@@ -1675,11 +1695,11 @@
                 let stageData = gameData[stageId];
                 if (!stageData) return false;
                 
-                if (stageId === 'faculties' || stageId === 'exchange') {
+                if (stageId === 'faculties' || stageId === 'exchange' || stageId === 'admission') {
                     const subScenes = Object.values(stageData.nextScene);
                     return subScenes.every(s => isStageCompleted(s));
                 }
-
+                
                 if (Array.isArray(stageData)) {
                     return stageData.every(q => gameState.answeredQuestions.has(q.id));
                 }
@@ -1718,7 +1738,7 @@
                     const libraryComplete = isStageCompleted('library');
                     const facultiesComplete = isStageCompleted('faculties');
                     const exchangeComplete = isStageCompleted('exchange');
-                    const admissionComplete = isStageCompleted('admission_quiz');
+                    const admissionComplete = isStageCompleted('admission');
                     
                     const allKeyStagesComplete = libraryComplete && facultiesComplete && exchangeComplete && admissionComplete;
                     const scoreSufficient = gameState.score >= 50;
@@ -1727,7 +1747,7 @@
                         showEndScene();
                     } else {
                         let message = "الطريق إلى الشهادة لم يكتمل بعد!<br><br>للحصول عليها، يجب عليك تحقيق شرطين:<br>";
-                        message += `1. إكمال تحديات المكتبة، والكليات (كلا المسارين)، والتبادل (كلا المسارين)، والقبول والتسجيل.<br>`;
+                        message += `1. إكمال تحديات المكتبة، والكليات (كلا المسارين)، والتبادل (كلا المسارين)، والقبول والتسجيل (كلا المسارين).<br>`;
                         message += `(${libraryComplete ? '✔️' : '❌'} المكتبة) | `;
                         message += `(${facultiesComplete ? '✔️' : '❌'} الكليات) | `;
                         message += `(${exchangeComplete ? '✔️' : '❌'} التبادل) | `;
@@ -1755,12 +1775,11 @@
             document.getElementById('start-grants-quiz-btn').addEventListener('click', () => {
                 renderScene('grants');
             });
-
+            
             document.getElementById('start-admission-quiz-btn').addEventListener('click', () => {
-                renderScene('admission_quiz');
+                renderScene('admission');
             });
             
-            // ربط زر "ابدأ التحدي" في شاشة معلومات التبادل
             document.getElementById('start-exchange-quiz-btn').addEventListener('click', () => {
                 renderScene('exchange');
             });

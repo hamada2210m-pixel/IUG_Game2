@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS remains unchanged */
         :root {
             --primary-color: #006633;
             --primary-dark: #004422;
@@ -34,7 +33,7 @@
             color: var(--text-dark);
             padding: 10px;
             box-sizing: border-box;
-            background-image: url('Ferst.webp'); /* ✅ تم التعديل */
+            background-image: url('Ferst.webp');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -573,6 +572,7 @@
             <div id="exchange_tf_questions-scene" class="game-stage hidden"></div>
             <div id="exchange_mc_questions-scene" class="game-stage hidden"></div>
             <div id="library-scene" class="game-stage hidden"></div>
+            <div id="grants-scene" class="game-stage hidden"></div>
             
             <div id="end-scene" class="game-stage hidden">
                 <div class="scene-content">
@@ -595,8 +595,6 @@
     </div>
 
     <script>
-        // The script content remains unchanged until the DOMContentLoaded event listener
-        // ... (all functions like registerPlayer, updatePlayerScore, shuffleArray, preloadImages are the same)
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-lE41eY0lEWEOxZevGyTMxNbpY2zTmRzWa3DEAd5Dc6O72GgtMA/exec';
         
         function registerPlayer(name, phone, year) {
@@ -652,7 +650,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const gameData = {
-                // gameData content with .webp images ✅
                 'gate': { id: 'gate_q1', image: 'hares 1.webp', question: 'أهلاً بك في الجامعة الإسلامية! للدخول، أجب عن السؤال التالي: في أي عام تأسست الجامعة؟', options: { '1978': '1978', '1982': '1982', '1960': '1960', '1990': '1990' }, correctAnswer: '1978', points: 1, correctFeedback: 'رائع! لقد حصلت على جنيه واحد. البوابة الآن مفتوحة أمامك!', incorrectFeedback: 'إجابة غير صحيحة. حاول مرة أخرى!' },
                 'library': [ { id: 'library_q1', image: 'library_question.webp', question: 'تضم مكتبتنا كنزاً معرفياً ضخماً. كم عدد المراجع الإلكترونية التي توفرها؟', options: { '100k': 'أكثر من 100 ألف مرجع الكتروني', '150k': 'أكثر من 150 ألف مرجع الكتروني', '50k': 'أقل من 50 ألف مرجع الكتروني', '200k': 'أكثر من 200 ألف مرجع الكتروني' }, correctAnswer: '150k', points: 1, correctFeedback: 'إجابة ممتازة! معرفتك دقيقة. لقد ربحت جنيهًا واحدًا. لننتقل للتحدي التالي.', incorrectFeedback: 'حاول مرة أخرى! المعرفة قوة.' }, { id: 'library_q2', image: 'library_question_2.webp', question: 'هل توفر المكتبة قاعات هادئة ومخصصة للدراسة؟', options: { 'yes': 'نعم، توفر قاعات هادئة', 'no': 'لا، المكتبة للكتب فقط' }, correctAnswer: 'yes', points: 1, correctFeedback: 'بالتأكيد! راحتك أثناء الدراسة تهمنا. لقد ربحت جنيهًا واحدًا إضافيًا.', incorrectFeedback: 'إجابة غير صحيحة. المكتبة مكان مثالي للدراسة.' }, { id: 'library_q3', image: 'library_question_3.webp', question: 'كيف تساعدك المكتبة في أبحاثك الجامعية؟', options: { 'resources': 'توفر مصادر ومراجع متنوعة', 'writes_for_you': 'تكتب البحث بدلاً عنك' }, correctAnswer: 'resources', points: 1, correctFeedback: 'صحيح! المكتبة هي شريكك الأول في البحث العلمي. ربحت جنيهًا واحدًا.', incorrectFeedback: 'إجابة غير دقيقة. المكتبة تدعمك بالمصادر لا بالقيام بالعمل عنك.' }, { id: 'library_q4', image: 'library_question_4.webp', question: 'هل توفر المكتبة مواد رقمية يمكن الوصول إليها عن بعد؟', options: { 'yes_ebooks': 'نعم، توفر كتباً إلكترونية', 'no_digital': 'لا، كل المواد ورقية فقط' }, correctAnswer: 'yes_ebooks', points: 1, correctFeedback: 'أحسنت! يمكنك الوصول لكنز معرفي من أي مكان. لقد ربحت آخر جنيه في هذه المرحلة.', incorrectFeedback: 'إجابة غير صحيحة. العصر الرقمي في قلب مكتبتنا.' } ],
                 'faculties': { image: 'first_faculties_q.webp', question: 'اختر نوع التحدي الذي تود خوضه هنا:', options: { 'tf_questions': '<span class="icon">✔️❌</span> أسئلة صح وخطأ', 'mc_questions': '<span class="icon">❓</span> أسئلة اختيار من متعدد' }, correctAnswer: null, points: 0, nextScene: { 'tf_questions': 'tf_questions', 'mc_questions': 'mc_questions' } },
@@ -662,8 +659,96 @@
                 'exchange_tf_questions': [ { id: 'ex_tf_q1', image: 'all_q.webp', question: 'تهتم العلاقات الخارجية في الجامعة بتوفير منح بكالوريوس، ماجستير، دكتوراه وما بعد الدكتوراه في جامعات عالمية مثل هارفارد وأوكسفورد وغيرها.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1 }, { id: 'ex_tf_q2', image: 'all_q.webp', question: 'الجامعة عضو في شبكة جامعات البحر الأسود وشرق البحر المتوسط (BSEMAN).', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1 }, { id: 'ex_tf_q3', image: 'all_q.webp', question: 'العلاقات الخارجية أبرمت مشاريع تبادل أكاديمي ضمن برنامج Erasmus+ مع جامعة جلاسكو وجامعة Algarve.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1 }, { id: 'ex_tf_q4', image: 'all_q.webp', question: 'إحدى اتفاقيات التبادل مع جامعة جلاسكو دعمت تبادل طلبة وأعضاء هيئة تدريس ضمن فترة 2016–2019.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1 }, { id: 'ex_tf_q5', image: 'all_q.webp', question: 'نظمت العلاقات الخارجية ورشة عمل خاصة بالمشاريع الأوروبية مثل Erasmus+ وTEMPUS وبرنامج المقدسي.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1 }, { id: 'ex_tf_q6', image: 'all_q.webp', question: 'تم الترتيب لعقد مؤتمر دولي في الأبحاث الإدارية والاقتصادية بتمويل من Erasmus+ ضمن مشروع BERC.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1 } ],
                 'exchange_mc_questions': [ { id: 'ex_mc_q1', image: 'all_q.webp', question: 'أياً من الخدمات التالية تتولّاها دائرة العلاقات الخارجية؟', options: { 'توفير منح دراسية دولية والتبادل الأكاديمي واستقطاب الباحثين': 'توفير منح دراسية دولية والتبادل الأكاديمي واستقطاب الباحثين', 'تأمين المنح الدراسية فقط': 'تأمين المنح الدراسية فقط', 'تنظيم الرحلات السياحية': 'تنظيم الرحلات السياحية', 'إصدار التراخيص الحكومية': 'إصدار التراخيص الحكومية' }, correctAnswer: 'توفير منح دراسية دولية والتبادل الأكاديمي واستقطاب الباحثين', points: 1 }, { id: 'ex_mc_q2', image: 'all_q.webp', question: 'ما البرنامج الأوروبي الذي فتح المجال لتبادل أعضاء هيئة التدريس والطلبة مع جامعات كالاسكوتلندية والبرتغالية؟', options: { 'Erasmus+ (Key Action 1)': 'Erasmus+ (Key Action 1)', 'Horizon 2020': 'Horizon 2020', 'Marie Skłodowska-Curie': 'Marie Skłodowska-Curie', 'Erasmus Mundus': 'Erasmus Mundus' }, correctAnswer: 'Erasmus+ (Key Action 1)', points: 1 }, { id: 'ex_mc_q3', image: 'all_q.webp', question: 'أي مشروع كان موجّهًا لتطوير مراكز الأبحاث الإدارية والاقتصادية والمعروف اختصاراً بـ "BERC"؟', options: { 'BERC بدعم من Erasmus+': 'BERC بدعم من Erasmus+', 'برنامج مد الأولويات': 'برنامج مد الأولويات', 'وثائق تبادل البحوث': 'وثائق تبادل البحوث', 'مشروع التواصل الثقافي': 'مشروع التواصل الثقافي' }, correctAnswer: 'BERC بدعم من Erasmus+', points: 1 }, { id: 'ex_mc_q4', image: 'all_q.webp', question: 'أي من التالي صحيح حول اتفاقيات الجامعة؟', options: { 'الاتفاقيات تشمل تبادل طلاب وأكاديميين ضمن برامج دولية': 'الاتفاقيات تشمل تبادل طلاب وأكاديميين ضمن برامج دولية', 'Erasmus+ يشمل فقط البحث': 'Erasmus+ يشمل فقط البحث', 'لا يوجد تبادل طلبة مع أوروبا': 'لا يوجد تبادل طلبة مع أوروبا', 'الاتفاقيات محلية فقط': 'الاتفاقيات محلية فقط' }, correctAnswer: 'الاتفاقيات تشمل تبادل طلاب وأكاديميين ضمن برامج دولية', points: 1 }, { id: 'ex_mc_q5', image: 'all_q.webp', question: 'أي من البرامج التالية نُظمت عنه ورشة تقديمية بحضور أكثر من 350 مشاركاً وأطراف من وزارة التعليم العالي؟', options: { 'Erasmus+': 'Erasmus+', 'Horizon Europe': 'Horizon Europe', 'TEMPUS': 'TEMPUS', 'برنامج النفاذ المفتوح': 'برنامج النفاذ المفتوح' }, correctAnswer: 'Erasmus+', points: 1 }, { id: 'ex_mc_q6', image: 'all_q.webp', question: 'مع أي جامعة أبرمت الجامعة الإسلامية اتفاقاً ضمن مشروع Erasmus+ بعنوان ROMOR؟', options: { 'جامعة جلاسكو (University of Glasgow)': 'جامعة جلاسكو (University of Glasgow)', 'جامعة برشلونة': 'جامعة برشلونة', 'جامعة ساساري': 'جامعة ساساري', 'جامعة Algarve': 'جامعة Algarve' }, correctAnswer: 'جامعة جلاسكو (University of Glasgow)', points: 1 }, { id: 'ex_mc_q7', image: 'all_q.webp', question: 'أي من الجامعات التالية لم يتم ذكرها ضمن اتفاقيات التبادل الأكاديمي؟', options: { 'جامعة هارفارد – أمريكا': 'جامعة هارفارد – أمريكا', 'جامعة Siegen – ألمانيا': 'جامعة Siegen – ألمانيا', 'جامعة Barcelona – إسبانيا': 'جامعة Barcelona – إسبانيا', 'جامعة Algarve – البرتغال': 'جامعة Algarve – البرتغال' }, correctAnswer: 'جامعة هارفارد – أمريكا', points: 1 }, { id: 'ex_mc_q8', image: 'all_q.webp', question: 'أيٌّ مما يلي ليس من اختصاص العلاقات الخارجية بحسب الموقع؟', options: { 'قبول طلبات القبول الجامعي المحلي': 'قبول طلبات القبول الجامعي المحلي', 'برامج التعاون الأكاديمي': 'برامج التعاون الأكاديمي', 'التبادل الأكاديمي': 'التبادل الأكاديمي', 'بوابة الباحثين عن منح': 'بوابة الباحثين عن منح' }, correctAnswer: 'قبول طلبات القبول الجامعي المحلي', points: 1 } ],
                 
+                // ✅ --- بداية قسم المنح والمساعدات الجديد ---
+                'grants': [
+                    { 
+                        id: 'grants_q1', 
+                        image: 'all_q.webp', 
+                        question: 'أنهت مريم فصلها الدراسي الأول في كلية الهندسة بتفوق، وحصلت على معدل فصلي 96% بعد أن درست 16 ساعة معتمدة. ما هي نسبة "منحة الامتياز" التي تستحقها تلقائياً في الفصل التالي؟', 
+                        options: { '35': '35%', '50': '50%', '70': '70%', '100': '100%' }, 
+                        correctAnswer: '70', 
+                        points: 4, 
+                        correctFeedback: 'إجابة دقيقة! الجامعة تكافئ المتميزين فصلياً. تفوقك هو مفتاح دعمك.',
+                        incorrectFeedback: 'الإجابة الصحيحة هي 70%. تمنح هذه النسبة لمن يحصل على معدل فصلي بين 95% و 100%.'
+                    },
+                    { 
+                        id: 'grants_q2', 
+                        image: 'all_q.webp', 
+                        question: 'ننتقل الآن إلى "منحة الأسرة". ما هي نسبة المنحة التي يحصل عليها كل فرد من أسرة لديها "شقيقان فقط" يدرسان في الجامعة؟', 
+                        options: { '15': '15%', '25': '25%', '30': '30%', '50': '50%' }, 
+                        correctAnswer: '15', 
+                        points: 2, 
+                        correctFeedback: 'صحيح! نسبة المنحة لشقيقين هي 15% لكل منهما. لنرَ الحالة التالية.'
+                    },
+                    { 
+                        id: 'grants_q3', 
+                        image: 'all_q.webp', 
+                        question: 'وماذا عن أسرة لديها "3 أشقاء" يدرسون معاً في الجامعة؟', 
+                        options: { '15': '15%', '25': '25%', '30': '30%', '35': '35%' }, 
+                        correctAnswer: '25', 
+                        points: 3, 
+                        correctFeedback: 'ممتاز! النسبة ترتفع إلى 25% لكل طالب عند وجود 3 أشقاء.'
+                    },
+                    { 
+                        id: 'grants_q4', 
+                        image: 'all_q.webp', 
+                        question: 'أخيراً، في "منحة الأسرة"، ما هي نسبة المنحة لأسرة لديها "4 أشقاء أو أكثر"؟', 
+                        options: { '25': '25%', '30': '30%', '35': '35%', '40': '40%' }, 
+                        correctAnswer: '30', 
+                        points: 4, 
+                        correctFeedback: 'إجابة صحيحة! 30% هي النسبة الأعلى لمنحة الأسرة. الآن سؤال عن الشروط!'
+                    },
+                    { 
+                        id: 'grants_q5', 
+                        image: 'all_q.webp', 
+                        question: 'سؤال للمحترفين: إذا كان معدل أحد الأشقاء في كلية الطب 72%، هل يستمر في الاستفادة من منحة الأسرة؟', 
+                        options: { 'yes': 'نعم، يستمر', 'no': 'لا، تتوقف عنه المنحة' }, 
+                        correctAnswer: 'no', 
+                        points: 4, 
+                        correctFeedback: 'ملاحظة مهمة! شرط المعدل أساسي، حيث يجب أن يحافظ طالب الطب على معدل 75% فأكثر. فهمك للشروط يستحق مكافأة.',
+                        incorrectFeedback: 'الإجابة الصحيحة هي "لا". شرط المعدل لطلبة الطب هو 75% فأكثر للاستفادة من منحة الأسرة.'
+                    },
+                    { 
+                        id: 'grants_q6', 
+                        image: 'all_q.webp', 
+                        question: 'الجامعة تقدر المواهب الخاصة. ما هي نسبة المنحة التي يحصل عليها الطالب الذي يحفظ القرآن الكريم كاملاً بعد اجتياز امتحان التسميع؟', 
+                        options: { '35': '35%', '50': '50%', '70': '70%', '100': '100%' }, 
+                        correctAnswer: '50', 
+                        points: 4, 
+                        correctFeedback: 'أحسنت! منحة حفظة القرآن الكريم هي 50%، وهي من المنح القيمة التي تقدمها الجامعة.'
+                    },
+                    { 
+                        id: 'grants_q7', 
+                        image: 'all_q.webp', 
+                        question: 'ما هي نسبة المنحة المخصصة للطالب من ذوي الاحتياجات الخاصة الذي لديه إعاقة بنسبة 70% فما فوق (حسب تقرير طبيب الجامعة)؟', 
+                        options: { '35': '35%', '50': '50%', '70': '70%', '85': '85%' }, 
+                        correctAnswer: '70', 
+                        points: 4, 
+                        correctFeedback: 'صحيح! الجامعة تقدم دعماً كبيراً بنسبة 70% لهذه الفئة من الطلبة.'
+                    },
+                    { 
+                        id: 'grants_q8', 
+                        image: 'all_q.webp', 
+                        question: 'لتشجيع الالتحاق ببعض التخصصات، تقدم الجامعة منحاً خاصة. أي من التخصصات التالية يحصل طلبتها على منحة خاصة قد تصل إلى 70%؟', 
+                        options: { 'physics_chemistry': 'الفيزياء والكيمياء', 'sharia_usul': 'الشريعة وأصول الدين', 'both': 'كلاهما معاً' }, 
+                        correctAnswer: 'both', 
+                        points: 5, 
+                        correctFeedback: 'رائع! بالفعل، كليات الشريعة وأصول الدين وبعض تخصصات العلوم مثل الفيزياء والكيمياء تحظى بدعم خاص.'
+                    },
+                    { 
+                        id: 'grants_q9', 
+                        image: 'all_q.webp', 
+                        question: 'سؤال مصيري: حصل سعيد على منحة تتطلب منه الحفاظ على معدل فصلي 80%. في الفصل الماضي، كان معدله 79%. هل ستستمر منحته في الفصل القادم؟', 
+                        options: { 'yes_continue': 'نعم، ستستمر', 'no_stop': 'لا، ستتوقف' }, 
+                        correctAnswer: 'no_stop', 
+                        points: 5, 
+                        correctFeedback: 'إجابة دقيقة! الحفاظ على المعدل هو شرط أساسي لاستمرار معظم المنح. فهمك لهذه النقطة يجعلك طالباً واعياً.',
+                        incorrectFeedback: 'الإجابة الصحيحة هي "لا". معظم المنح تتوقف إذا لم يتم الحفاظ على المعدل المطلوب.'
+                    }
+                ],
+                // --- نهاية قسم المنح والمساعدات الجديد ---
+                
                 'cafeteria': { isUnderConstruction: true },
-                'grants': { isUnderConstruction: true },
                 'hospital': { isUnderConstruction: true },
                 'admission': { isUnderConstruction: true },
                 'studentaffairs': { isUnderConstruction: true },
@@ -680,7 +765,6 @@
                 'exchange_mc_questions': 'exchange'
             };
             
-            // All the element variables (landingScreen, etc.)
             const landingScreen = document.getElementById('landing-screen');
             const showRegisterBtn = document.getElementById('show-register-btn');
             const startScreen = document.getElementById('start-screen');
@@ -697,7 +781,6 @@
             const incorrectSound = document.getElementById('incorrect-sound');
             const transitionSound = document.getElementById('transition-sound');
 
-            // All the game logic functions (saveGameState, loadGameState, etc.)
             function saveGameState() {
                 try {
                     const stateToSave = {
@@ -733,23 +816,18 @@
                 }
             }
 
-            // ✅ --- بداية الدالة الجديدة والمحسّنة لاستعادة الجلسة ---
             function restoreGameSession() {
                 if (loadGameState() && gameState.uniquePlayerId) {
-                    // 1. إخفاء شاشات البداية وإظهار شاشة اللعب
                     landingScreen.classList.add('hidden');
                     startScreen.classList.add('hidden');
                     gameSceneContainer.classList.remove('hidden');
                     playerStats.classList.remove('hidden');
 
-                    // 2. تحديث واجهة المستخدم بالبيانات المحفوظة
                     updatePlayerStats();
 
-                    // 3. تحديد المشهد الذي سيتم عرضه (مع التأكد من وجود قيمة افتراضية آمنة)
                     const sceneToRender = gameState.currentScene && gameData[gameState.currentScene] ? gameState.currentScene : 'map';
                     const indexToRender = gameState.currentSubQuestionIndex || 0;
 
-                    // 4. عرض رسالة ترحيب بالعودة، ثم عرض المشهد الصحيح
                     showModal(
                         'أهلاً بعودتك!', 
                         `مرحباً ${gameState.playerName}، يسعدنا رؤيتك مجدداً! سنكمل من حيث توقفنا.`, 
@@ -757,11 +835,10 @@
                             renderScene(sceneToRender, indexToRender, false);
                         }
                     );
-                    return true; // للإشارة إلى أنه تم استعادة جلسة
+                    return true;
                 }
-                return false; // لا يوجد جلسة محفوظة
+                return false;
             }
-            // --- نهاية الدالة الجديدة ---
 
             showRegisterBtn.addEventListener('click', () => {
                 landingScreen.classList.add('hidden');
@@ -1024,7 +1101,6 @@
                 return false;
             }
             
-            // Event listeners
             playerForm.addEventListener('submit', startGame);
 
             document.getElementById('map-scene').addEventListener('click', (e) => {
@@ -1107,7 +1183,6 @@
                 preloadImages(Array.from(allImageUrls));
             });
             
-            // ✅ --- استدعاء دالة استعادة الجلسة عند بدء تشغيل اللعبة ---
             restoreGameSession();
         });
     </script>

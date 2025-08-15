@@ -471,7 +471,7 @@
         }
 
         #grants-info-scene .scene-content,
-        #faculties-info-scene .scene-content { /* تطبيق النمط على الشاشة الجديدة */
+        #faculties-info-scene .scene-content {
             padding: 0;
         }
 
@@ -553,7 +553,6 @@
             border-top: 1px solid #eee;
         }
         
-        /* --- ✅ CSS قديم: خاص بشاشة عرض الكليات --- */
         #faculties-info-scene .info-scene-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -594,7 +593,7 @@
             margin: 0;
         }
         
-        /* --- ✅ CSS جديد: خاص بشاشة قائمة الكليات --- */
+        /* --- CSS جديد: خاص بشاشة قائمة الكليات --- */
         #faculties-list-scene .info-scene-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -631,7 +630,7 @@
             margin: 0;
         }
 
-        /* --- ✅ CSS جديد: خاص بشاشة عرض موقع الكلية --- */
+        /* --- CSS جديد: خاص بشاشة عرض موقع الكلية --- */
         #college-website-scene .scene-content {
             padding: 20px;
             height: 85vh;
@@ -995,19 +994,19 @@
 
 
         document.addEventListener('DOMContentLoaded', () => {
-            // ✅ (جديد) بيانات الكليات
+            // بيانات الكليات مع الإيموجي
             const collegesData = [
-                { name: 'كلية الطب', description: 'الطب وعلومه وطبيبٌ للمستقبل', url: 'https://medicine.iugaza.edu.ps/' },
-                { name: 'كلية الهندسة', description: 'هندسة المستقبل بكافة مجالات الحياة', url: 'https://eng.iugaza.edu.ps/' },
-                { name: 'كلية تكنولوجيا المعلومات', description: 'عصر التكنولوجيا والمعلوماتية وأمن المعلومات والبيانات', url: 'https://fit.iugaza.edu.ps/' },
-                { name: 'كلية التمريض', description: 'بذلٌ وعطاءٌ وتفانٍ لكل مريض وفي كل مكان', url: 'https://nursing.iugaza.edu.ps/' },
-                { name: 'كلية العلوم الصحية', description: 'العلاج السليم يبدأ من هنا', url: 'https://healthscience.iugaza.edu.ps/' },
-                { name: 'كلية العلوم', description: 'علوم الطبيعة وأسرار الكون', url: 'https://science.iugaza.edu.ps/' },
-                { name: 'كلية الآداب', description: 'علمٌ ولغاتٌ وأدبٌ وثقافة الأمم المختلفة قديماً وحديثاً', url: 'https://arts.iugaza.edu.ps/' },
-                { name: 'كلية الشريعة والقانون', description: 'دراسة للشريعة الاسلامية والمحاماة على مبادئ الشريعة السمحة', url: 'https://sharea.iugaza.edu.ps/' },
-                { name: 'كلية أصول الدين', description: 'الدين الإسلامي ، أصوله وأحكامه', url: 'https://osool.iugaza.edu.ps/' },
-                { name: 'كلية التربية', description: 'معلمٌ .. يربي أجيال المستقبل المستنيرة', url: 'https://education.iugaza.edu.ps/' },
-                { name: 'كلية الاقتصاد والعلوم الإدارية', description: 'بناء الاقتصاد والإدارة السليمة والمال', url: 'https://commerce.iugaza.edu.ps/' }
+                { name: 'كلية الطب', description: 'الطب وعلومه وطبيبٌ للمستقبل', url: 'https://medicine.iugaza.edu.ps/', emoji: '⚕️' },
+                { name: 'كلية الهندسة', description: 'هندسة المستقبل بكافة مجالات الحياة', url: 'https://eng.iugaza.edu.ps/', emoji: '🏗️' },
+                { name: 'كلية تكنولوجيا المعلومات', description: 'عصر التكنولوجيا والمعلوماتية وأمن المعلومات والبيانات', url: 'https://fit.iugaza.edu.ps/', emoji: '💻' },
+                { name: 'كلية التمريض', description: 'بذلٌ وعطاءٌ وتفانٍ لكل مريض وفي كل مكان', url: 'https://nursing.iugaza.edu.ps/', emoji: '🩺' },
+                { name: 'كلية العلوم الصحية', description: 'العلاج السليم يبدأ من هنا', url: 'https://healthscience.iugaza.edu.ps/', emoji: '🧬' },
+                { name: 'كلية العلوم', description: 'علوم الطبيعة وأسرار الكون', url: 'https://science.iugaza.edu.ps/', emoji: '🔬' },
+                { name: 'كلية الآداب', description: 'علمٌ ولغاتٌ وأدبٌ وثقافة الأمم المختلفة قديماً وحديثاً', url: 'https://arts.iugaza.edu.ps/', emoji: '📚' },
+                { name: 'كلية الشريعة والقانون', description: 'دراسة للشريعة الاسلامية والمحاماة على مبادئ الشريعة السمحة', url: 'https://sharea.iugaza.edu.ps/', emoji: '⚖️' },
+                { name: 'كلية أصول الدين', description: 'الدين الإسلامي ، أصوله وأحكامه', url: 'https://osool.iugaza.edu.ps/', emoji: '🕌' },
+                { name: 'كلية التربية', description: 'معلمٌ .. يربي أجيال المستقبل المستنيرة', url: 'https://education.iugaza.edu.ps/', emoji: '👩‍🏫' },
+                { name: 'كلية الاقتصاد والعلوم الإدارية', description: 'بناء الاقتصاد والإدارة السليمة والمال', url: 'https://commerce.iugaza.edu.ps/', emoji: '💼' }
             ];
 
             const gameData = {
@@ -1483,17 +1482,15 @@
                     return; 
                 }
 
-                // --- ✅ تعديل: تغيير سلوك زر الكليات ليفتح القائمة الجديدة ---
                 if (destination === 'faculties') {
                     if (isStageCompleted(destination)) {
                         showModal("مكان مألوف!", "لقد أكملت جميع تحديات هذا المكان. اختر وجهة أخرى.", null);
                     } else {
                         document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
-                        document.getElementById('faculties-list-scene').classList.remove('hidden'); // عرض قائمة الكليات
+                        document.getElementById('faculties-list-scene').classList.remove('hidden');
                     }
                     return; 
                 }
-                // --- نهاية التعديل ---
 
                 if (destination === 'certificate') {
                     const libraryComplete = isStageCompleted('library');
@@ -1535,7 +1532,6 @@
                 renderScene('grants');
             });
             
-            // --- ✅ قديم: زر بدء تحدي الكليات (من شاشة المعلومات القديمة) ---
             document.getElementById('start-faculties-quiz-btn').addEventListener('click', () => {
                 renderScene('faculties');
             });
@@ -1585,14 +1581,14 @@
                 preloadImages(Array.from(allImageUrls));
             });
 
-            // ✅ (جديد) دالة لإنشاء قائمة الكليات
+            // دالة لإنشاء قائمة الكليات مع الإيموجي
             function populateFacultiesList() {
                 const container = document.getElementById('faculties-grid-container');
                 let content = '';
                 collegesData.forEach(college => {
                     content += `
                         <div class="college-info-card" data-url="${college.url}" data-name="${college.name}">
-                            <h3>${college.name}</h3>
+                            <h3>${college.emoji} ${college.name}</h3>
                             <p>${college.description}</p>
                         </div>
                     `;
@@ -1600,7 +1596,7 @@
                 container.innerHTML = content;
             }
             
-            // ✅ (جديد) معالج حدث الضغط على بطاقة كلية
+            // معالج حدث الضغط على بطاقة كلية
             document.getElementById('faculties-grid-container').addEventListener('click', (e) => {
                 const card = e.target.closest('.college-info-card');
                 if (!card) return;
@@ -1631,15 +1627,13 @@
                 });
             });
 
-            // ✅ (جديد) معالج حدث زر الانتقال إلى تحدي الكليات
+            // معالج حدث زر الانتقال إلى تحدي الكليات
             document.getElementById('proceed-to-faculties-quiz-btn').addEventListener('click', () => {
-                 // هذا الزر يعرض شاشة المعلومات القديمة التي تسبق اختيار نوع الأسئلة
                  document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
                  document.getElementById('faculties-info-scene').classList.remove('hidden');
             });
 
-
-            // ✅ (جديد) استدعاء الدالة عند تحميل اللعبة
+            // استدعاء الدالة عند تحميل اللعبة
             populateFacultiesList();
             
             restoreGameSession();

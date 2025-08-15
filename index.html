@@ -132,6 +132,20 @@
             line-height: 1.5;
             margin: 0;
         }
+        
+        /* ✅ تمت إضافة تنسيق لزر إعادة اللعبة */
+        .reset-link-container {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .reset-link-container a {
+            color: var(--text-light);
+            text-decoration: none;
+        }
+        .reset-link-container a:hover {
+            text-decoration: underline;
+            color: var(--primary-color);
+        }
 
         #start-screen {
             background-color: var(--white-color);
@@ -486,6 +500,9 @@
             <button id="show-register-btn" class="action-button">
                 <span class="btn-icon">📅</span> لا تفوّت الفرصة - سجّل الآن!
             </button>
+            <p class="reset-link-container">
+                <a href="#" id="reset-progress-btn">هل تريد بدء رحلة جديدة؟ (سيتم حذف التقدم الحالي)</a>
+            </p>
         </div>
 
         <div id="start-screen" class="hidden">
@@ -566,6 +583,8 @@
     <script>
         // JS remains the same until the event listener
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-lE41eY0lEWEOxZevGyTMxNbpY2zTmRzWa3DEAd5Dc6O72GgtMA/exec';
+        
+        // Functions remain the same
         function registerPlayer(name, phone, year) {
             const formData = new FormData();
             formData.append('action', 'register');
@@ -617,7 +636,6 @@
 
             const gameState = { playerName: '', playerPhone: '', tawjihiYear: '', uniquePlayerId: null, score: 0, currentScene: null, currentSubQuestionIndex: 0, answeredQuestions: new Set() };
             
-            // ✅ تم إضافة هذا الكائن لتحديد علاقة المراحل
             const sceneParentMap = {
                 'tf_questions': 'faculties',
                 'mc_questions': 'faculties',
@@ -640,6 +658,44 @@
             const correctSound = document.getElementById('correct-sound');
             const incorrectSound = document.getElementById('incorrect-sound');
             const transitionSound = document.getElementById('transition-sound');
+
+            // ✅ --- بداية دوال الحفظ والاستعادة ---
+            function saveGameState() {
+                try {
+                    const stateToSave = {
+                        ...gameState,
+                        answeredQuestions: Array.from(gameState.answeredQuestions) // تحويل Set إلى Array
+                    };
+                    localStorage.setItem('iugGameProgress', JSON.stringify(stateToSave));
+                } catch (e) {
+                    console.error("Failed to save game state:", e);
+                }
+            }
+
+            function loadGameState() {
+                try {
+                    const savedStateJSON = localStorage.getItem('iugGameProgress');
+                    if (savedStateJSON) {
+                        const savedState = JSON.parse(savedStateJSON);
+                        Object.assign(gameState, savedState);
+                        gameState.answeredQuestions = new Set(savedState.answeredQuestions); // تحويل Array إلى Set
+                        return true;
+                    }
+                    return false;
+                } catch (e) {
+                    console.error("Failed to load game state:", e);
+                    return false;
+                }
+            }
+
+            function resetGameState() {
+                if (confirm("هل أنت متأكد أنك تريد بدء رحلة جديدة؟ سيتم حذف كل تقدمك الحالي.")) {
+                    localStorage.removeItem('iugGameProgress');
+                    location.reload();
+                }
+            }
+            // --- نهاية دوال الحفظ والاستعادة ---
+
 
             showRegisterBtn.addEventListener('click', () => {
                 landingScreen.classList.add('hidden');
@@ -681,6 +737,7 @@
                             gameState.playerPhone = phoneInput;
                             gameState.tawjihiYear = tawjihiYearInput;
                             gameState.uniquePlayerId = data.uniqueId;
+                            saveGameState(); // ✅ حفظ الحالة بعد التسجيل مباشرة
                             updatePlayerStats();
                             startScreen.classList.add('hidden');
                             gameSceneContainer.classList.remove('hidden');
@@ -743,8 +800,12 @@
                 if (Array.isArray(sceneData)) {
                     gameState.currentSubQuestionIndex = questionIndex;
                     sceneData = sceneData[questionIndex];
+                } else {
+                    gameState.currentSubQuestionIndex = 0;
                 }
                 
+                saveGameState(); // ✅ حفظ الحالة عند كل انتقال لمشهد جديد
+
                 let progressBarHTML = '';
                 if (Array.isArray(gameData[sceneId])) {
                     const totalQuestions = gameData[sceneId].length;
@@ -803,6 +864,9 @@
                     
                     correctSound.play();
                     gameState.score += sceneData.points;
+                    gameState.answeredQuestions.add(questionId);
+                    saveGameState(); // ✅ حفظ الحالة بعد الإجابة الصحيحة وتحديث النقاط
+
                     updatePlayerStats();
                     if (gameState.uniquePlayerId) {
                         updatePlayerScore(gameState.uniquePlayerId, gameState.score);
@@ -813,7 +877,6 @@
                     feedbackElement.className = 'feedback-message correct';
                     feedbackElement.style.display = 'block';
 
-                    gameState.answeredQuestions.add(questionId);
 
                     setTimeout(() => {
                         if (sceneId === 'gate') {
@@ -823,25 +886,18 @@
                             if (nextQuestionIndex < gameData[sceneId].length) {
                                 renderScene(sceneId, nextQuestionIndex);
                             } else {
-                                // ✅ --- بداية الكود المعدل ---
                                 const parentScene = sceneParentMap[sceneId];
-
-                                if (parentScene) { // إذا كانت هذه المرحلة تابعة لمرحلة اختيار أخرى
+                                if (parentScene) {
                                     const siblingScenes = Object.values(gameData[parentScene].nextScene);
                                     const allSiblingsCompleted = siblingScenes.every(siblingId => isStageCompleted(siblingId));
-
                                     if (allSiblingsCompleted) {
-                                        // أنهى اللاعب كل أنواع الأسئلة، الآن يمكنه العودة للخريطة
                                         showModal("إنجاز مذهل!", `لقد أكملت كل تحديات هذا القسم بنجاح. لنعد إلى الخريطة.`, () => renderScene('map'));
                                     } else {
-                                        // أنهى نوعاً واحداً فقط، نرجعه لصفحة الاختيار
                                         showModal("رائع!", `لقد أتممت هذا التحدي. يمكنك الآن تجربة النوع الآخر من الأسئلة.`, () => renderScene(parentScene));
                                     }
                                 } else {
-                                    // إذا كانت مرحلة عادية (مثل المكتبة)، نرجعه للخريطة مباشرة
                                     showModal("إنجاز رائع!", `لقد أكملت جميع تحديات هذا القسم بنجاح. لنعد إلى الخريطة.`, () => renderScene('map'));
                                 }
-                                // --- نهاية الكود المعدل ---
                             }
                         } else {
                             renderScene('map');
@@ -881,19 +937,18 @@
             
             function isStageCompleted(stageId) {
                 const stageData = gameData[stageId];
-                if (!stageData || !Array.isArray(stageData)) {
-                    // This handles cases where a scene might not be an array of questions,
-                    // for the purpose of our check, we can consider it "not completable" in this manner.
-                    // A more robust check might be needed if game structure changes, but this is fine for now.
-                    if(gameData[stageId]){
-                         const subScenes = Object.values(gameData[stageId].nextScene || {});
-                         if(subScenes.length > 0){
-                            return subScenes.every(s => isStageCompleted(s));
-                         }
-                    }
-                    return false;
+                if (!stageData) return false;
+
+                if (Array.isArray(stageData)) {
+                    return stageData.every(q => gameState.answeredQuestions.has(q.id));
                 }
-                return stageData.every(q => gameState.answeredQuestions.has(q.id));
+
+                if (stageData.nextScene) {
+                    const subScenes = Object.values(stageData.nextScene);
+                    return subScenes.every(s => isStageCompleted(s));
+                }
+                
+                return false;
             }
             
             playerForm.addEventListener('submit', startGame);
@@ -907,8 +962,8 @@
 
                 if (destination === 'certificate') {
                     const libraryComplete = isStageCompleted('library');
-                    const facultiesComplete = isStageCompleted('faculties'); // Check parent stage
-                    const exchangeComplete = isStageCompleted('exchange'); // Check parent stage
+                    const facultiesComplete = isStageCompleted('faculties');
+                    const exchangeComplete = isStageCompleted('exchange');
                     
                     const allKeyStagesComplete = libraryComplete && facultiesComplete && exchangeComplete;
                     const scoreSufficient = gameState.score >= 50;
@@ -942,6 +997,10 @@
             });
 
             document.getElementById('restart-btn').addEventListener('click', () => { location.reload(); });
+            document.getElementById('reset-progress-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                resetGameState();
+            });
             
             window.addEventListener('popstate', (event) => {
                 if (event.state && event.state.scene) {
@@ -950,6 +1009,24 @@
                     location.reload();
                 }
             });
+
+            // ✅ --- بداية منطق استعادة الحالة عند تحميل الصفحة ---
+            if (loadGameState() && gameState.uniquePlayerId) {
+                // وجدنا تقدماً محفوظاً للاعب مسجل
+                landingScreen.classList.add('hidden');
+                startScreen.classList.add('hidden');
+                gameSceneContainer.classList.remove('hidden');
+                playerStats.classList.remove('hidden');
+                updatePlayerStats();
+                
+                const sceneToRender = gameState.currentScene || 'gate'; // إذا لم يكن هناك مشهد محدد، ابدأ من البوابة
+                const indexToRender = gameState.currentSubQuestionIndex || 0;
+
+                showModal('أهلاً بعودتك!', `مرحباً ${gameState.playerName}، يسعدنا رؤيتك مجدداً! سنكمل من حيث توقفنا.`, () => {
+                    renderScene(sceneToRender, indexToRender, false);
+                });
+            }
+            // --- نهاية منطق استعادة الحالة ---
         });
     </script>
 </body>

@@ -598,7 +598,7 @@
 
     <script>
         // The script content remains unchanged until the DOMContentLoaded event listener
-        // ... (all functions like registerPlayer, updatePlayerScore, shuffleArray are the same)
+        // ... (all functions like registerPlayer, updatePlayerScore, shuffleArray, preloadImages are the same)
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-lE41eY0lEWEOxZevGyTMxNbpY2zTmRzWa3DEAd5Dc6O72GgtMA/exec';
         
         function registerPlayer(name, phone, year) {
@@ -681,7 +681,8 @@
                 'exchange_tf_questions': 'exchange',
                 'exchange_mc_questions': 'exchange'
             };
-
+            
+            // All the element variables (landingScreen, etc.)
             const landingScreen = document.getElementById('landing-screen');
             const showRegisterBtn = document.getElementById('show-register-btn');
             const startScreen = document.getElementById('start-screen');
@@ -698,6 +699,7 @@
             const incorrectSound = document.getElementById('incorrect-sound');
             const transitionSound = document.getElementById('transition-sound');
 
+            // All the game logic functions (saveGameState, loadGameState, etc.)
             function saveGameState() {
                 try {
                     const stateToSave = {
@@ -732,7 +734,37 @@
                     location.reload();
                 }
             }
-            
+
+            // ✅ --- بداية الدالة الجديدة والمحسّنة لاستعادة الجلسة ---
+            function restoreGameSession() {
+                if (loadGameState() && gameState.uniquePlayerId) {
+                    // 1. إخفاء شاشات البداية وإظهار شاشة اللعب
+                    landingScreen.classList.add('hidden');
+                    startScreen.classList.add('hidden');
+                    gameSceneContainer.classList.remove('hidden');
+                    playerStats.classList.remove('hidden');
+
+                    // 2. تحديث واجهة المستخدم بالبيانات المحفوظة
+                    updatePlayerStats();
+
+                    // 3. تحديد المشهد الذي سيتم عرضه (مع التأكد من وجود قيمة افتراضية آمنة)
+                    const sceneToRender = gameState.currentScene && gameData[gameState.currentScene] ? gameState.currentScene : 'map';
+                    const indexToRender = gameState.currentSubQuestionIndex || 0;
+
+                    // 4. عرض رسالة ترحيب بالعودة، ثم عرض المشهد الصحيح
+                    showModal(
+                        'أهلاً بعودتك!', 
+                        `مرحباً ${gameState.playerName}، يسعدنا رؤيتك مجدداً! سنكمل من حيث توقفنا.`, 
+                        () => {
+                            renderScene(sceneToRender, indexToRender, false);
+                        }
+                    );
+                    return true; // للإشارة إلى أنه تم استعادة جلسة
+                }
+                return false; // لا يوجد جلسة محفوظة
+            }
+            // --- نهاية الدالة الجديدة ---
+
             showRegisterBtn.addEventListener('click', () => {
                 landingScreen.classList.add('hidden');
                 startScreen.classList.remove('hidden');
@@ -994,6 +1026,7 @@
                 return false;
             }
             
+            // Event listeners
             playerForm.addEventListener('submit', startGame);
 
             document.getElementById('map-scene').addEventListener('click', (e) => {
@@ -1061,7 +1094,6 @@
                 }
             });
             
-            // ✅ --- تم تعديل هذا الجزء ليبدأ التحميل المسبق بعد تحميل الصفحة بالكامل ---
             const allImageUrls = new Set();
             Object.values(gameData).forEach(scene => {
                 if (Array.isArray(scene)) {
@@ -1076,22 +1108,9 @@
             window.addEventListener('load', () => {
                 preloadImages(Array.from(allImageUrls));
             });
-            // --- نهاية التعديل ---
-
-            if (loadGameState() && gameState.uniquePlayerId) {
-                landingScreen.classList.add('hidden');
-                startScreen.classList.add('hidden');
-                gameSceneContainer.classList.remove('hidden');
-                playerStats.classList.remove('hidden');
-                updatePlayerStats();
-                
-                const sceneToRender = gameState.currentScene || 'gate';
-                const indexToRender = gameState.currentSubQuestionIndex || 0;
-
-                showModal('أهلاً بعودتك!', `مرحباً ${gameState.playerName}، يسعدنا رؤيتك مجدداً! سنكمل من حيث توقفنا.`, () => {
-                    renderScene(sceneToRender, indexToRender, false);
-                });
-            }
+            
+            // ✅ --- استدعاء دالة استعادة الجلسة عند بدء تشغيل اللعبة ---
+            restoreGameSession();
         });
     </script>
 </body>

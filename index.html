@@ -597,6 +597,8 @@
     </div>
 
     <script>
+        // The script content remains unchanged until the DOMContentLoaded event listener
+        // ... (all functions like registerPlayer, updatePlayerScore, shuffleArray are the same)
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-lE41eY0lEWEOxZevGyTMxNbpY2zTmRzWa3DEAd5Dc6O72GgtMA/exec';
         
         function registerPlayer(name, phone, year) {
@@ -642,7 +644,6 @@
             return newArray;
         }
 
-        // ✅ --- دالة التحميل المسبق للصور ---
         function preloadImages(urls) {
             urls.forEach(url => {
                 const img = new Image();
@@ -1060,7 +1061,7 @@
                 }
             });
             
-            // ✅ --- بداية منطق التحميل المسبق ---
+            // ✅ --- تم تعديل هذا الجزء ليبدأ التحميل المسبق بعد تحميل الصفحة بالكامل ---
             const allImageUrls = new Set();
             Object.values(gameData).forEach(scene => {
                 if (Array.isArray(scene)) {
@@ -1071,9 +1072,11 @@
                     allImageUrls.add(scene.image);
                 }
             });
-            preloadImages(Array.from(allImageUrls));
-            // --- نهاية منطق التحميل المسبق ---
-
+            
+            window.addEventListener('load', () => {
+                preloadImages(Array.from(allImageUrls));
+            });
+            // --- نهاية التعديل ---
 
             if (loadGameState() && gameState.uniquePlayerId) {
                 landingScreen.classList.add('hidden');

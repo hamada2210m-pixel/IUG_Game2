@@ -714,11 +714,12 @@
             margin-bottom: 15px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             text-align: right;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, border-right-color 0.3s ease; /* تم إضافة تأثير انتقالي هنا */
         }
         .admission-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-right-color: var(--secondary-color); /* تم تغيير هذا السطر */
         }
         .admission-card h3 {
             font-size: 18px;

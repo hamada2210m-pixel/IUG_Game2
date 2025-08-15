@@ -462,6 +462,90 @@
         #exchange-scene .option-btn span {
             font-size: 30px;
         }
+
+        /* --- ✅ CSS جديد خاص بشاشة عرض المنح --- */
+        #grants-info-scene .scene-content {
+            padding: 0;
+        }
+
+        .info-header {
+            padding: 25px 25px 20px 25px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .info-scene-container {
+            max-height: 60vh;
+            overflow-y: auto;
+            padding: 20px 25px;
+            text-align: right;
+        }
+        
+        .grant-category {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--primary-dark);
+            margin-top: 20px;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        .grant-category:first-child {
+            margin-top: 0;
+        }
+
+        .grant-card {
+            background-color: #f9f9f9;
+            border-right: 5px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .grant-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+            color: var(--primary-dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grant-percentage {
+            background-color: var(--secondary-color);
+            color: var(--text-dark);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .grant-details ul {
+            list-style: none;
+            padding-right: 0;
+            margin: 0;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .grant-details li {
+            padding-right: 25px;
+            position: relative;
+            margin-bottom: 8px;
+        }
+        .grant-details li::before {
+            content: '🔹';
+            position: absolute;
+            right: 0;
+            top: 0;
+            color: var(--primary-color);
+        }
+
+        .info-footer {
+            padding: 20px 25px;
+            border-top: 1px solid #eee;
+        }
+        /* --- نهاية CSS الجديد --- */
         
         @media (max-width: 600px) {
             .options-container {
@@ -565,6 +649,7 @@
                     </div>
                 </div>
             </div>
+
             <div id="faculties-scene" class="game-stage hidden"></div>
             <div id="tf_questions-scene" class="game-stage hidden"></div>
             <div id="mc_questions-scene" class="game-stage hidden"></div>
@@ -572,6 +657,88 @@
             <div id="exchange_tf_questions-scene" class="game-stage hidden"></div>
             <div id="exchange_mc_questions-scene" class="game-stage hidden"></div>
             <div id="library-scene" class="game-stage hidden"></div>
+            
+            <div id="grants-info-scene" class="game-stage hidden">
+                <div class="scene-content">
+                    <div class="info-header">
+                        <h2 class="scene-title">دليل المنح والمساعدات الطلابية</h2>
+                        <p>المعرفة قوة! قبل أن تبدأ التحدي، اطلع على دليل المنح الشامل الذي تقدمه الجامعة. كل معلومة هنا قد تكون مفتاحك للحصول على دعم كبير.</p>
+                    </div>
+                    
+                    <div class="info-scene-container">
+                        <h3 class="grant-category">منح التفوق الأكاديمي</h3>
+                        <div class="grant-card">
+                            <h3>منحة الامتياز (حسب المعدل الفصلي) <span class="grant-percentage">70%</span></h3>
+                            <div class="grant-details"><ul><li>المعدل المطلوب: 95% - 100% فصلياً</li><li>يجب اجتياز 15 ساعة معتمدة على الأقل.</li></ul></div>
+                        </div>
+                        <div class="grant-card">
+                            <h3>منحة الامتياز (حسب المعدل الفصلي) <span class="grant-percentage">35%</span></h3>
+                            <div class="grant-details"><ul><li>المعدل المطلوب: 90% - 94.9% فصلياً</li><li>يجب اجتياز 15 ساعة معتمدة على الأقل.</li></ul></div>
+                        </div>
+                        <div class="grant-card">
+                            <h3>منحة وزارة التربية والتعليم <span class="grant-percentage">70%+</span></h3>
+                            <div class="grant-details"><ul><li>المعدل المطلوب: أعلى معدلين في كل كلية</li><li>للاستمرارية: معدل فصلي 80%</li><li>يتم اختيارهم عبر الوزارة.</li></ul></div>
+                        </div>
+
+                        <h3 class="grant-category">منح التخصصات الأكاديمية</h3>
+                        <div class="grant-card">
+                            <h3>المنحة الشرعية <span class="grant-percentage">70%</span></h3>
+                            <div class="grant-details"><ul><li>للتخصصات: الشريعة الإسلامية، أصول الدين (عام)</li><li>معدل الثانوية: 80% فأكثر</li><li>للاستمرارية: معدل فصلي 80%</li></ul></div>
+                        </div>
+                         <div class="grant-card">
+                            <h3>المنحة الشرعية <span class="grant-percentage">35%</span></h3>
+                            <div class="grant-details"><ul><li>للتخصصات: الشريعة الإسلامية، أصول الدين (عام)</li><li>معدل الثانوية: 70% - 79.9%</li><li>للاستمرارية: معدل فصلي 80%</li></ul></div>
+                        </div>
+                        <div class="grant-card">
+                            <h3>منح كلية العلوم (فيزياء وكيمياء) <span class="grant-percentage">70%</span></h3>
+                            <div class="grant-details"><ul><li>منحتان كاملتان سنوياً لكل تخصص (فيزياء/كيمياء)</li><li>للمتفوقين في الثانوية العامة والمادة العلمية.</li></ul></div>
+                        </div>
+
+                        <h3 class="grant-category">منح المواهب والفئات الخاصة</h3>
+                        <div class="grant-card">
+                            <h3>منحة حفظة القرآن الكريم <span class="grant-percentage">50%</span></h3>
+                            <div class="grant-details"><ul><li>للاستمرارية: معدل فصلي 80%</li><li>يجب النجاح في امتحان التسميع لكامل القرآن.</li></ul></div>
+                        </div>
+                        <div class="grant-card">
+                            <h3>المنحة الرياضية <span class="grant-percentage">25-35%</span></h3>
+                            <div class="grant-details"><ul><li>للاستمرارية: معدل فصلي 65%</li><li>للطلبة الملتحقين بفرق الجامعة الرياضية.</li></ul></div>
+                        </div>
+                        <div class="grant-card">
+                            <h3>منحة ذوي الاحتياجات الخاصة <span class="grant-percentage">35-70%</span></h3>
+                            <div class="grant-details"><ul><li>للاستمرارية: معدل فصلي 65%</li><li>35% للإعاقة (50-69%)، و 70% للإعاقة (70% فأكثر).</li></ul></div>
+                        </div>
+
+                        <h3 class="grant-category">منح الدعم الأسري والمجتمعي</h3>
+                        <div class="grant-card">
+                            <h3>منحة الأسرة (شقيقان) <span class="grant-percentage">15%</span></h3>
+                            <div class="grant-details"><ul><li>للاستمرارية: معدل 70% (75% للطب)</li><li>لكل طالب على حدة.</li></ul></div>
+                        </div>
+                         <div class="grant-card">
+                            <h3>منحة الأسرة (3 أشقاء) <span class="grant-percentage">25%</span></h3>
+                            <div class="grant-details"><ul><li>للاستمرارية: معدل 70% (75% للطب)</li><li>لكل طالب على حدة.</li></ul></div>
+                        </div>
+                         <div class="grant-card">
+                            <h3>منحة الأسرة (4 أشقاء فأكثر) <span class="grant-percentage">30%</span></h3>
+                            <div class="grant-details"><ul><li>للاستمرارية: معدل 70% (75% للطب)</li><li>لكل طالب على حدة.</li></ul></div>
+                        </div>
+                        <div class="grant-card">
+                            <h3>منحة أبناء العاملين <span class="grant-percentage">50%</span></h3>
+                            <div class="grant-details"><ul><li>للاستمرارية: معدل فصلي 65%</li><li>تشمل أبناء العاملين ومجلس الأمناء.</li></ul></div>
+                        </div>
+                         <div class="grant-card">
+                            <h3>منح الأسرى والشهداء والأيتام <span class="grant-percentage">70%+</span></h3>
+                            <div class="grant-details"><ul><li>للاستمرارية: معدل فصلي 80%</li><li>تتوفر منح مختلفة لهذه الفئات وتتطلب إثباتات رسمية.</li></ul></div>
+                        </div>
+                    </div>
+
+                    <div class="info-footer">
+                        <button id="start-grants-quiz-btn" class="action-button">
+                            فهمت... ابدأ التحدي الآن!
+                            <span class="btn-icon">💡</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
             <div id="grants-scene" class="game-stage hidden"></div>
             
             <div id="end-scene" class="game-stage hidden">
@@ -658,8 +825,6 @@
                 'exchange': { image: 'all_q.webp', question: 'اختر نوع التحدي الذي تود خوضه هنا:', options: { 'exchange_tf_questions': '<span class="icon">✔️❌</span> أسئلة صح وخطأ', 'exchange_mc_questions': '<span class="icon">❓</span> أسئلة اختيار من متعدد' }, correctAnswer: null, points: 0, nextScene: { 'exchange_tf_questions': 'exchange_tf_questions', 'exchange_mc_questions': 'exchange_mc_questions' } },
                 'exchange_tf_questions': [ { id: 'ex_tf_q1', image: 'all_q.webp', question: 'تهتم العلاقات الخارجية في الجامعة بتوفير منح بكالوريوس، ماجستير، دكتوراه وما بعد الدكتوراه في جامعات عالمية مثل هارفارد وأوكسفورد وغيرها.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1 }, { id: 'ex_tf_q2', image: 'all_q.webp', question: 'الجامعة عضو في شبكة جامعات البحر الأسود وشرق البحر المتوسط (BSEMAN).', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1 }, { id: 'ex_tf_q3', image: 'all_q.webp', question: 'العلاقات الخارجية أبرمت مشاريع تبادل أكاديمي ضمن برنامج Erasmus+ مع جامعة جلاسكو وجامعة Algarve.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1 }, { id: 'ex_tf_q4', image: 'all_q.webp', question: 'إحدى اتفاقيات التبادل مع جامعة جلاسكو دعمت تبادل طلبة وأعضاء هيئة تدريس ضمن فترة 2016–2019.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1 }, { id: 'ex_tf_q5', image: 'all_q.webp', question: 'نظمت العلاقات الخارجية ورشة عمل خاصة بالمشاريع الأوروبية مثل Erasmus+ وTEMPUS وبرنامج المقدسي.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1 }, { id: 'ex_tf_q6', image: 'all_q.webp', question: 'تم الترتيب لعقد مؤتمر دولي في الأبحاث الإدارية والاقتصادية بتمويل من Erasmus+ ضمن مشروع BERC.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1 } ],
                 'exchange_mc_questions': [ { id: 'ex_mc_q1', image: 'all_q.webp', question: 'أياً من الخدمات التالية تتولّاها دائرة العلاقات الخارجية؟', options: { 'توفير منح دراسية دولية والتبادل الأكاديمي واستقطاب الباحثين': 'توفير منح دراسية دولية والتبادل الأكاديمي واستقطاب الباحثين', 'تأمين المنح الدراسية فقط': 'تأمين المنح الدراسية فقط', 'تنظيم الرحلات السياحية': 'تنظيم الرحلات السياحية', 'إصدار التراخيص الحكومية': 'إصدار التراخيص الحكومية' }, correctAnswer: 'توفير منح دراسية دولية والتبادل الأكاديمي واستقطاب الباحثين', points: 1 }, { id: 'ex_mc_q2', image: 'all_q.webp', question: 'ما البرنامج الأوروبي الذي فتح المجال لتبادل أعضاء هيئة التدريس والطلبة مع جامعات كالاسكوتلندية والبرتغالية؟', options: { 'Erasmus+ (Key Action 1)': 'Erasmus+ (Key Action 1)', 'Horizon 2020': 'Horizon 2020', 'Marie Skłodowska-Curie': 'Marie Skłodowska-Curie', 'Erasmus Mundus': 'Erasmus Mundus' }, correctAnswer: 'Erasmus+ (Key Action 1)', points: 1 }, { id: 'ex_mc_q3', image: 'all_q.webp', question: 'أي مشروع كان موجّهًا لتطوير مراكز الأبحاث الإدارية والاقتصادية والمعروف اختصاراً بـ "BERC"؟', options: { 'BERC بدعم من Erasmus+': 'BERC بدعم من Erasmus+', 'برنامج مد الأولويات': 'برنامج مد الأولويات', 'وثائق تبادل البحوث': 'وثائق تبادل البحوث', 'مشروع التواصل الثقافي': 'مشروع التواصل الثقافي' }, correctAnswer: 'BERC بدعم من Erasmus+', points: 1 }, { id: 'ex_mc_q4', image: 'all_q.webp', question: 'أي من التالي صحيح حول اتفاقيات الجامعة؟', options: { 'الاتفاقيات تشمل تبادل طلاب وأكاديميين ضمن برامج دولية': 'الاتفاقيات تشمل تبادل طلاب وأكاديميين ضمن برامج دولية', 'Erasmus+ يشمل فقط البحث': 'Erasmus+ يشمل فقط البحث', 'لا يوجد تبادل طلبة مع أوروبا': 'لا يوجد تبادل طلبة مع أوروبا', 'الاتفاقيات محلية فقط': 'الاتفاقيات محلية فقط' }, correctAnswer: 'الاتفاقيات تشمل تبادل طلاب وأكاديميين ضمن برامج دولية', points: 1 }, { id: 'ex_mc_q5', image: 'all_q.webp', question: 'أي من البرامج التالية نُظمت عنه ورشة تقديمية بحضور أكثر من 350 مشاركاً وأطراف من وزارة التعليم العالي؟', options: { 'Erasmus+': 'Erasmus+', 'Horizon Europe': 'Horizon Europe', 'TEMPUS': 'TEMPUS', 'برنامج النفاذ المفتوح': 'برنامج النفاذ المفتوح' }, correctAnswer: 'Erasmus+', points: 1 }, { id: 'ex_mc_q6', image: 'all_q.webp', question: 'مع أي جامعة أبرمت الجامعة الإسلامية اتفاقاً ضمن مشروع Erasmus+ بعنوان ROMOR؟', options: { 'جامعة جلاسكو (University of Glasgow)': 'جامعة جلاسكو (University of Glasgow)', 'جامعة برشلونة': 'جامعة برشلونة', 'جامعة ساساري': 'جامعة ساساري', 'جامعة Algarve': 'جامعة Algarve' }, correctAnswer: 'جامعة جلاسكو (University of Glasgow)', points: 1 }, { id: 'ex_mc_q7', image: 'all_q.webp', question: 'أي من الجامعات التالية لم يتم ذكرها ضمن اتفاقيات التبادل الأكاديمي؟', options: { 'جامعة هارفارد – أمريكا': 'جامعة هارفارد – أمريكا', 'جامعة Siegen – ألمانيا': 'جامعة Siegen – ألمانيا', 'جامعة Barcelona – إسبانيا': 'جامعة Barcelona – إسبانيا', 'جامعة Algarve – البرتغال': 'جامعة Algarve – البرتغال' }, correctAnswer: 'جامعة هارفارد – أمريكا', points: 1 }, { id: 'ex_mc_q8', image: 'all_q.webp', question: 'أيٌّ مما يلي ليس من اختصاص العلاقات الخارجية بحسب الموقع؟', options: { 'قبول طلبات القبول الجامعي المحلي': 'قبول طلبات القبول الجامعي المحلي', 'برامج التعاون الأكاديمي': 'برامج التعاون الأكاديمي', 'التبادل الأكاديمي': 'التبادل الأكاديمي', 'بوابة الباحثين عن منح': 'بوابة الباحثين عن منح' }, correctAnswer: 'قبول طلبات القبول الجامعي المحلي', points: 1 } ],
-                
-                // ✅ --- بداية قسم المنح والمساعدات الجديد ---
                 'grants': [
                     { 
                         id: 'grants_q1', 
@@ -701,7 +866,7 @@
                     { 
                         id: 'grants_q5', 
                         image: 'all_q.webp', 
-                        question: 'سؤال للمحترفين: إذا كان معدل أحد الأشقاء في كلية الطب 72%، هل يستمر في الاستفادة من منحة الأسرة؟', 
+                        question: 'سؤال للمحترفين: إذا كان معدل أحد الأشقاء في كلية الطب 72%، هل يستمر في الاستفادة منحة الأسرة؟', 
                         options: { 'yes': 'نعم، يستمر', 'no': 'لا، تتوقف عنه المنحة' }, 
                         correctAnswer: 'no', 
                         points: 4, 
@@ -746,8 +911,6 @@
                         incorrectFeedback: 'الإجابة الصحيحة هي "لا". معظم المنح تتوقف إذا لم يتم الحفاظ على المعدل المطلوب.'
                     }
                 ],
-                // --- نهاية قسم المنح والمساعدات الجديد ---
-                
                 'cafeteria': { isUnderConstruction: true },
                 'hospital': { isUnderConstruction: true },
                 'admission': { isUnderConstruction: true },
@@ -1110,6 +1273,19 @@
                 const destination = button.dataset.destination;
                 const destinationData = gameData[destination];
 
+                // --- ✅ تعديل منطق اللعبة للتعامل مع قسم المنح ---
+                if (destination === 'grants') {
+                    if (isStageCompleted(destination)) {
+                        showModal("مكان مألوف!", "لقد أكملت جميع تحديات هذا المكان. اختر وجهة أخرى.", null);
+                    } else {
+                        // عرض شاشة المعلومات أولاً بدلاً من الأسئلة مباشرة
+                        document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
+                        document.getElementById('grants-info-scene').classList.remove('hidden');
+                    }
+                    return; // نوقف التنفيذ هنا لمنع استدعاء renderScene
+                }
+                // --- نهاية التعديل ---
+
                 if (destination === 'certificate') {
                     const libraryComplete = isStageCompleted('library');
                     const facultiesComplete = isStageCompleted('faculties');
@@ -1146,6 +1322,12 @@
                 }
             });
             
+            // --- ✅ JavaScript جديد: زر بدء تحدي المنح ---
+            document.getElementById('start-grants-quiz-btn').addEventListener('click', () => {
+                renderScene('grants');
+            });
+            // --- نهاية JavaScript الجديد ---
+
             document.addEventListener('click', function(event) {
                 if (event.target.id === 'logout-btn') {
                     event.preventDefault();

@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS remains unchanged */
+        /* CSS remains unchanged, with an addition at the end */
         :root {
             --primary-color: #006633;
             --primary-dark: #004422;
@@ -466,6 +466,23 @@
                 margin-bottom: 15px;
             }
         }
+        
+        /* ✅ تمت إضافة تنسيق لزر تسجيل الخروج */
+        #logout-btn {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            text-decoration: none;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: normal;
+            transition: background-color 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        #logout-btn:hover {
+            background-color: var(--incorrect-color);
+            border-color: var(--incorrect-color);
+        }
     </style>
 </head>
 <body>
@@ -529,6 +546,7 @@
             <div id="player-stats" class="hidden">
                 <span id="player-name"></span>
                 <span id="player-score"></span>
+                <a href="#" id="logout-btn" title="الخروج والبدء من جديد">تسجيل الخروج</a>
             </div>
 
             <div id="gate-scene" class="game-stage hidden"></div>
@@ -565,7 +583,7 @@
                     <img src="https://placehold.co/400x250/28a745/FFFFFF?text=شهادة+شكر" alt="شهادة مشاركة" class="scene-image" style="max-width: 100%; border-radius: 10px; margin-bottom: 20px;">
                     <p id="final-message" style="font-size: 18px; line-height: 1.6;"></p>
                     <button id="share-btn" class="action-button">مشاركة على وسائل التواصل</button>
-                    <button id="restart-btn" class="action-button" style="margin-top: 10px; background-color: var(--text-light);">ابدأ من جديد</button>
+                    <button id="new-player-btn" class="action-button" style="margin-top: 10px; background-color: var(--text-light);">بدء رحلة جديدة (لاعب جديد)</button>
                 </div>
             </div>
         </div>
@@ -580,6 +598,7 @@
     </div>
 
     <script>
+        // All JS code remains the same as the last version
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-lE41eY0lEWEOxZevGyTMxNbpY2zTmRzWa3DEAd5Dc6O72GgtMA/exec';
         
         function registerPlayer(name, phone, year) {
@@ -611,7 +630,6 @@
                 .catch(error => console.error('Error in update fetch:', error));
         }
 
-        // ✅ --- دالة الخلط العشوائي ---
         function shuffleArray(array) {
             let currentIndex = array.length, randomIndex;
             const newArray = [...array]; 
@@ -629,7 +647,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const gameData = {
-                // gameData content remains exactly the same
+                // gameData content remains the same
                 'gate': { id: 'gate_q1', image: 'hares 1.png', question: 'أهلاً بك في الجامعة الإسلامية! للدخول، أجب عن السؤال التالي: في أي عام تأسست الجامعة؟', options: { '1978': '1978', '1982': '1982', '1960': '1960', '1990': '1990' }, correctAnswer: '1978', points: 1, correctFeedback: 'رائع! لقد حصلت على جنيه واحد. البوابة الآن مفتوحة أمامك!', incorrectFeedback: 'إجابة غير صحيحة. حاول مرة أخرى!' },
                 'library': [ { id: 'library_q1', image: 'library_question.png', question: 'تضم مكتبتنا كنزاً معرفياً ضخماً. كم عدد المراجع الإلكترونية التي توفرها؟', options: { '100k': 'أكثر من 100 ألف مرجع الكتروني', '150k': 'أكثر من 150 ألف مرجع الكتروني', '50k': 'أقل من 50 ألف مرجع الكتروني', '200k': 'أكثر من 200 ألف مرجع الكتروني' }, correctAnswer: '150k', points: 1, correctFeedback: 'إجابة ممتازة! معرفتك دقيقة. لقد ربحت جنيهًا واحدًا. لننتقل للتحدي التالي.', incorrectFeedback: 'حاول مرة أخرى! المعرفة قوة.' }, { id: 'library_q2', image: 'library_question_2.png', question: 'هل توفر المكتبة قاعات هادئة ومخصصة للدراسة؟', options: { 'yes': 'نعم، توفر قاعات هادئة', 'no': 'لا، المكتبة للكتب فقط' }, correctAnswer: 'yes', points: 1, correctFeedback: 'بالتأكيد! راحتك أثناء الدراسة تهمنا. لقد ربحت جنيهًا واحدًا إضافيًا.', incorrectFeedback: 'إجابة غير صحيحة. المكتبة مكان مثالي للدراسة.' }, { id: 'library_q3', image: 'library_question_3.png', question: 'كيف تساعدك المكتبة في أبحاثك الجامعية؟', options: { 'resources': 'توفر مصادر ومراجع متنوعة', 'writes_for_you': 'تكتب البحث بدلاً عنك' }, correctAnswer: 'resources', points: 1, correctFeedback: 'صحيح! المكتبة هي شريكك الأول في البحث العلمي. ربحت جنيهًا واحدًا.', incorrectFeedback: 'إجابة غير دقيقة. المكتبة تدعمك بالمصادر لا بالقيام بالعمل عنك.' }, { id: 'library_q4', image: 'library_question_4.png', question: 'هل توفر المكتبة مواد رقمية يمكن الوصول إليها عن بعد؟', options: { 'yes_ebooks': 'نعم، توفر كتباً إلكترونية', 'no_digital': 'لا، كل المواد ورقية فقط' }, correctAnswer: 'yes_ebooks', points: 1, correctFeedback: 'أحسنت! يمكنك الوصول لكنز معرفي من أي مكان. لقد ربحت آخر جنيه في هذه المرحلة.', incorrectFeedback: 'إجابة غير صحيحة. العصر الرقمي في قلب مكتبتنا.' } ],
                 'faculties': { image: 'first_faculties_q.png', question: 'اختر نوع التحدي الذي تود خوضه هنا:', options: { 'tf_questions': '<span class="icon">✔️❌</span> أسئلة صح وخطأ', 'mc_questions': '<span class="icon">❓</span> أسئلة اختيار من متعدد' }, correctAnswer: null, points: 0, nextScene: { 'tf_questions': 'tf_questions', 'mc_questions': 'mc_questions' } },
@@ -648,7 +666,6 @@
                 'stadium': { isUnderConstruction: true }
             };
 
-            // ✅ تم إرجاع حالة اللعبة إلى شكلها الأصلي بدون المراحل المخلوطة
             const gameState = { playerName: '', playerPhone: '', tawjihiYear: '', uniquePlayerId: null, score: 0, currentScene: null, currentSubQuestionIndex: 0, answeredQuestions: new Set() };
             
             const sceneParentMap = {
@@ -810,7 +827,6 @@
 
                 gameState.currentScene = sceneId;
                 if (Array.isArray(sceneData)) {
-                    // ✅ تم إرجاع هذا السطر ليعتمد على الترتيب الأصلي للأسئلة
                     gameState.currentSubQuestionIndex = questionIndex;
                     sceneData = sceneData[questionIndex];
                 } else {
@@ -821,27 +837,23 @@
 
                 let progressBarHTML = '';
                 if (Array.isArray(gameData[sceneId])) {
-                    // ✅ تم إرجاع هذا السطر ليعتمد على الترتيب الأصلي للأسئلة
                     const totalQuestions = gameData[sceneId].length;
                     const currentProgress = ((questionIndex + 1) / totalQuestions) * 100;
                     progressBarHTML = `<div class="progress-bar-container"><div class="progress-bar" style="width: ${currentProgress}%"></div></div>`;
                 }
                 
-                // ✅ --- بداية منطق خلط الخيارات ---
                 let optionsHTML = '';
                 let delay = 0;
                 let optionKeys = Object.keys(sceneData.options);
 
-                // نقوم بخلط الخيارات فقط إذا كان السؤال له إجابة صحيحة (أي أنه ليس قائمة انتقال)
                 if (sceneData.correctAnswer !== null) {
                     optionKeys = shuffleArray(optionKeys);
                 }
 
-                for (const key of optionKeys) { // نستخدم قائمة المفاتيح المخلوطة
+                for (const key of optionKeys) {
                     optionsHTML += `<button class="option-btn" data-answer="${key}" style="animation-delay: ${delay}s">${sceneData.options[key]}</button>`;
                     delay += 0.1;
                 }
-                // --- نهاية منطق خلط الخيارات ---
 
                 sceneElement.innerHTML = `
                     <img src="${sceneData.image}" alt="صورة مشهد ${sceneId}" class="scene-image">
@@ -1019,8 +1031,17 @@
                      showModal("خطأ", "لم يتم العثور على الوجهة المطلوبة.", null);
                 }
             });
+            
+            // ✅ تمت إضافة وظيفة لزر تسجيل الخروج الجديد
+            document.addEventListener('click', function(event) {
+                if (event.target.id === 'logout-btn') {
+                    event.preventDefault();
+                    resetGameState();
+                }
+            });
 
-            document.getElementById('restart-btn').addEventListener('click', () => { location.reload(); });
+            document.getElementById('new-player-btn').addEventListener('click', resetGameState);
+
             document.getElementById('reset-progress-btn').addEventListener('click', (e) => {
                 e.preventDefault();
                 resetGameState();

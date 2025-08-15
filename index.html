@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS remains unchanged, with an addition at the end */
+        /* CSS remains unchanged */
         :root {
             --primary-color: #006633;
             --primary-dark: #004422;
@@ -238,6 +238,22 @@
             padding: 5px 10px;
             border-radius: 5px;
         }
+        
+        #logout-btn {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            text-decoration: none;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: normal;
+            transition: background-color 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        #logout-btn:hover {
+            background-color: var(--incorrect-color);
+            border-color: var(--incorrect-color);
+        }
 
         .game-stage {
             background-color: var(--white-color);
@@ -466,23 +482,6 @@
                 margin-bottom: 15px;
             }
         }
-        
-        /* ✅ تمت إضافة تنسيق لزر تسجيل الخروج */
-        #logout-btn {
-            background-color: rgba(255, 255, 255, 0.15);
-            color: #fff;
-            text-decoration: none;
-            padding: 4px 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            font-weight: normal;
-            transition: background-color 0.3s;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        #logout-btn:hover {
-            background-color: var(--incorrect-color);
-            border-color: var(--incorrect-color);
-        }
     </style>
 </head>
 <body>
@@ -598,7 +597,6 @@
     </div>
 
     <script>
-        // All JS code remains the same as the last version
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-lE41eY0lEWEOxZevGyTMxNbpY2zTmRzWa3DEAd5Dc6O72GgtMA/exec';
         
         function registerPlayer(name, phone, year) {
@@ -642,6 +640,14 @@
                 ];
             }
             return newArray;
+        }
+
+        // ✅ --- دالة التحميل المسبق للصور ---
+        function preloadImages(urls) {
+            urls.forEach(url => {
+                const img = new Image();
+                img.src = url;
+            });
         }
 
 
@@ -1032,7 +1038,6 @@
                 }
             });
             
-            // ✅ تمت إضافة وظيفة لزر تسجيل الخروج الجديد
             document.addEventListener('click', function(event) {
                 if (event.target.id === 'logout-btn') {
                     event.preventDefault();
@@ -1054,6 +1059,21 @@
                     location.reload();
                 }
             });
+            
+            // ✅ --- بداية منطق التحميل المسبق ---
+            const allImageUrls = new Set();
+            Object.values(gameData).forEach(scene => {
+                if (Array.isArray(scene)) {
+                    scene.forEach(question => {
+                        if (question.image) allImageUrls.add(question.image);
+                    });
+                } else if (scene && scene.image) {
+                    allImageUrls.add(scene.image);
+                }
+            });
+            preloadImages(Array.from(allImageUrls));
+            // --- نهاية منطق التحميل المسبق ---
+
 
             if (loadGameState() && gameState.uniquePlayerId) {
                 landingScreen.classList.add('hidden');

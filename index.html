@@ -32,6 +32,7 @@
             margin: 0;
             color: var(--text-dark);
             padding: 10px;
+            padding-top: 80px; /* <<< هذا السطر مهم لإعطاء مساحة للشريط العلوي */
             box-sizing: border-box;
             background-image: url('Ferst.webp');
             background-size: cover;
@@ -214,53 +215,6 @@
             display: none !important;
         }
 
-        #player-stats {
-            position: fixed;
-            top: 15px;
-            left: 15px;
-            background-color: rgba(0, 68, 34, 0.9);
-            color: var(--white-color);
-            padding: 10px 15px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            z-index: 50;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        #player-score {
-            background-color: var(--secondary-color);
-            color: var(--text-dark);
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-        
-        #logout-btn, #back-to-map-btn {
-            background-color: rgba(255, 255, 255, 0.15);
-            color: #fff;
-            text-decoration: none;
-            padding: 4px 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            font-weight: normal;
-            transition: background-color 0.3s;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        #logout-btn:hover {
-            background-color: var(--incorrect-color);
-            border-color: var(--incorrect-color);
-        }
-        #back-to-map-btn:hover {
-            background-color: var(--info-color);
-            border-color: var(--info-color);
-        }
-
         .game-stage {
             background-color: var(--white-color);
             padding: 0;
@@ -430,12 +384,6 @@
             height: 10px;
             margin: 10px auto 20px;
             box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
-            /* تحسينات التصميم */
-            height: 12px;
-            border-radius: 6px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            position: relative;
-            background-color: #e6f3ee;
         }
 
         .progress-bar {
@@ -443,7 +391,6 @@
             width: 0;
             background-color: var(--primary-color);
             transition: width 0.5s ease;
-            border-radius: 6px;
         }
 
         #faculties-scene .options-container,
@@ -710,27 +657,6 @@
             opacity: 1;
         }
 
-
-        @media (max-width: 600px) {
-            .options-container {
-                grid-template-columns: 1fr;
-            }
-            #player-stats {
-                font-size: 14px;
-                gap: 8px;
-                padding: 8px 10px;
-                flex-wrap: wrap;
-            }
-            .features-grid {
-                flex-direction: column;
-                align-items: center;
-            }
-            .feature-card {
-                width: 90%;
-                margin-bottom: 15px;
-            }
-        }
-        
         /* --- تصميم جديد لبطاقات القبول والتسجيل --- */
         .admission-card {
             background-color: #f9f9f9;
@@ -765,6 +691,89 @@
             line-height: 1.6;
         }
 
+		/* ======== بداية ستايل شريط الحالة الجديد ======== */
+		#status-bar {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			background-color: var(--primary-dark);
+			color: var(--white-color);
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 12px 25px;
+			box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+			z-index: 1000;
+			box-sizing: border-box;
+			border-bottom: 3px solid var(--secondary-color);
+			transition: top 0.3s ease-in-out;
+		}
+
+		/* لإخفاء الشريط في البداية */
+		#status-bar.hidden {
+			top: -100px;
+		}
+
+		.status-section {
+			display: flex;
+			align-items: center;
+			gap: 15px;
+		}
+
+		#player-name-display {
+			font-weight: bold;
+			font-size: 17px;
+		}
+
+		#player-score-display {
+			background-color: var(--secondary-color);
+			color: var(--text-dark);
+			padding: 6px 15px;
+			border-radius: 20px;
+			font-weight: bold;
+			font-size: 16px;
+		}
+
+		.status-bar-btn {
+			background-color: rgba(255, 255, 255, 0.1);
+			color: var(--white-color);
+			text-decoration: none;
+			padding: 8px 15px;
+			border-radius: 8px;
+			font-size: 15px;
+			font-weight: bold;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			border: 1px solid rgba(255, 255, 255, 0.3);
+			transition: all 0.3s ease;
+		}
+
+		.status-bar-btn:hover {
+			background-color: var(--incorrect-color);
+			border-color: var(--incorrect-color);
+			transform: translateY(-2px);
+		}
+
+		.status-section .icon {
+			font-size: 22px;
+		}
+		/* ======== نهاية ستايل شريط الحالة الجديد ======== */
+
+        @media (max-width: 600px) {
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+            .features-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+            .feature-card {
+                width: 90%;
+                margin-bottom: 15px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -773,6 +782,19 @@
     <audio id="incorrect-sound" src="funny.mp3"></audio>
     <audio id="transition-sound" src="turning.mp3"></audio>
 
+    <div id="status-bar" class="hidden">
+        <div class="status-section">
+            <span class="icon">👤</span>
+            <span id="player-name-display"></span>
+        </div>
+        <div class="status-section">
+            <span id="player-score-display"></span>
+            <a href="#" id="logout-btn" class="status-bar-btn">
+                <span class="icon">🚪</span>
+                خروج
+            </a>
+        </div>
+    </div>
     <div class="game-container">
         <div id="landing-screen">
             <img src="logo.webp" alt="شعار الجامعة الإسلامية" class="logo"> <h1>رحلتك نحو المعرفة والتميز تبدأ الآن</h1>
@@ -823,13 +845,7 @@
         </div>
 
         <div id="game-scene" class="hidden">
-            <div id="player-stats" class="hidden">
-                <span id="player-name"></span>
-                <span id="player-score"></span>
-                <a href="#" id="back-to-map-btn" title="العودة إلى الخريطة">🗺️ الخريطة</a>
-                <a href="#" id="logout-btn" title="الخروج والبدء من جديد">تسجيل الخروج</a>
-            </div>
-
+            
             <div id="gate-scene" class="game-stage hidden"></div>
             <div id="map-scene" class="game-stage hidden">
                 <div class="scene-content">
@@ -871,7 +887,7 @@
             </div>
 
             <div id="college-website-scene" class="game-stage hidden">
-                </div>
+            </div>
 
             <div id="faculties-scene" class="game-stage hidden"></div>
             <div id="tf_questions-scene" class="game-stage hidden"></div>
@@ -889,7 +905,7 @@
                     </div>
                     
                     <div class="info-scene-container" id="admission-info-container">
-                        </div>
+                    </div>
                     
                     <div class="info-footer">
                         <button id="start-admission-quiz-btn" class="action-button">
@@ -1068,21 +1084,6 @@
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-lE41eY0lEWEOxZevGyTMxNbpY2zTmRzWa3DEAd5Dc6O72GgtMA/exec';
         
-        let audioAllowed = false;
-
-        function allowAudio() {
-            if (!audioAllowed) {
-                const audioElements = document.querySelectorAll('audio');
-                audioElements.forEach(audio => {
-                    audio.muted = false;
-                });
-                audioAllowed = true;
-            }
-        }
-        
-        document.addEventListener('click', allowAudio, { once: true });
-        document.addEventListener('touchstart', allowAudio, { once: true });
-
         function registerPlayer(name, phone, year) {
             const formData = new FormData();
             formData.append('action', 'register');
@@ -1257,6 +1258,7 @@
                         incorrectFeedback: 'الإجابة الصحيحة هي "لا". معظم المنح تتوقف إذا لم يتم الحفاظ على المعدل المطلوب.'
                     }
                 ],
+                // تحديث بيانات مرحلة "القبول والتسجيل"
                 'admission-info': {
                     isInfoScreen: true,
                     nextScene: 'admission'
@@ -1285,6 +1287,7 @@
             };
 
             const admissionInfoData = [
+                // تم تحديث الأيقونات هنا
                 { id: 1, title: 'الدخول من البوابات', text: 'أولاً، عليك الدخول من بوابات الجامعة والتوجه إلى محطة استقبال الطلبة الجدد ومراجعة المختصين.', icon: '🚪' },
                 { id: 2, title: 'دفع رسوم الالتحاق', text: 'الخطوة التالية هي التوجه إلى الدائرة المالية لدفع رسوم طلب الالتحاق، والتي تبلغ 20 دينار أردني.', icon: '💰' },
                 { id: 3, title: 'تعبئة طلب الالتحاق', text: 'يمكنك تعبئة طلب الالتحاق إلكترونياً من خلال أجهزة مخصصة في قاعة الاستقبال أو عبر موقع الجامعة الرسمي.', icon: '📝' },
@@ -1312,16 +1315,16 @@
             const startScreen = document.getElementById('start-screen');
             const gameSceneContainer = document.getElementById('game-scene');
             const playerForm = document.getElementById('player-form');
-            const playerNameSpan = document.getElementById('player-name');
-            const playerScoreSpan = document.getElementById('player-score');
-            const playerStats = document.getElementById('player-stats');
+            const playerNameDisplay = document.getElementById('player-name-display');
+            const playerScoreDisplay = document.getElementById('player-score-display');
+            const statusBar = document.getElementById('status-bar');
             const modal = document.getElementById('feedback-modal');
             const modalTitle = document.getElementById('modal-title');
             const modalText = document.getElementById('modal-text');
             const modalCloseBtn = document.getElementById('modal-close-btn');
             const correctSound = document.getElementById('correct-sound');
             const incorrectSound = document.getElementById('incorrect-sound');
-            const transitionSound = document.getElementById('transition-sound');
+            const transitionSound = document.getElementById('turning.mp3');
 
             function saveGameState() {
                 try {
@@ -1363,7 +1366,7 @@
                     landingScreen.classList.add('hidden');
                     startScreen.classList.add('hidden');
                     gameSceneContainer.classList.remove('hidden');
-                    playerStats.classList.remove('hidden');
+                    statusBar.classList.remove('hidden');
 
                     updatePlayerStats();
 
@@ -1446,7 +1449,7 @@
                             updatePlayerStats();
                             startScreen.classList.add('hidden');
                             gameSceneContainer.classList.remove('hidden');
-                            playerStats.classList.remove('hidden');
+                            statusBar.classList.remove('hidden');
                             showModal(`أهلاً بك يا ${gameState.playerName}!`, 'تم تسجيلك بنجاح. هيا بنا نبدأ الرحلة.', () => {
                                 renderScene('gate');
                             });
@@ -1477,8 +1480,8 @@
             }
 
             function renderScene(sceneId, questionIndex = 0, pushState = true) {
-                if (audioAllowed && transitionSound) {
-                    transitionSound.play().catch(e => console.error("Error playing audio:", e));
+                if (transitionSound) {
+                    transitionSound.play();
                 }
                 
                 if (pushState) {
@@ -1585,7 +1588,7 @@
                 });
                 
                 document.getElementById('start-admission-quiz-btn').onclick = () => {
-                    renderScene('admission');
+                    renderScene('admission'); // الانتقال إلى شاشة اختيار نوع الأسئلة الجديدة
                 };
             }
 
@@ -1599,6 +1602,7 @@
                  };
             }
 
+            // الدالة الجديدة لعرض شاشة معلومات التبادل الأكاديمي
             function renderExchangeInfoScene() {
                  document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
                  document.getElementById('exchange-info-scene').classList.remove('hidden');
@@ -1696,8 +1700,8 @@
             }
 
             function updatePlayerStats() {
-                playerNameSpan.textContent = `اللاعب: ${gameState.playerName}`;
-                playerScoreSpan.innerHTML = `الرصيد: <span id="player-score-value">${gameState.score}</span> جنيه`;
+                playerNameDisplay.textContent = gameState.playerName;
+                playerScoreDisplay.innerHTML = `💰 ${gameState.score} جنيه`;
             }
 
             function showModal(title, text, callback) {
@@ -1807,10 +1811,6 @@
                 if (event.target.id === 'logout-btn' || event.target.closest('#logout-btn')) {
                     event.preventDefault();
                     resetGameState();
-                }
-                if (event.target.id === 'back-to-map-btn' || event.target.closest('#back-to-map-btn')) {
-                    event.preventDefault();
-                    renderScene('map');
                 }
             });
 

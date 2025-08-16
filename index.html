@@ -421,40 +421,68 @@
             font-size: 36px;
             margin-bottom: 5px;
         }
-
-        /* تحسينات شريط التقدم */
+        
+        /* بداية الإضافات والتحسينات: تصميم جديد لشريط التقدم */
         .progress-bar-container {
             width: 90%;
-            background-color: #e0e0e0;
-            border-radius: 10px; /* حواف دائرية */
-            overflow: hidden;
-            height: 18px; /* زيادة الارتفاع */
-            margin: 10px auto 20px;
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1); /* ظل داخلي */
-            position: relative;
-        }
-        
-        .progress-bar {
-            height: 100%;
-            width: 0;
-            background-color: var(--primary-color);
-            transition: width 0.5s ease;
-            border-radius: 10px;
+            max-width: 500px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 50px;
+            height: 22px;
+            margin: 20px auto;
+            padding: 4px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), 0 1px 1px rgba(255,255,255,0.8);
             position: relative;
         }
 
+        .progress-bar {
+            height: 100%;
+            width: 0; /* سيتم التحكم به بواسطة JavaScript */
+            border-radius: 50px;
+            background-image: linear-gradient(45deg, var(--primary-color), #008a44);
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 8px rgba(0, 102, 51, 0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* تأثير لمعان متحرك على الشريط لإعطاء لمسة جمالية */
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.35) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: translateX(-100%);
+            animation: shimmer 2.5s infinite linear;
+        }
+
+        @keyframes shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* تصميم نص النسبة المئوية */
         .progress-text {
             position: absolute;
-            width: 100%;
-            text-align: center;
-            color: var(--white-color);
-            font-size: 12px;
-            font-weight: bold;
             top: 50%;
-            transform: translateY(-50%);
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-            z-index: 2;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+            z-index: 2; /* للتأكد من ظهوره فوق الشريط */
         }
+        /* نهاية الإضافات والتحسينات: تصميم جديد لشريط التقدم */
 
 
         #faculties-scene .options-container,
@@ -679,679 +707,136 @@
             display: flex;
             justify-content: flex-end;
         }
+
+        /* بداية الإضافات والتحسينات: تعديلات طفيفة للاستجابة على الشاشات الصغيرة جداً */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 26px;
+            }
+            .subtitle {
+                font-size: 16px;
+            }
+            .feature-card {
+                width: calc(50% - 15px); /* إظهار بطاقتين في كل صف */
+            }
+            #start-screen, #landing-screen {
+                padding: 20px;
+            }
+            .scene-content {
+                padding: 20px;
+            }
+            .options-container {
+                grid-template-columns: 1fr; /* إظهار الخيارات تحت بعضها */
+            }
+        }
+        /* نهاية الإضافات والتحسينات */
     </style>
 </head>
 <body>
+
     <div class="game-container">
-        <div id="landing-screen" class="screen">
-            <img src="https://i.ibb.co/6P6Xg4j/Logo.webp" alt="رحلتي في الإسلامية" class="logo">
-            <h1>رحلتك في الجامعة الإسلامية</h1>
-            <p class="subtitle">استكشف الجامعة الإسلامية من خلال لعبة تفاعلية مليئة بالأسئلة والمغامرات، تعرّف على كلياتها، برامجها، ومنحها الدراسية!</p>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <span class="icon">🏛️</span>
-                    <h3>استكشف الكليات</h3>
-                    <p>اكتشف تخصصات مختلفة واختر الأنسب لك.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="icon">🎓</span>
-                    <h3>تعرف على المنح</h3>
-                    <p>تعرف على المنح الدراسية والبرامج المتاحة.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="icon">🤔</span>
-                    <h3>اختبر معلوماتك</h3>
-                    <p>أجب عن الأسئلة واجمع النقاط.</p>
-                </div>
+        <div id="landing-screen">
             </div>
-            <button class="action-button" onclick="showStartScreen()">
-                ابدأ رحلتك
-                <span class="btn-icon">🚀</span>
-            </button>
-            <div class="reset-link-container">
-                <a href="#" onclick="resetGame()">إعادة ضبط اللعبة</a>
-            </div>
+
+        <div id="start-screen" class="hidden">
+             <button id="start-game-btn" class="action-button">ابدأ اللعب</button>
         </div>
-
-        <div id="start-screen" class="screen hidden">
-            <h2>أدخل اسمك لتبدأ</h2>
-            <div class="form-group">
-                <label for="playerName">اسم الطالب:</label>
-                <input type="text" id="playerName" placeholder="اكتب اسمك هنا..." autocomplete="off">
-            </div>
-            <button id="startButton" class="action-button" disabled>
-                هيا بنا
-                <span class="btn-icon">➡️</span>
-            </button>
-        </div>
-
-        <div id="main-game" class="screen hidden">
-            <div id="player-stats">
-                <span id="player-name-display"></span>
-                <span>النقاط: <span id="player-score">0</span></span>
-                <a href="#" id="logout-btn" onclick="logout()">خروج</a>
-            </div>
-            
-            <div class="progress-bar-container">
-                <div class="progress-bar" id="progressBar"></div>
-                <div class="progress-text" id="progressText"></div>
-            </div>
-
-            <div id="game-stages">
-                <div id="map-scene" class="game-stage">
-                    <img src="https://i.ibb.co/3Wf0z6W/Map.webp" alt="خريطة الجامعة" class="scene-image">
-                    <div class="scene-content">
-                        <h2 class="scene-title">أهلاً بك في الجامعة!</h2>
-                        <p>ابدأ رحلتك من هنا. اختر وجهتك التالية.</p>
-                        <div class="options-container">
-                            <button class="option-btn" onclick="nextScene('grants-scene')">
-                                <span class="map-icon">💰</span>
-                                المنح الدراسية
-                            </button>
-                            <button class="option-btn" onclick="nextScene('exchange-scene')">
-                                <span class="map-icon">✈️</span>
-                                برامج التبادل
-                            </button>
-                            <button class="option-btn" onclick="nextScene('faculties-scene')">
-                                <span class="map-icon">📚</span>
-                                الكليات
-                            </button>
-                            <button class="option-btn" onclick="nextScene('admission-scene')">
-                                <span class="map-icon">📝</span>
-                                شروط القبول
-                            </button>
-                        </div>
-                    </div>
+        
+        <div id="game-area" class="hidden">
+            <div class="game-stage" id="some-question-scene">
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                    <span class="progress-text" id="progressText">0%</span>
                 </div>
-
-                <div id="faculties-scene" class="game-stage hidden">
-                    <img src="https://i.ibb.co/Qk45z6H/Faculties.webp" alt="صورة الكليات" class="scene-image">
-                    <div class="scene-content">
-                        <h2 class="scene-title">استكشاف الكليات</h2>
-                        <p>اختر الكلية التي تثير اهتمامك لتعرف عنها المزيد.</p>
-                        <div class="options-container">
-                            <button class="option-btn" onclick="showFacultyInfo('الشريعة والقانون')">
-                                <span>⚖️</span>
-                                كلية الشريعة والقانون
-                            </button>
-                            <button class="option-btn" onclick="showFacultyInfo('الهندسة')">
-                                <span>⚙️</span>
-                                كلية الهندسة
-                            </button>
-                            <button class="option-btn" onclick="showFacultyInfo('الطب')">
-                                <span>⚕️</span>
-                                كلية الطب
-                            </button>
-                            <button class="option-btn" onclick="showFacultyInfo('الآداب')">
-                                <span>📖</span>
-                                كلية الآداب
-                            </button>
-                            <button class="option-btn" onclick="showFacultyInfo('التجارة')">
-                                <span>📈</span>
-                                كلية التجارة
-                            </button>
-                        </div>
-                        <div class="feedback-message" id="faculties-feedback"></div>
-                        <button id="back-to-map-btn" class="action-button hidden" onclick="nextScene('map-scene')">
-                            العودة للخريطة
-                        </button>
+                <div class="scene-content">
                     </div>
-                </div>
-
-                <div id="faculties-info-scene" class="game-stage hidden">
-                    <img src="https://i.ibb.co/3yC2T4b/Faculty-info.webp" alt="معلومات عن الكلية" class="scene-image">
-                    <div class="scene-content">
-                        <div class="info-header">
-                            <h2 class="scene-title" id="faculty-info-title"></h2>
-                            <p id="faculty-info-desc"></p>
-                        </div>
-                        <div class="info-scene-container" id="faculty-majors-container">
-                            </div>
-                        <div class="info-footer">
-                            <button class="action-button" onclick="nextScene('faculties-scene')">
-                                العودة للكليات
-                                <span class="btn-icon">⬅️</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="grants-scene" class="game-stage hidden">
-                    <img src="https://i.ibb.co/GvxBqgK/Grants.webp" alt="صورة للمنح" class="scene-image">
-                    <div class="scene-content">
-                        <h2 class="scene-title">المنح الدراسية</h2>
-                        <p>اختر المنحة التي ترغب بالتعرف عليها.</p>
-                        <div class="options-container">
-                            <button class="option-btn" onclick="showGrantInfo('منحة التفوق الأكاديمي')">
-                                <span>🏆</span>
-                                منحة التفوق الأكاديمي
-                            </button>
-                            <button class="option-btn" onclick="showGrantInfo('منحة الأسر المتعففة')">
-                                <span>❤️</span>
-                                منحة الأسر المتعففة
-                            </button>
-                            <button class="option-btn" onclick="showGrantInfo('منحة أبناء الشهداء')">
-                                <span>🇵🇸</span>
-                                منحة أبناء الشهداء
-                            </button>
-                        </div>
-                        <div class="feedback-message" id="grants-feedback"></div>
-                        <button id="back-to-map-btn" class="action-button hidden" onclick="nextScene('map-scene')">
-                            العودة للخريطة
-                        </button>
-                    </div>
-                </div>
-
-                <div id="grants-info-scene" class="game-stage hidden">
-                    <img src="https://i.ibb.co/q5kYgRz/Grants-info.webp" alt="معلومات عن المنح" class="scene-image">
-                    <div class="scene-content">
-                        <div class="info-header">
-                            <h2 class="scene-title" id="grant-info-title"></h2>
-                            <p id="grant-info-desc"></p>
-                        </div>
-                        <div class="info-scene-container" id="grant-details-container">
-                            </div>
-                        <div class="info-footer">
-                            <button class="action-button" onclick="nextScene('grants-scene')">
-                                العودة للمنح
-                                <span class="btn-icon">⬅️</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="exchange-scene" class="game-stage hidden">
-                    <img src="https://i.ibb.co/v4cW37p/Exchange.webp" alt="صورة برامج التبادل" class="scene-image">
-                    <div class="scene-content">
-                        <h2 class="scene-title">برامج التبادل الطلابي</h2>
-                        <p>تُقدم الجامعة برامج تبادل مع عدة جامعات دولية. اختر البرنامج لتعرف عنه المزيد.</p>
-                        <div class="options-container">
-                            <button class="option-btn" onclick="showExchangeInfo('الجامعة الإسلامية الماليزية')">
-                                <span>🇲🇾</span>
-                                برنامج التبادل مع ماليزيا
-                            </button>
-                            <button class="option-btn" onclick="showExchangeInfo('الجامعة الأوروبية')">
-                                <span>🇪🇺</span>
-                                برنامج التبادل مع أوروبا
-                            </button>
-                        </div>
-                        <div class="feedback-message" id="exchange-feedback"></div>
-                        <button id="back-to-map-btn" class="action-button hidden" onclick="nextScene('map-scene')">
-                            العودة للخريطة
-                        </button>
-                    </div>
-                </div>
-
-                <div id="exchange-info-scene" class="game-stage hidden">
-                    <img src="https://i.ibb.co/L51R8gD/Exchange-info.webp" alt="معلومات عن التبادل" class="scene-image">
-                    <div class="scene-content">
-                        <div class="info-header">
-                            <h2 class="scene-title" id="exchange-info-title"></h2>
-                            <p id="exchange-info-desc"></p>
-                        </div>
-                        <div class="info-scene-container" id="exchange-details-container">
-                            </div>
-                        <div class="info-footer">
-                            <button class="action-button" onclick="nextScene('exchange-scene')">
-                                العودة لبرامج التبادل
-                                <span class="btn-icon">⬅️</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="admission-scene" class="game-stage hidden">
-                    <img src="https://i.ibb.co/k2c5g97/Admission.webp" alt="شروط القبول" class="scene-image">
-                    <div class="scene-content">
-                        <h2 class="scene-title">شروط القبول</h2>
-                        <p>أجب عن الأسئلة التالية لمعرفة مدى استعدادك للتقديم:</p>
-                        <div id="quiz-container">
-                            </div>
-                        <div class="feedback-message" id="admission-feedback"></div>
-                        <button id="back-to-map-btn" class="action-button hidden" onclick="nextScene('map-scene')">
-                            العودة للخريطة
-                        </button>
-                    </div>
-                </div>
-
-                <div id="end-scene" class="game-stage hidden">
-                    <img src="https://i.ibb.co/Bq9p6Vz/End.webp" alt="صورة النهاية" class="scene-image">
-                    <div class="scene-content">
-                        <h2 class="scene-title">تهانينا! لقد أنهيت رحلتك.</h2>
-                        <p id="final-score-message">
-                            يا <span id="final-player-name"></span>، لقد جمعت <span id="final-player-score">0</span> نقطة.
-                        </p>
-                        <p>شكراً لاهتمامك بالجامعة الإسلامية. نتمنى لك التوفيق في رحلتك التعليمية القادمة!</p>
-                        <button class="action-button" onclick="resetGame()">ابدأ من جديد</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="feedback-modal" class="modal hidden">
-            <div class="modal-content" id="modal-content">
-                <h2 id="modal-title"></h2>
-                <p id="modal-text"></p>
-                <button class="action-button" onclick="closeModal()">موافق</button>
             </div>
         </div>
     </div>
-    
-    <audio id="click-sound" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" preload="auto"></audio>
-    <audio id="correct-sound" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" preload="auto"></audio>
-    <audio id="incorrect-sound" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" preload="auto"></audio>
+
 
     <script>
-        // ملفات الصوت
-        const clickSound = document.getElementById('click-sound');
-        const correctSound = document.getElementById('correct-sound');
-        const incorrectSound = document.getElementById('incorrect-sound');
+        // --- الجزء الأول: حل مشكلة الصوت على الجوال ---
 
-        // البيانات
-        const gameData = {
-            playerName: '',
-            playerScore: 0,
-            progress: 0,
-            currentQuizQuestion: 0,
-        };
+        // 1. قم بتعريف متغيرات الصوت في بداية الكود
+        //    تأكد من أن مسارات الملفات الصوتية صحيحة
+        const transitionSound = new Audio('sounds/transition.mp3'); 
+        const correctSound = new Audio('sounds/correct.mp3');
+        const incorrectSound = new Audio('sounds/incorrect.mp3');
 
-        const scenes = {
-            'landing-screen': document.getElementById('landing-screen'),
-            'start-screen': document.getElementById('start-screen'),
-            'main-game': document.getElementById('main-game'),
-            'map-scene': document.getElementById('map-scene'),
-            'faculties-scene': document.getElementById('faculties-scene'),
-            'faculties-info-scene': document.getElementById('faculties-info-scene'),
-            'grants-scene': document.getElementById('grants-scene'),
-            'grants-info-scene': document.getElementById('grants-info-scene'),
-            'exchange-scene': document.getElementById('exchange-scene'),
-            'exchange-info-scene': document.getElementById('exchange-info-scene'),
-            'admission-scene': document.getElementById('admission-scene'),
-            'end-scene': document.getElementById('end-scene')
-        };
+        // متغير لتتبع ما إذا تم تفعيل الصوت
+        let isAudioUnlocked = false;
 
-        const quizQuestions = [
-            {
-                question: 'هل لديك شهادة الثانوية العامة بتقدير جيد جداً على الأقل؟',
-                options: ['نعم', 'لا'],
-                correctAnswer: 'نعم',
-                points: 20
-            },
-            {
-                question: 'هل اجتزت اختبارات القبول والمقابلات الشخصية المطلوبة؟',
-                options: ['نعم', 'لا'],
-                correctAnswer: 'نعم',
-                points: 20
-            },
-            {
-                question: 'هل تسعى للتعرف على المزيد من المعلومات عن الحياة الجامعية؟',
-                options: ['نعم', 'لا'],
-                correctAnswer: 'نعم',
-                points: 10
-            }
-        ];
-
-        // عناصر الواجهة
-        const playerNameInput = document.getElementById('playerName');
-        const startButton = document.getElementById('startButton');
-        const playerNameDisplay = document.getElementById('player-name-display');
-        const playerScoreDisplay = document.getElementById('player-score');
-        const progressBar = document.getElementById('progressBar');
-        const progressText = document.getElementById('progressText');
-        const quizContainer = document.getElementById('quiz-container');
-        const feedbackModal = document.getElementById('feedback-modal');
-        const modalTitle = document.getElementById('modal-title');
-        const modalText = document.getElementById('modal-text');
-        
-        // البيانات
-        const facultyData = {
-            'الشريعة والقانون': {
-                description: 'تهدف الكلية إلى إعداد جيل واعٍ بالشريعة الإسلامية، ومؤهل للتعامل مع التحديات القانونية المعاصرة.',
-                majors: [
-                    { name: 'الفقه المقارن', icon: '⚖️' },
-                    { name: 'القانون الخاص', icon: '📜' },
-                    { name: 'القانون العام', icon: '🏛️' },
-                    { name: 'أصول الدين', icon: '🕌' }
-                ]
-            },
-            'الهندسة': {
-                description: 'تقدم الكلية برامج هندسية حديثة تجمع بين النظرية والتطبيق لتلبية احتياجات سوق العمل.',
-                majors: [
-                    { name: 'الهندسة المدنية', icon: '🏗️' },
-                    { name: 'هندسة العمارة', icon: '📐' },
-                    { name: 'هندسة الكهرباء', icon: '💡' },
-                    { name: 'هندسة الاتصالات', icon: '📡' },
-                    { name: 'هندسة الحاسوب', icon: '💻' }
-                ]
-            },
-            'الطب': {
-                description: 'تعتبر كلية الطب من الكليات الرائدة في مجال التعليم الطبي، وتساهم في إعداد أطباء أكفاء.',
-                majors: [
-                    { name: 'الطب البشري', icon: '🩺' },
-                    { name: 'طب الأسنان', icon: '🦷' },
-                    { name: 'الصيدلة', icon: '💊' },
-                    { name: 'التمريض', icon: '🩹' }
-                ]
-            },
-            'الآداب': {
-                description: 'توفر الكلية بيئة أكاديمية ممتازة لتعزيز الإبداع الفكري والأدبي.',
-                majors: [
-                    { name: 'اللغة العربية', icon: '📝' },
-                    { name: 'التاريخ', icon: '🕰️' },
-                    { name: 'الجغرافيا', icon: '🗺️' },
-                    { name: 'علم النفس', icon: '🧠' }
-                ]
-            },
-            'التجارة': {
-                description: 'تهدف الكلية إلى تزويد الطلاب بالمعرفة والمهارات اللازمة للعمل في القطاعين الاقتصادي والتجاري.',
-                majors: [
-                    { name: 'المحاسبة', icon: '💰' },
-                    { name: 'إدارة الأعمال', icon: '📊' },
-                    { name: 'التسويق', icon: '📈' },
-                    { name: 'العلوم المالية', icon: '💵' }
-                ]
-            }
-        };
-
-        const grantData = {
-            'منحة التفوق الأكاديمي': {
-                description: 'مخصصة للطلاب المتفوقين في الثانوية العامة.',
-                details: [
-                    { title: 'النسبة المئوية', value: '100%' },
-                    { title: 'شروط التقديم', details: ['معدل 95% فما فوق', 'تقديم شهادة الثانوية'] },
-                    { title: 'المميزات', details: ['تغطية الرسوم الدراسية بالكامل', 'فرص للمشاركة في أبحاث'] }
-                ]
-            },
-            'منحة الأسر المتعففة': {
-                description: 'تُمنح للطلاب من الأسر ذات الدخل المحدود لمساعدتهم على استكمال دراستهم.',
-                details: [
-                    { title: 'النسبة المئوية', value: '50-75%' },
-                    { title: 'شروط التقديم', details: ['إثبات دخل الأسرة', 'دراسة اجتماعية للحالة'] },
-                    { title: 'المميزات', details: ['تخفيض كبير على الرسوم', 'دعم مادي إضافي في بعض الحالات'] }
-                ]
-            },
-            'منحة أبناء الشهداء': {
-                description: 'تكريماً لتضحيات أبناء الوطن، تُقدم الجامعة هذه المنحة.',
-                details: [
-                    { title: 'النسبة المئوية', value: '100%' },
-                    { title: 'شروط التقديم', details: ['تقديم ما يثبت وضع الطالب', 'إرفاق شهادة الوفاة'] },
-                    { title: 'المميزات', details: ['تغطية الرسوم الدراسية بالكامل', 'أولوية في بعض البرامج'] }
-                ]
-            }
-        };
-
-        const exchangeData = {
-            'الجامعة الإسلامية الماليزية': {
-                description: 'برنامج تبادل ثقافي وأكاديمي لتعزيز العلاقات مع الجامعات الآسيوية.',
-                details: [
-                    { title: 'مدة البرنامج', value: 'فصل دراسي واحد' },
-                    { title: 'المشاريع', details: ['مشروع بحثي مشترك', 'مشروع ثقافي'] }
-                ]
-            },
-            'الجامعة الأوروبية': {
-                description: 'فرصة فريدة للطلاب للتعرف على نظام التعليم الأوروبي والاندماج في بيئة دولية.',
-                details: [
-                    { title: 'مدة البرنامج', value: 'سنة أكاديمية كاملة' },
-                    { title: 'المشاريع', details: ['مشاركة في مؤتمرات دولية', 'تدريب عملي في شركات أوروبية'] }
-                ]
-            }
-        };
-
-        // وظائف اللعبة
-        function saveGame() {
-            localStorage.setItem('gameData', JSON.stringify(gameData));
-        }
-
-        function loadGame() {
-            const savedData = localStorage.getItem('gameData');
-            if (savedData) {
-                Object.assign(gameData, JSON.parse(savedData));
-                playerNameInput.value = gameData.playerName;
-                playerNameDisplay.textContent = gameData.playerName;
-                playerScoreDisplay.textContent = gameData.playerScore;
-                updateProgressBar();
-                showScreen('main-game');
-                nextScene('map-scene');
-            } else {
-                showScreen('landing-screen');
-            }
-        }
-
-        function showScreen(screenId) {
-            for (const key in scenes) {
-                if (scenes.hasOwnProperty(key)) {
-                    scenes[key].classList.add('hidden');
-                }
-            }
-            scenes[screenId].classList.remove('hidden');
-        }
-
-        function showStartScreen() {
-            showScreen('start-screen');
-            // تأكد من تشغيل أي صوت عند أول تفاعل
-            try {
-                clickSound.play();
-                clickSound.pause();
-                clickSound.currentTime = 0;
-            } catch (e) {
-                console.log('Audio playback prevented by browser.');
-            }
-        }
-
-        function startGame() {
-            gameData.playerName = playerNameInput.value;
-            if (gameData.playerName.trim() === '') {
-                return;
-            }
-            gameData.playerScore = 0;
-            gameData.progress = 0;
-            gameData.currentQuizQuestion = 0;
-            saveGame();
-            playerNameDisplay.textContent = gameData.playerName;
-            playerScoreDisplay.textContent = gameData.playerScore;
-            updateProgressBar();
-            showScreen('main-game');
-            nextScene('map-scene');
-        }
-
-        function nextScene(sceneId) {
-            clickSound.play().catch(e => console.log('Click sound failed to play:', e));
-            
-            // تحديث شريط التقدم
-            if (sceneId !== 'end-scene') {
-                updateProgress(10);
-            }
-
-            // إخفاء زر العودة للخريطة إذا كان موجودًا
-            const backBtn = document.getElementById('back-to-map-btn');
-            if (backBtn) {
-                backBtn.classList.add('hidden');
-            }
-
-            // عرض المشهد الجديد
-            for (const key in scenes) {
-                if (key !== 'main-game' && key !== 'player-stats') {
-                    scenes[key].classList.add('hidden');
-                }
-            }
-            scenes[sceneId].classList.remove('hidden');
-
-            // إذا كان المشهد هو "شروط القبول" (admission-scene)
-            if (sceneId === 'admission-scene') {
-                renderQuizQuestion();
-            }
+        // 2. أضف مستمع الأحداث لزر بدء اللعبة
+        const startGameButton = document.getElementById('start-game-btn');
+        if (startGameButton) {
+            startGameButton.addEventListener('click', unlockAudioOnFirstInteraction);
+        } else {
+            // إذا لم يتم العثور على الزر، استخدم أول نقرة في أي مكان كحل بديل
+            document.body.addEventListener('click', unlockAudioOnFirstInteraction, { once: true });
         }
         
-        function updateProgressBar() {
-            const totalStages = 8; // عدد المراحل الكلية
-            const completedStages = gameData.progress / 10;
-            const percentage = (completedStages / totalStages) * 100;
-            
-            progressBar.style.width = percentage + '%';
-            progressText.textContent = `${Math.round(percentage)}%`;
+        function unlockAudioOnFirstInteraction() {
+            if (isAudioUnlocked) return;
 
-            // إذا تم الانتهاء من جميع المراحل
-            if (completedStages >= totalStages) {
-                endGame();
-            }
-        }
-
-        function updateProgress(value) {
-            gameData.progress += value;
-            saveGame();
-            updateProgressBar();
-        }
-
-        function showFeedback(message, type) {
-            modalTitle.textContent = type === 'correct' ? 'إجابة صحيحة!' : (type === 'incorrect' ? 'إجابة خاطئة!' : 'تنبيه');
-            modalText.textContent = message;
-            feedbackModal.classList.remove('hidden');
-        }
-
-        function closeModal() {
-            feedbackModal.classList.add('hidden');
-        }
-
-        function resetGame() {
-            localStorage.clear();
-            gameData.playerName = '';
-            gameData.playerScore = 0;
-            gameData.progress = 0;
-            gameData.currentQuizQuestion = 0;
-            showScreen('landing-screen');
-            playerNameInput.value = '';
-            startButton.disabled = true;
-        }
-
-        function logout() {
-            resetGame();
-        }
-
-        function endGame() {
-            document.getElementById('final-player-name').textContent = gameData.playerName;
-            document.getElementById('final-player-score').textContent = gameData.playerScore;
-            showScreen('end-scene');
-            localStorage.clear();
-        }
-
-        function renderQuizQuestion() {
-            quizContainer.innerHTML = '';
-            const backBtn = document.getElementById('back-to-map-btn');
-            backBtn.classList.add('hidden');
-            
-            if (gameData.currentQuizQuestion < quizQuestions.length) {
-                const q = quizQuestions[gameData.currentQuizQuestion];
-                const questionElement = document.createElement('div');
-                questionElement.className = 'quiz-question';
-                questionElement.innerHTML = `<p>${q.question}</p>`;
-                
-                const optionsContainer = document.createElement('div');
-                optionsContainer.className = 'options-container';
-                
-                q.options.forEach(option => {
-                    const button = document.createElement('button');
-                    button.textContent = option;
-                    button.className = 'option-btn';
-                    button.onclick = () => checkQuizAnswer(option, q.correctAnswer, q.points);
-                    optionsContainer.appendChild(button);
-                });
-                
-                questionElement.appendChild(optionsContainer);
-                quizContainer.appendChild(questionElement);
-            } else {
-                quizContainer.innerHTML = '<p>لقد أنهيت أسئلة القبول. يمكنك العودة الآن للخريطة!</p>';
-                backBtn.classList.remove('hidden');
-            }
-        }
-
-        function checkQuizAnswer(selectedOption, correctAnswer, points) {
-            const isCorrect = (selectedOption === correctAnswer);
-            const feedbackMsg = isCorrect ? `إجابة صحيحة! لقد ربحت ${points} نقطة.` : `إجابة خاطئة. حاول مجدداً.`;
-
-            if (isCorrect) {
-                gameData.playerScore += points;
-                playerScoreDisplay.textContent = gameData.playerScore;
-                correctSound.play().catch(e => console.log('Correct sound failed to play:', e));
-            } else {
-                incorrectSound.play().catch(e => console.log('Incorrect sound failed to play:', e));
-            }
-            
-            showFeedback(feedbackMsg, isCorrect ? 'correct' : 'incorrect');
-
-            if (isCorrect) {
-                gameData.currentQuizQuestion++;
-            }
-            saveGame();
-            renderQuizQuestion();
-        }
-
-        function showFacultyInfo(facultyName) {
-            nextScene('faculties-info-scene');
-            const data = facultyData[facultyName];
-            document.getElementById('faculty-info-title').textContent = facultyName;
-            document.getElementById('faculty-info-desc').textContent = data.description;
-            
-            const majorsContainer = document.getElementById('faculty-majors-container');
-            majorsContainer.innerHTML = '';
-            data.majors.forEach(major => {
-                const card = document.createElement('div');
-                card.className = 'college-card';
-                card.innerHTML = `<span class="college-icon">${major.icon}</span><h3>${major.name}</h3>`;
-                majorsContainer.appendChild(card);
+            // هذه الخدعة "تفتح" إمكانية تشغيل الصوت في المتصفح
+            const sounds = [transitionSound, correctSound, incorrectSound];
+            sounds.forEach(sound => {
+                sound.play().then(() => sound.pause()).catch(() => {});
+                sound.currentTime = 0;
             });
+            
+            isAudioUnlocked = true;
+            console.log('Audio context unlocked for mobile browsers.');
+
+            // ملاحظة: إذا كان زر البدء يقوم بوظائف أخرى، تأكد من أنها لا تتعارض
+            // على سبيل المثال، إذا كان لديك دالة اسمها startGame()، يمكنك استدعاؤها هنا
+            // startGame(); 
         }
 
-        function showGrantInfo(grantName) {
-            nextScene('grants-info-scene');
-            const data = grantData[grantName];
-            document.getElementById('grant-info-title').textContent = grantName;
-            document.getElementById('grant-info-desc').textContent = data.description;
-
-            const detailsContainer = document.getElementById('grant-details-container');
-            detailsContainer.innerHTML = '';
-            data.details.forEach(detail => {
-                const card = document.createElement('div');
-                card.className = 'grant-card';
-                let detailsHTML = '';
-                if (Array.isArray(detail.details)) {
-                    detailsHTML = `<ul>${detail.details.map(item => `<li>${item}</li>`).join('')}</ul>`;
-                } else if (detail.value) {
-                    detailsHTML = `<div class="grant-percentage">${detail.value}</div>`;
-                }
-                card.innerHTML = `<h3>${detail.title}</h3>${detailsHTML}`;
-                detailsContainer.appendChild(card);
-            });
+        // 3. الآن يمكنك تشغيل الأصوات في أي مكان في الكود الخاص بك هكذا:
+        //    مثال: عند الانتقال لسؤال جديد
+        function playTransitionSound() {
+            transitionSound.currentTime = 0; // للبدء من البداية في كل مرة
+            transitionSound.play().catch(e => console.error("Error playing sound:", e));
         }
 
-        function showExchangeInfo(exchangeName) {
-            nextScene('exchange-info-scene');
-            const data = exchangeData[exchangeName];
-            document.getElementById('exchange-info-title').textContent = exchangeName;
-            document.getElementById('exchange-info-desc').textContent = data.description;
 
-            const detailsContainer = document.getElementById('exchange-details-container');
-            detailsContainer.innerHTML = '';
-            data.details.forEach(detail => {
-                const card = document.createElement('div');
-                card.className = 'exchange-card';
-                let detailsHTML = '';
-                if (Array.isArray(detail.details)) {
-                    detailsHTML = `<ul>${detail.details.map(item => `<li>${item}</li>`).join('')}</ul>`;
-                } else if (detail.value) {
-                    detailsHTML = `<p>${detail.value}</p>`;
-                }
-                card.innerHTML = `<h3>${detail.title}</h3>${detailsHTML}`;
-                detailsContainer.appendChild(card);
-            });
+        // --- الجزء الثاني: تحديث شريط التقدم ---
+
+        /**
+         * دالة لتحديث شريط التقدم ونسبة التقدم المئوية
+         * @param {number} currentStep - الخطوة الحالية التي وصل إليها اللاعب
+         * @param {number} totalSteps - العدد الإجمالي للخطوات في المرحلة
+         */
+        function updateProgressBar(currentStep, totalSteps) {
+            // حساب النسبة المئوية
+            const percentage = Math.round((currentStep / totalSteps) * 100);
+            
+            // الوصول إلى عناصر شريط التقدم
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+
+            // التأكد من وجود العناصر قبل تحديثها
+            if (progressBar && progressText) {
+                // تحديث عرض الشريط
+                progressBar.style.width = percentage + '%';
+                // تحديث النص
+                progressText.textContent = percentage + '%';
+            }
         }
 
-        playerNameInput.addEventListener('input', () => {
-            startButton.disabled = playerNameInput.value.trim() === '';
-        });
+        // --- مثال على كيفية استخدام دالة تحديث الشريط ---
+        // يمكنك استدعاء هذه الدالة عندما يجيب اللاعب على سؤال
+        // مثلاً، إذا كانت اللعبة بها 5 أسئلة وهذه هي إجابة السؤال الأول:
+        // updateProgressBar(1, 5);
+        
+        // وعند إجابة السؤال الثاني:
+        // updateProgressBar(2, 5);
+        
+        // ولتجربة التصميم الآن، يمكنك إلغاء التعليق على السطر التالي:
+        // setTimeout(() => updateProgressBar(3, 5), 2000); // سيجعل الشريط 60% بعد ثانيتين
 
-        startButton.addEventListener('click', startGame);
-
-        window.onload = loadGame;
     </script>
-</body>
+    </body>
 </html>

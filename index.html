@@ -316,7 +316,7 @@
 
         .modal {
             position: fixed;
-            z-index: 100;
+            z-index: 2000; /* زاد الرقم ليكون فوق كل شيء */
             left: 0;
             top: 0;
             width: 100%;
@@ -662,33 +662,54 @@
             background-color: #f9f9f9;
             border-right: 5px solid var(--primary-color);
             border-radius: 10px;
-            padding: 15px;
+            padding: 20px;
             margin-bottom: 15px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             text-align: right;
-            transition: transform 0.3s ease, border-right-color 0.3s ease;
         }
-        .admission-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            border-right-color: var(--secondary-color);
-        }
+        
         .admission-card h3 {
-            font-size: 18px;
+            font-size: 20px;
             color: var(--primary-dark);
-            margin: 0 0 10px 0;
+            margin: 0 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .admission-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .admission-card li {
             display: flex;
+            justify-content: space-between;
             align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
         }
-        .admission-card .step-icon {
-            font-size: 24px;
-            margin-left: 10px;
+        .admission-card li:last-child {
+            border-bottom: none;
+        }
+
+        .admission-card .specialization {
+            font-size: 16px;
+            color: var(--text-dark);
+        }
+
+        .admission-card .score {
+            font-size: 16px;
+            font-weight: bold;
             color: var(--primary-color);
+            background-color: var(--light-bg);
+            padding: 4px 10px;
+            border-radius: 20px;
         }
-        .admission-card p {
-            font-size: 14px;
-            color: var(--text-light);
-            line-height: 1.6;
+        
+        .admission-card .score.new-major {
+            background-color: var(--secondary-color);
+            color: var(--text-dark);
         }
 
 		/* ======== بداية ستايل شريط الحالة الجديد ======== */
@@ -765,6 +786,69 @@
 			font-size: 22px;
 		}
 		/* ======== نهاية ستايل شريط الحالة الجديد ======== */
+
+        /* ======== بداية ستايل مودال الإعلان ======== */
+        .ad-modal-content {
+            position: relative;
+            background-color: transparent;
+            padding: 0;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            border-radius: var(--border-radius-main);
+            animation: fadeInUp 0.5s;
+        }
+
+        .ad-modal-content img {
+            width: 100%;
+            display: block;
+            border-radius: var(--border-radius-main);
+        }
+
+        .close-ad-btn {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            color: #000;
+            background-color: var(--white-color);
+            font-size: 35px;
+            font-weight: bold;
+            width: 40px;
+            height: 40px;
+            line-height: 35px;
+            text-align: center;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .close-ad-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            color: var(--incorrect-color);
+        }
+        /* ======== نهاية ستايل مودال الإعلان ======== */
+        
+        /* ======== بداية ستايل مودال الفيديو ======== */
+        .video-modal-content {
+            background-color: #000;
+            width: 90%;
+            max-width: 800px;
+            border-radius: var(--border-radius-main);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+            animation: fadeInUp 0.5s;
+            min-height: 200px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #video-loader {
+            position: static;
+            transform: none;
+            color: var(--white-color);
+        }
+        /* ======== نهاية ستايل مودال الفيديو ======== */
 
         @media (max-width: 600px) {
             .options-container {
@@ -912,11 +996,12 @@
             <div id="admission-info-scene" class="game-stage hidden">
                 <div class="scene-content">
                     <div class="info-header">
-                        <h2 class="scene-title">📝 دليل القبول والتسجيل</h2>
-                        <p>تصفح الخطوات اللازمة للالتحاق بالجامعة، ثم اختبر معلوماتك في التحدي التالي.</p>
+                        <h2 class="scene-title">📝 مفتاح التنسيق 2024-2025</h2>
+                        <p>اطلع على معدلات القبول المطلوبة لكليات الجامعة المختلفة قبل بدء التحدي.</p>
                     </div>
                     
                     <div class="info-scene-container" id="admission-info-container">
+                        <!-- سيتم تعبئة المحتوى هنا بواسطة الجافاسكريبت -->
                     </div>
                     
                     <div class="info-footer">
@@ -1092,6 +1177,27 @@
             <button id="modal-close-btn" class="action-button">متابعة</button>
         </div>
     </div>
+
+    <!-- ======== بداية مودال الإعلان ======== -->
+    <div id="ad-modal" class="modal hidden">
+        <div class="ad-modal-content">
+            <span class="close-ad-btn">&times;</span>
+            <img src="eng.webp" alt="إعلان كلية الهندسة">
+        </div>
+    </div>
+    <!-- ======== نهاية مودال الإعلان ======== -->
+
+    <!-- ======== بداية مودال الفيديو الترحيبي ======== -->
+    <div id="video-modal" class="modal hidden">
+        <div class="video-modal-content">
+            <div id="video-loader" class="loader-container">
+                <div class="loader"></div>
+                <p>جاري تحميل الفيديو...</p>
+            </div>
+            <video id="welcome-video" width="100%" style="display: none; border-radius: var(--border-radius-main);"></video>
+        </div>
+    </div>
+    <!-- ======== نهاية مودال الفيديو الترحيبي ======== -->
 
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-lE41eY0lEWEOxZevGyTMxNbpY2zTmRzWa3DEAd5Dc6O72GgtMA/exec';
@@ -1270,7 +1376,6 @@
                         incorrectFeedback: 'الإجابة الصحيحة هي "لا". معظم المنح تتوقف إذا لم يتم الحفاظ على المعدل المطلوب.'
                     }
                 ],
-                // تحديث بيانات مرحلة "القبول والتسجيل"
                 'admission-info': {
                     isInfoScreen: true,
                     nextScene: 'admission'
@@ -1278,18 +1383,18 @@
                 'admission': { image: 'all_q.webp', question: 'اختر نوع التحدي الذي تود خوضه هنا:', options: { 'admission_tf_questions': '<span class="icon">✔️❌</span> أسئلة صح وخطأ', 'admission_mc_questions': '<span class="icon">❓</span> أسئلة اختيار من متعدد' }, correctAnswer: null, points: 0, nextScene: { 'admission_tf_questions': 'admission_tf_questions', 'admission_mc_questions': 'admission_mc_questions' } },
 
                 'admission_tf_questions': [
-                    { id: 'ad_tf_q1', image: 'all_q.webp', question: 'تهتم عمادة القبول والتسجيل بإجراءات قبول الطلبة الجدد في الجامعة.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1 },
-                    { id: 'ad_tf_q2', image: 'all_q.webp', question: 'العمادة مسؤولة فقط عن تسجيل الطلاب الجدد وليس عن تسجيل المواد الدراسية للفصول الحالية.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'incorrect', points: 1, correctFeedback: 'خطأ! العمادة تشرف على تسجيل المواد أيضاً.' },
-                    { id: 'ad_tf_q3', image: 'all_q.webp', question: 'يمكن للطلبة تعديل جدول المواد الدراسية خلال فترة التسجيل المرنة التي تحددها العمادة.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1 },
-                    { id: 'ad_tf_q4', image: 'all_q.webp', question: 'إصدار الشهادات الأكاديمية يتم من خلال عمادة القبول والتسجيل فقط بعد إنهاء جميع متطلبات التخرج.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1 },
-                    { id: 'ad_tf_q5', image: 'all_q.webp', question: 'العمادة لا تتعامل مع معاملات التحويل الداخلي بين الكليات.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'incorrect', points: 1, correctFeedback: 'خطأ! العمادة تشرف على جميع معاملات التحويل بين الكليات.' }
+                    { id: 'ad_tf_q1', image: 'all_q.webp', question: 'معدل القبول في كلية الطب البشري هو 96%.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'incorrect', points: 1, correctFeedback: 'خطأ! معدل القبول في الطب البشري هو 97%.' },
+                    { id: 'ad_tf_q2', image: 'all_q.webp', question: 'تخصص "هندسة الويب" هو تخصص جديد في كلية الهندسة.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'incorrect', points: 1, correctFeedback: 'خطأ! تخصص "حوسبة الويب" هو الجديد في كلية تكنولوجيا المعلومات.' },
+                    { id: 'ad_tf_q3', image: 'all_q.webp', question: 'يمكن لطلبة الفرع الأدبي الالتحاق بكلية التمريض بمعدل 80%.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1 },
+                    { id: 'ad_tf_q4', image: 'all_q.webp', question: 'معدل القبول في تخصص "الإذاعة والتلفزيون" هو 75%.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'incorrect', points: 1, correctFeedback: 'خطأ! معدل القبول في هذا التخصص هو 65%.' },
+                    { id: 'ad_tf_q5', image: 'all_q.webp', question: 'كلية العلوم الصحية لا تقبل طلبة من الفرع الأدبي.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1 }
                 ],
                 'admission_mc_questions': [
-                    { id: 'ad_mc_q1', image: 'all_q.webp', question: 'أي من المهام التالية تقع ضمن مسؤوليات عمادة القبول والتسجيل؟', options: { 'تنظيم الأنشطة الطلابية': 'تنظيم الأنشطة الطلابية', 'تسجيل المواد الدراسية للفصل الدراسي': 'تسجيل المواد الدراسية للفصل الدراسي', 'إدارة مكتبة الجامعة': 'إدارة مكتبة الجامعة', 'تقديم الدعم النفسي للطلبة': 'تقديم الدعم النفسي للطلبة' }, correctAnswer: 'تسجيل المواد الدراسية للفصل الدراسي', points: 1 },
-                    { id: 'ad_mc_q2', image: 'all_q.webp', question: 'متى يقوم الطلاب عادةً بتسجيل المواد الدراسية للفصل الجديد؟', options: { 'قبل بدء الفصل الدراسي بوقت محدد': 'قبل بدء الفصل الدراسي بوقت محدد', 'بعد نهاية الفصل الدراسي': 'بعد نهاية الفصل الدراسي', 'أثناء العطلة الصيفية فقط': 'أثناء العطلة الصيفية فقط', 'في أي وقت دون جدول محدد': 'في أي وقت دون جدول محدد' }, correctAnswer: 'قبل بدء الفصل الدراسي بوقت محدد', points: 1 },
-                    { id: 'ad_mc_q3', image: 'all_q.webp', question: 'إذا أراد طالب تعديل جدول مواد الفصل الدراسي، يجب عليه:', options: { 'التوجه مباشرة إلى كلية أخرى': 'التوجه مباشرة إلى كلية أخرى', 'التواصل مع عمادة القبول والتسجيل': 'التواصل مع عمادة القبول والتسجيل', 'انتظار نهاية الفصل الدراسي': 'انتظار نهاية الفصل الدراسي', 'تقديم طلب للجامعة عبر البريد الإلكتروني فقط': 'تقديم طلب للجامعة عبر البريد الإلكتروني فقط' }, correctAnswer: 'التواصل مع عمادة القبول والتسجيل', points: 1 },
-                    { id: 'ad_mc_q4', image: 'all_q.webp', question: 'إصدار الشهادات الأكاديمية يتم بعد:', options: { 'حضور جميع المحاضرات': 'حضور جميع المحاضرات', 'إنهاء جميع متطلبات التخرج': 'إنهاء جميع متطلبات التخرج', 'اجتياز امتحان اللغة الإنجليزية فقط': 'اجتياز امتحان اللغة الإنجليزية فقط', 'دفع الرسوم الدراسية فقط': 'دفع الرسوم الدراسية فقط' }, correctAnswer: 'إنهاء جميع متطلبات التخرج', points: 1 },
-                    { id: 'ad_mc_q5', image: 'all_q.webp', question: 'التحويل بين الكليات في الجامعة يتم عن طريق:', options: { 'طلب مباشر للكليّة': 'طلب مباشر للكليّة', 'عمادة القبول والتسجيل': 'عمادة القبول والتسجيل', 'الطلاب بأنفسهم دون إشراف': 'الطلاب بأنفسهم دون إشراف', 'مكتب العلاقات العامة': 'مكتب العلاقات العامة' }, correctAnswer: 'عمادة القبول والتسجيل', points: 1 }
+                    { id: 'ad_mc_q1', image: 'all_q.webp', question: 'ما هو معدل القبول المطلوب للالتحاق بتخصص "الذكاء الاصطناعي"؟', options: { '80': '80%', '65': '65%', '70': '70%', '75': '75%' }, correctAnswer: '80', points: 1 },
+                    { id: 'ad_mc_q2', image: 'all_q.webp', question: 'أي من التخصصات التالية يعتبر "جديد" حسب مفتاح التنسيق؟', options: { 'الذكاء الاصطناعي': 'الذكاء الاصطناعي', 'التحاليل الطبية': 'التحاليل الطبية', 'التمريض': 'التمريض', 'التصميم الداخلي': 'التصميم الداخلي' }, correctAnswer: 'الذكاء الاصطناعي', points: 1 },
+                    { id: 'ad_mc_q3', image: 'all_q.webp', question: 'كم يبلغ معدل القبول في كلية الشريعة والقانون (فرع الشريعة)؟', options: { '65': '65%', '70': '70%', '75': '75%', '80': '80%' }, correctAnswer: '75', points: 1 },
+                    { id: 'ad_mc_q4', image: 'all_q.webp', question: 'أي كلية تتطلب أعلى معدل قبول للفرع العلمي؟', options: { 'الهندسة': 'الهندسة', 'الطب': 'الطب', 'تكنولوجيا المعلومات': 'تكنولوجيا المعلومات', 'العلوم': 'العلوم' }, correctAnswer: 'الطب', points: 1 },
+                    { id: 'ad_mc_q5', image: 'all_q.webp', question: 'ما هو أدنى معدل قبول يمكن للطالب الحاصل على شهادة الثانوية العامة (الفرع العلمي) الالتحاق به في الجامعة؟', options: { '65': '65%', '70': '70%', '75': '75%', '60': '60%' }, correctAnswer: '65', points: 1 }
                 ],
                 'cafeteria': { isUnderConstruction: true },
                 'hospital': { isUnderConstruction: true },
@@ -1299,16 +1404,78 @@
             };
 
             const admissionInfoData = [
-                // تم تحديث الأيقونات هنا
-                { id: 1, title: 'الدخول من البوابات', text: 'أولاً، عليك الدخول من بوابات الجامعة والتوجه إلى محطة استقبال الطلبة الجدد ومراجعة المختصين.', icon: '🚪' },
-                { id: 2, title: 'دفع رسوم الالتحاق', text: 'الخطوة التالية هي التوجه إلى الدائرة المالية لدفع رسوم طلب الالتحاق، والتي تبلغ 20 دينار أردني.', icon: '💰' },
-                { id: 3, title: 'تعبئة طلب الالتحاق', text: 'يمكنك تعبئة طلب الالتحاق إلكترونياً من خلال أجهزة مخصصة في قاعة الاستقبال أو عبر موقع الجامعة الرسمي.', icon: '📝' },
-                { id: 4, title: 'إدخال البيانات', text: 'ستقوم بإدخال رقم الطالب ورقم إيصال الدفع، ومن ثم تعبئة كافة بيانات الطلب المطلوبة منك بدقة.', icon: '💻' },
-                { id: 5, title: 'مراجعة واعتماد الطلب', text: 'بعد إتمام تعبئة الطلب، سيتم مراجعته واعتماده من قبل الموظف المختص حتى تتم عملية قبولك.', icon: '✅' },
-                { id: 6, title: 'استلام كلمة المرور', text: 'سيتم إرسال كلمة المرور الخاصة بحسابك على صفحة الطالب في رسالة نصية قصيرة إلى رقم جوالك الذي سجلته.', icon: '📱' },
-                { id: 7, title: 'دفع الرسوم الدراسية', text: 'حان الوقت للتوجه إلى الدائرة المالية لدفع الرسوم الدراسية الخاصة بالمساقات التي سجلتها.', icon: '💵' },
-                { id: 8, title: 'استلام الجدول الدراسي', text: 'توجه إلى عمادة القبول والتسجيل لاستلام الجدول الدراسي الخاص بك، بالإضافة إلى حقيبتك الجامعية.', icon: '📚' },
-                { id: 9, title: 'تسليم الأوراق الثبوتية', text: 'أخيراً، قم بتسليم الأوراق الثبوتية المطلوبة عند المسجلين، وهي: صورة مصدقة عن شهادة الثانوية العامة، وصورة الهوية أو جواز السفر.', icon: '📄' }
+                {
+                    faculty: "الطب",
+                    specializations: [
+                        { name: "الطب البشري", score: "97% علمي / 96% طلاب" }
+                    ]
+                },
+                {
+                    faculty: "الهندسة",
+                    specializations: [
+                        { name: "الهندسة المدنية، الهندسة المعمارية (تصميم داخلي، تكنولوجيا مباني، تخطيط عمراني)، الذكاء الاصطناعي، هندسة الحاسوب، الهندسة الصناعية، الهندسة الكهربائية، الهندسة البيئية، الهندسة الميكانيكية، هندسة النظم الذكية", score: "80% علمي" }
+                    ]
+                },
+                {
+                    faculty: "تكنولوجيا المعلومات",
+                    specializations: [
+                        { name: "علم الحاسوب، تطوير البرمجيات، تكنولوجيا المعلومات، حوسبة الويب (جديد)", score: "65% علمي" },
+                        { name: "الوسائط المتعددة", score: "70% علمي / 65% أدبي" }
+                    ]
+                },
+                {
+                    faculty: "العلوم",
+                    specializations: [
+                        { name: "الكيمياء، الرياضيات، الفيزياء، الأحياء، علوم الأرض والبيئة، الكيمياء الحيوية، علوم البحار، الإنتاج النباتي، التكنولوجيا الحيوية، رياضيات فرعي كمبيوتر", score: "65% علمي" }
+                    ]
+                },
+                {
+                    faculty: "العلوم الصحية",
+                    specializations: [
+                        { name: "العلوم الطبية المخبرية، البصريات، العلاج الطبيعي، تقنيات التصوير الطبي (جديد)، التغذية السريرية (جديد)", score: "70% علمي" }
+                    ]
+                },
+                {
+                    faculty: "التمريض",
+                    specializations: [
+                        { name: "التمريض", score: "70% علمي / 80% أدبي" },
+                        { name: "القبالة", score: "70% علمي / 80% أدبي" }
+                    ]
+                },
+                {
+                    faculty: "الاقتصاد والعلوم الإدارية",
+                    specializations: [
+                        { name: "المحاسبة (دراسة باللغة العربية)، إدارة الأعمال (دراسة باللغة العربية)", score: "65% علمي وأدبي" },
+                        { name: "المحاسبة (دراسة باللغة الإنجليزية)، إدارة الأعمال (دراسة باللغة الإنجليزية)", score: "65% علمي وأدبي" },
+                        { name: "إدارة الأعمال فرعي الريادة والإبتكار (جديد)، التسويق والتجارة الالكترونية، العلوم السياسية والإعلام، الاقتصاد والعلوم السياسية، الاقتصاد فرعي الإحصاء التطبيقي، العلوم المالية والمصرفية، المحاسبة فرعي تكنولوجيا المعلومات، الاقتصاد الرقمي وتكنولوجيا المال", score: "65% علمي وأدبي" }
+                    ]
+                },
+                {
+                    faculty: "الشريعة والقانون",
+                    specializations: [
+                        { name: "الشريعة الإسلامية", score: "65% علمي وأدبي" },
+                        { name: "الشريعة الإسلامية فرعي فتوى وتحكيم", score: "75% علمي وأدبي" },
+                        { name: "الشريعة والقانون", score: "75% علمي وأدبي" }
+                    ]
+                },
+                {
+                    faculty: "أصول الدين",
+                    specializations: [
+                        { name: "أصول الدين (عام)، الدعوة والإعلام", score: "65% علمي وأدبي" }
+                    ]
+                },
+                {
+                    faculty: "الآداب",
+                    specializations: [
+                        { name: "اللغة العربية، اللغة العربية فرعي الصحافة، اللغة العربية فرعي التدقيق اللغوي، اللغة الإنجليزية، لغة إنجليزية فرعي ترجمة، لغة إنجليزية فرعي صحافة وإعلام (جديد)، الجغرافيا، الجغرافيا فرعي نظم المعلومات الجغرافية، الصحافة والإعلام، الإعلام الرقمي، الخدمة الاجتماعية، التاريخ والآثار، التاريخ فرعي دراسات إسرائيلية، صحافة وإعلام فرعي تكنولوجيا الإذاعة والتلفزيون", score: "65% علمي وأدبي" }
+                    ]
+                },
+                {
+                    faculty: "التربية",
+                    specializations: [
+                        { name: "تعليم اللغة العربية، تعليم اللغة الإنجليزية، تعليم العلوم، تعليم الرياضيات، تعليم اجتماعيات، تعليم التربية الإسلامية، المرحلة الأساسية، الإرشاد النفسي والتوجيه التربوي، الكيمياء وأساليب تدريسها، الفيزياء وأساليب تدريسها، الأحياء وأساليب تدريسها، الحاسوب وأساليب تدريسه، اللغة العربية وأساليب تدريسها، اللغة الإنجليزية وأساليب تدريسها، التاريخ وأساليب تدريسه، الجغرافيا وأساليب تدريسها، الرياضيات وأساليب تدريسها", score: "65% علمي وأدبي" }
+                    ]
+                }
             ];
 
             const gameState = { playerName: '', playerPhone: '', tawjihiYear: '', uniquePlayerId: null, score: 0, currentScene: null, currentSubQuestionIndex: 0, answeredQuestions: new Set() };
@@ -1337,6 +1504,15 @@
             const correctSound = document.getElementById('correct-sound');
             const incorrectSound = document.getElementById('incorrect-sound');
             const transitionSound = document.getElementById('turning.mp3');
+            
+            // ======== متغيرات الإعلان والفيديو ========
+            const adModal = document.getElementById('ad-modal');
+            const videoModal = document.getElementById('video-modal');
+            const welcomeVideo = document.getElementById('welcome-video');
+            const videoLoader = document.getElementById('video-loader');
+            let adShownThisSession = false; 
+            let adTriggerQuestionIndex = -1; 
+            // =====================================
 
             function saveGameState() {
                 try {
@@ -1501,6 +1677,18 @@
                 }
                 document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
 
+                // ======== منطق تحديد وقت ظهور الإعلان ========
+                if ((sceneId === 'tf_questions' || sceneId === 'mc_questions') && questionIndex === 0 && !adShownThisSession) {
+                    const sceneData = gameData[sceneId];
+                    if (sceneData.length > 3) {
+                        // يظهر الإعلان بين السؤال الثاني والخامس
+                        const minTrigger = 1; 
+                        const maxTrigger = Math.min(sceneData.length - 2, 4); 
+                        adTriggerQuestionIndex = Math.floor(Math.random() * (maxTrigger - minTrigger + 1)) + minTrigger;
+                    }
+                }
+                // ===========================================
+
                 if (sceneId === 'map') {
                     document.getElementById('map-scene').classList.remove('hidden');
                     return;
@@ -1521,7 +1709,6 @@
                     return;
                 }
 
-                // إضافة الشاشة الجديدة هنا
                 if (sceneId === 'exchange-info') {
                     renderExchangeInfoScene();
                     return;
@@ -1588,19 +1775,32 @@
                 saveGameState();
 
                 const container = document.getElementById('admission-info-container');
-                container.innerHTML = '';
-                admissionInfoData.forEach(step => {
+                container.innerHTML = ''; 
+                admissionInfoData.forEach(facultyData => {
                     const card = document.createElement('div');
                     card.className = 'admission-card';
+                    
+                    let specializationsHTML = '<ul>';
+                    facultyData.specializations.forEach(spec => {
+                        const isNew = spec.name.includes('(جديد)');
+                        specializationsHTML += `
+                            <li>
+                                <span class="specialization">${spec.name.replace(' (جديد)', '')} ${isNew ? '<span class="score new-major">جديد</span>' : ''}</span>
+                                <span class="score">${spec.score}</span>
+                            </li>
+                        `;
+                    });
+                    specializationsHTML += '</ul>';
+
                     card.innerHTML = `
-                        <h3><span class="step-icon">${step.icon}</span> ${step.title}</h3>
-                        <p>${step.text}</p>
+                        <h3>${facultyData.faculty}</h3>
+                        ${specializationsHTML}
                     `;
                     container.appendChild(card);
                 });
                 
                 document.getElementById('start-admission-quiz-btn').onclick = () => {
-                    renderScene('admission'); // الانتقال إلى شاشة اختيار نوع الأسئلة الجديدة
+                    renderScene('admission');
                 };
             }
 
@@ -1613,8 +1813,7 @@
                     renderScene('grants');
                  };
             }
-
-            // الدالة الجديدة لعرض شاشة معلومات التبادل الأكاديمي
+            
             function renderExchangeInfoScene() {
                  document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
                  document.getElementById('exchange-info-scene').classList.remove('hidden');
@@ -1669,9 +1868,18 @@
                     feedbackElement.className = 'feedback-message correct';
                     feedbackElement.style.display = 'block';
 
+                    // ======== منطق إظهار الإعلان ========
+                    if ((sceneId === 'tf_questions' || sceneId === 'mc_questions') && !adShownThisSession) {
+                        if (gameState.currentSubQuestionIndex === adTriggerQuestionIndex) {
+                            // ننتظر قليلاً ثم نظهر الإعلان
+                            setTimeout(showAdModal, 1000);
+                        }
+                    }
+                    // =====================================
+
                     setTimeout(() => {
                         if (sceneId === 'gate') {
-                            renderScene('map');
+                            playWelcomeVideo();
                         } else if (Array.isArray(gameData[sceneId])) {
                             const nextQuestionIndex = gameState.currentSubQuestionIndex + 1;
                             if (nextQuestionIndex < gameData[sceneId].length) {
@@ -1725,6 +1933,37 @@
                     if (callback) callback();
                 };
             }
+
+            // ======== دالة إظهار مودال الإعلان ========
+            function showAdModal() {
+                adModal.classList.remove('hidden');
+                adShownThisSession = true; // نضمن ظهوره مرة واحدة فقط
+            }
+            // =======================================
+            
+            // ======== دالة تشغيل الفيديو الترحيبي ========
+            function playWelcomeVideo() {
+                const videoModal = document.getElementById('video-modal');
+                const welcomeVideo = document.getElementById('welcome-video');
+                const videoLoader = document.getElementById('video-loader');
+                
+                videoModal.classList.remove('hidden');
+                welcomeVideo.src = 'hares1.mp4';
+                
+                welcomeVideo.oncanplay = function() {
+                    videoLoader.style.display = 'none';
+                    welcomeVideo.style.display = 'block';
+                    welcomeVideo.play();
+                };
+
+                welcomeVideo.onended = function() {
+                    videoModal.classList.add('hidden');
+                    welcomeVideo.pause();
+                    welcomeVideo.currentTime = 0;
+                    renderScene('map');
+                };
+            }
+            // ==========================================
             
             function isStageCompleted(stageId) {
                 let stageData = gameData[stageId];
@@ -1829,6 +2068,14 @@
                     renderScene('map');
                 }
             });
+
+            // ======== إضافة Event Listener لإغلاق مودال الإعلان ========
+            adModal.addEventListener('click', (event) => {
+                if (event.target.classList.contains('close-ad-btn') || event.target.id === 'ad-modal') {
+                    adModal.classList.add('hidden');
+                }
+            });
+            // =======================================================
 
             document.getElementById('new-player-btn').addEventListener('click', resetGameState);
 

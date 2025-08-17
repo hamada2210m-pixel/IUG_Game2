@@ -459,7 +459,7 @@
         .exchange-category:first-child {
             margin-top: 0;
         }
-        /* بداية التعديل */
+        
         .grant-card,
         .exchange-card {
             background-color: #f9f9f9;
@@ -476,7 +476,7 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.12);
             border-right-color: var(--secondary-color);
         }
-        /* نهاية التعديل */
+        
         .grant-card h3,
         .exchange-card h3 {
             margin: 0 0 10px 0;
@@ -755,6 +755,11 @@
 			border-color: var(--incorrect-color);
 			transform: translateY(-2px);
 		}
+        
+        .status-bar-btn#back-to-map-btn:hover {
+            background-color: var(--info-color);
+            border-color: var(--info-color);
+        }
 
 		.status-section .icon {
 			font-size: 22px;
@@ -782,6 +787,7 @@
     <audio id="incorrect-sound" src="funny.mp3"></audio>
     <audio id="transition-sound" src="turning.mp3"></audio>
 
+    <!-- ======== بداية شريط الحالة الجديد ======== -->
     <div id="status-bar" class="hidden">
         <div class="status-section">
             <span class="icon">👤</span>
@@ -789,12 +795,18 @@
         </div>
         <div class="status-section">
             <span id="player-score-display"></span>
+            <a href="#" id="back-to-map-btn" class="status-bar-btn">
+                <span class="icon">🗺️</span>
+                الخريطة
+            </a>
             <a href="#" id="logout-btn" class="status-bar-btn">
                 <span class="icon">🚪</span>
                 خروج
             </a>
         </div>
     </div>
+    <!-- ======== نهاية شريط الحالة الجديد ======== -->
+
     <div class="game-container">
         <div id="landing-screen">
             <img src="logo.webp" alt="شعار الجامعة الإسلامية" class="logo"> <h1>رحلتك نحو المعرفة والتميز تبدأ الآن</h1>
@@ -1811,6 +1823,10 @@
                 if (event.target.id === 'logout-btn' || event.target.closest('#logout-btn')) {
                     event.preventDefault();
                     resetGameState();
+                }
+                if (event.target.id === 'back-to-map-btn' || event.target.closest('#back-to-map-btn')) {
+                    event.preventDefault();
+                    renderScene('map');
                 }
             });
 

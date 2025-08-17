@@ -1541,14 +1541,18 @@
             // =====================================
 
             // ======== دوال الصوت الجديدة ========
-            function unlockAudio() {
+            async function unlockAudio() {
                 if (isAudioUnlocked) return;
                 const sounds = [correctSound, incorrectSound, transitionSound];
-                sounds.forEach(sound => {
-                    sound.play().then(() => sound.pause()).catch(() => {});
-                });
+                for (const sound of sounds) {
+                    try {
+                        await sound.play();
+                        sound.pause();
+                    } catch (error) {
+                        console.warn("Audio unlock failed for one sound, this is expected.", error.name);
+                    }
+                }
                 isAudioUnlocked = true;
-                document.body.removeEventListener('click', unlockAudio);
                 console.log("Audio context unlocked.");
             }
 
@@ -1640,11 +1644,6 @@
                 }
                 return false;
             }
-
-            showRegisterBtn.addEventListener('click', () => {
-                landingScreen.classList.add('hidden');
-                startScreen.classList.remove('hidden');
-            });
 
             function startGame(event) {
                 event.preventDefault();
@@ -2108,6 +2107,10 @@
             });
 
             document.addEventListener('click', function(event) {
+                if (event.target.id === 'show-register-btn' || event.target.closest('#show-register-btn')) {
+                    landingScreen.classList.add('hidden');
+                    startScreen.classList.remove('hidden');
+                }
                 if (event.target.id === 'logout-btn' || event.target.closest('#logout-btn')) {
                     event.preventDefault();
                     resetGameState();
@@ -2127,7 +2130,6 @@
             // =======================================================
             
             // ======== إضافة Event Listener لزر تخطي الفيديو ========
-            const skipVideoBtn = document.getElementById('skip-video-btn');
             skipVideoBtn.addEventListener('click', () => {
                 videoModal.classList.add('hidden');
                 welcomeVideo.pause();

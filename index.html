@@ -885,6 +885,44 @@
                 width: 90%;
                 margin-bottom: 15px;
             }
+
+            /* ======== بداية تصميم شريط الحالة المتجاوب ======== */
+            #status-bar {
+                padding: 8px 10px;
+                flex-direction: column;
+                gap: 5px;
+                align-items: stretch;
+            }
+
+            .status-section {
+                width: 100%;
+                justify-content: space-between;
+                gap: 8px;
+            }
+
+            #player-name-display {
+                font-size: 15px;
+            }
+
+            #player-score-display {
+                font-size: 14px;
+                padding: 5px 12px;
+            }
+
+            .status-bar-btn {
+                font-size: 13px;
+                padding: 6px 10px;
+                gap: 5px;
+            }
+
+            .status-section .icon {
+                font-size: 20px;
+            }
+
+            body {
+                padding-top: 125px; /* زيادة المساحة العلوية لاستيعاب الشريط الأطول */
+            }
+            /* ======== نهاية تصميم شريط الحالة المتجاوب ======== */
         }
     </style>
 </head>
@@ -899,9 +937,9 @@
         <div class="status-section">
             <span class="icon">👤</span>
             <span id="player-name-display"></span>
+            <span id="player-score-display"></span>
         </div>
         <div class="status-section">
-            <span id="player-score-display"></span>
             <a href="#" id="back-to-map-btn" class="status-bar-btn">
                 <span class="icon">🗺️</span>
                 الخريطة

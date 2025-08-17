@@ -841,12 +841,35 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
         }
 
         #video-loader {
             position: static;
             transform: none;
             color: var(--white-color);
+        }
+
+        .skip-video-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 25px;
+            border: 1px solid var(--white-color);
+            border-radius: 30px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: var(--white-color);
+            font-size: 16px;
+            font-weight: bold;
+            font-family: var(--font-family);
+            cursor: pointer;
+            transition: background-color 0.3s;
+            z-index: 10;
+        }
+
+        .skip-video-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
         }
         /* ======== نهاية ستايل مودال الفيديو ======== */
 
@@ -1195,6 +1218,7 @@
                 <p>جاري تحميل الفيديو...</p>
             </div>
             <video id="welcome-video" width="100%" style="display: none; border-radius: var(--border-radius-main);"></video>
+            <button id="skip-video-btn" class="skip-video-btn">تخطي الفيديو</button>
         </div>
     </div>
     <!-- ======== نهاية مودال الفيديو الترحيبي ======== -->
@@ -1510,6 +1534,7 @@
             const videoModal = document.getElementById('video-modal');
             const welcomeVideo = document.getElementById('welcome-video');
             const videoLoader = document.getElementById('video-loader');
+            const skipVideoBtn = document.getElementById('skip-video-btn');
             let adShownThisSession = false; 
             let adTriggerQuestionIndex = -1; 
             // =====================================
@@ -1943,12 +1968,8 @@
             
             // ======== دالة تشغيل الفيديو الترحيبي ========
             function playWelcomeVideo() {
-                const videoModal = document.getElementById('video-modal');
-                const welcomeVideo = document.getElementById('welcome-video');
-                const videoLoader = document.getElementById('video-loader');
-                
                 videoModal.classList.remove('hidden');
-                welcomeVideo.src = 'hares1.mp4';
+                welcomeVideo.src = 'hares 1.mp4'; // تم تصحيح الاسم
                 
                 welcomeVideo.oncanplay = function() {
                     videoLoader.style.display = 'none';
@@ -2074,6 +2095,15 @@
                 if (event.target.classList.contains('close-ad-btn') || event.target.id === 'ad-modal') {
                     adModal.classList.add('hidden');
                 }
+            });
+            // =======================================================
+            
+            // ======== إضافة Event Listener لزر تخطي الفيديو ========
+            skipVideoBtn.addEventListener('click', () => {
+                videoModal.classList.add('hidden');
+                welcomeVideo.pause();
+                welcomeVideo.currentTime = 0;
+                renderScene('map');
             });
             // =======================================================
 

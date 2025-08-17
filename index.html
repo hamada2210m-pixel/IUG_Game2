@@ -839,9 +839,12 @@
             animation: fadeInUp 0.5s;
             min-height: 200px; 
             display: flex;
+            flex-direction: column; /* Changed to column */
             justify-content: center;
             align-items: center;
             position: relative;
+            padding: 10px;
+            box-sizing: border-box;
         }
 
         #video-loader {
@@ -851,10 +854,7 @@
         }
 
         .skip-video-btn {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+            margin-top: 15px;
             padding: 10px 25px;
             border: 1px solid var(--white-color);
             border-radius: 30px;
@@ -1527,7 +1527,7 @@
             const modalCloseBtn = document.getElementById('modal-close-btn');
             const correctSound = document.getElementById('correct-sound');
             const incorrectSound = document.getElementById('incorrect-sound');
-            const transitionSound = document.getElementById('turning.mp3');
+            const transitionSound = document.getElementById('transition-sound');
             
             // ======== متغيرات الإعلان والفيديو ========
             const adModal = document.getElementById('ad-modal');
@@ -1537,6 +1537,29 @@
             const skipVideoBtn = document.getElementById('skip-video-btn');
             let adShownThisSession = false; 
             let adTriggerQuestionIndex = -1; 
+            let isAudioUnlocked = false;
+            // =====================================
+
+            // ======== دوال الصوت الجديدة ========
+            function unlockAudio() {
+                if (isAudioUnlocked) return;
+                const sounds = [correctSound, incorrectSound, transitionSound];
+                sounds.forEach(sound => {
+                    sound.play().then(() => sound.pause()).catch(() => {});
+                });
+                isAudioUnlocked = true;
+                document.body.removeEventListener('click', unlockAudio);
+                console.log("Audio context unlocked.");
+            }
+
+            function playSound(soundElement) {
+                if (soundElement) {
+                    soundElement.currentTime = 0;
+                    soundElement.play().catch(error => {
+                        console.error(`Could not play sound: ${soundElement.src}`, error);
+                    });
+                }
+            }
             // =====================================
 
             function saveGameState() {
@@ -1693,9 +1716,7 @@
             }
 
             function renderScene(sceneId, questionIndex = 0, pushState = true) {
-                if (transitionSound) {
-                    transitionSound.play();
-                }
+                playSound(transitionSound);
                 
                 if (pushState) {
                     history.pushState({ scene: sceneId, index: questionIndex }, '');
@@ -1876,7 +1897,7 @@
                 
                 if (isCorrect) {
                     document.querySelectorAll(`#${sceneId}-scene .option-btn`).forEach(btn => btn.disabled = true);
-                    correctSound.play();
+                    playSound(correctSound);
 
                     if (!gameState.answeredQuestions.has(questionId)) {
                         gameState.score += sceneData.points;
@@ -1929,7 +1950,7 @@
                     }, 2000);
 
                 } else {
-                    incorrectSound.play();
+                    playSound(incorrectSound);
                     targetButton.disabled = true;  
                     targetButton.classList.add('incorrect');
                     feedbackElement.textContent = sceneData.incorrectFeedback || 'إجابة غير صحيحة. حاول مرة أخرى!';
@@ -1969,7 +1990,7 @@
             // ======== دالة تشغيل الفيديو الترحيبي ========
             function playWelcomeVideo() {
                 videoModal.classList.remove('hidden');
-                welcomeVideo.src = 'hares 1.mp4'; // تم تصحيح الاسم
+                welcomeVideo.src = 'hares 1.mp4';
                 
                 welcomeVideo.oncanplay = function() {
                     videoLoader.style.display = 'none';
@@ -1982,6 +2003,13 @@
                     welcomeVideo.pause();
                     welcomeVideo.currentTime = 0;
                     renderScene('map');
+                };
+
+                // Error handling for the video
+                welcomeVideo.onerror = function() {
+                    console.error("Video could not be loaded.");
+                    videoModal.classList.add('hidden');
+                    renderScene('map'); // Skip to map if video fails
                 };
             }
             // ==========================================
@@ -2099,6 +2127,7 @@
             // =======================================================
             
             // ======== إضافة Event Listener لزر تخطي الفيديو ========
+            const skipVideoBtn = document.getElementById('skip-video-btn');
             skipVideoBtn.addEventListener('click', () => {
                 videoModal.classList.add('hidden');
                 welcomeVideo.pause();
@@ -2223,6 +2252,10 @@
                 document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
                 renderScene('faculties');
             });
+
+            // ======== إضافة Event Listener لفتح الصوت ========
+            document.body.addEventListener('click', unlockAudio, { once: true });
+            // =================================================
 
             populateFacultiesList();
             

@@ -301,6 +301,13 @@
         .option-btn.incorrect::before { content: '✗'; }
 
         .feedback-message {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .feedback-message.show {
+            display: block !important;
+            opacity: 1;
             margin-top: 20px;
             padding: 15px;
             border-radius: 10px;
@@ -829,50 +836,27 @@
         }
         /* ======== نهاية ستايل مودال الإعلان ======== */
         
-        /* ======== بداية ستايل مودال الفيديو ======== */
-        .video-modal-content {
-            background-color: #000;
-            width: 90%;
-            max-width: 800px;
-            border-radius: var(--border-radius-main);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-            animation: fadeInUp 0.5s;
-            min-height: 200px; 
-            display: flex;
-            flex-direction: column; /* Changed to column */
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            padding: 10px;
-            box-sizing: border-box;
+        /* ======== بداية ستايل شاشة الفيديو ======== */
+        #video-overlay {
+            flex-direction: column;
+            gap: 20px;
+            z-index: 3000; /* للتأكد من أنه فوق كل شيء */
         }
 
-        #video-loader {
-            position: static;
-            transform: none;
-            color: var(--white-color);
+        #skip-video-btn {
+            width: auto;
+            padding: 12px 30px;
+            background-color: var(--incorrect-color);
+            position: absolute;
+            bottom: 30px; /* يمكنك تغيير مكانه حسب الرغبة */
+            z-index: 3001;
         }
 
-        .skip-video-btn {
-            margin-top: 15px;
-            padding: 10px 25px;
-            border: 1px solid var(--white-color);
-            border-radius: 30px;
-            background-color: rgba(0, 0, 0, 0.6);
-            color: var(--white-color);
-            font-size: 16px;
-            font-weight: bold;
-            font-family: var(--font-family);
-            cursor: pointer;
-            transition: background-color 0.3s;
-            z-index: 10;
+        #skip-video-btn:hover {
+            background-color: #a71d2a;
         }
-
-        .skip-video-btn:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-        /* ======== نهاية ستايل مودال الفيديو ======== */
-
+        /* ======== نهاية ستايل شاشة الفيديو ======== */
+        
         @media (max-width: 600px) {
             .options-container {
                 grid-template-columns: 1fr;
@@ -928,11 +912,10 @@
 </head>
 <body>
 
-    <audio id="correct-sound" src="correct.mp3"></audio>
-    <audio id="incorrect-sound" src="funny.mp3"></audio>
-    <audio id="transition-sound" src="turning.mp3"></audio>
+    <audio id="correct-sound" src="correct.mp3" preload="auto"></audio>
+    <audio id="incorrect-sound" src="funny.mp3" preload="auto"></audio>
+    <audio id="transition-sound" src="turning.mp3" preload="auto"></audio>
 
-    <!-- ======== بداية شريط الحالة الجديد ======== -->
     <div id="status-bar" class="hidden">
         <div class="status-section">
             <span class="icon">👤</span>
@@ -950,11 +933,10 @@
             </a>
         </div>
     </div>
-    <!-- ======== نهاية شريط الحالة الجديد ======== -->
-
     <div class="game-container">
         <div id="landing-screen">
-            <img src="logo.webp" alt="شعار الجامعة الإسلامية" class="logo"> <h1>رحلتك نحو المعرفة والتميز تبدأ الآن</h1>
+            <img src="logo.webp" alt="شعار الجامعة الإسلامية" class="logo" loading="lazy">
+            <h1>رحلتك نحو المعرفة والتميز تبدأ الآن</h1>
             <p class="subtitle">تطلق الجامعة الإسلامية بغزة مسابقة تفاعلية فريدة لطلبة الثانوية العامة، استعد لتحدي معلوماتك والفوز بجوائز قيمة.</p>
             <div class="features-grid">
                 <div class="feature-card">
@@ -982,7 +964,8 @@
         </div>
 
         <div id="start-screen" class="hidden">
-            <img src="logo.webp" alt="شعار الجامعة الإسلامية" class="logo"> <h1>أهلاً بك في رحلتك الافتراضية</h1>
+            <img src="logo.webp" alt="شعار الجامعة الإسلامية" class="logo" loading="lazy">
+            <h1>أهلاً بك في رحلتك الافتراضية</h1>
             <p>استكشف الجامعة الإسلامية، أجب عن التحديات، واربح منحة دراسية حقيقية!</p>
             <form id="player-form">
                 <div class="form-group">
@@ -991,13 +974,13 @@
                 </div>
                 <div class="form-group">
                     <label for="phone">رقم الجوال:</label>
-                    <input type="tel" id="phone" placeholder="مثال: 059xxxxxxx" required>
+                    <input type="tel" id="phone" pattern="^05[9|6|4][0-9]{7}$" placeholder="مثال: 059xxxxxxx" required>
                 </div>
                 <div class="form-group">
                     <label for="tawjihi-year">سنة التوجيهي:</label>
                     <input type="number" id="tawjihi-year" placeholder="مثال: 2024" required>
                 </div>
-                <button type="submit" class="action-button">ابدأ الرحلة!</button>
+                <button type="submit" class="action-button" disabled>ابدأ الرحلة!</button>
             </form>
         </div>
 
@@ -1062,7 +1045,6 @@
                     </div>
                     
                     <div class="info-scene-container" id="admission-info-container">
-                        <!-- سيتم تعبئة المحتوى هنا بواسطة الجافاسكريبت -->
                     </div>
                     
                     <div class="info-footer">
@@ -1105,7 +1087,7 @@
                             <h3>🕌 المنحة الشرعية <span class="grant-percentage">70%</span></h3>
                             <div class="grant-details"><ul><li>للتخصصات: الشريعة الإسلامية، أصول الدين (عام)</li><li>معدل الثانوية: 80% فأكثر</li><li>للاستمرارية: معدل فصلي 80%</li></ul></div>
                         </div>
-                           <div class="grant-card">
+                            <div class="grant-card">
                             <h3>📚 المنحة الشرعية <span class="grant-percentage">35%</span></h3>
                             <div class="grant-details"><ul><li>للتخصصات: الشريعة الإسلامية، أصول الدين (عام)</li><li>معدل الثانوية: 70% - 79.9%</li><li>للاستمرارية: معدل فصلي 80%</li></ul></div>
                         </div>
@@ -1133,11 +1115,11 @@
                             <h3>🧑‍🤝‍🧑 منحة الأسرة (شقيقان) <span class="grant-percentage">15%</span></h3>
                             <div class="grant-details"><ul><li>للاستمرارية: معدل 70% (75% للطب)</li><li>لكل طالب على حدة.</li></ul></div>
                         </div>
-                           <div class="grant-card">
+                            <div class="grant-card">
                             <h3>👪 منحة الأسرة (3 أشقاء) <span class="grant-percentage">25%</span></h3>
                             <div class="grant-details"><ul><li>للاستمرارية: معدل 70% (75% للطب)</li><li>لكل طالب على حدة.</li></ul></div>
                         </div>
-                           <div class="grant-card">
+                            <div class="grant-card">
                             <h3>👨‍👧‍👦 منحة الأسرة (4 أشقاء فأكثر) <span class="grant-percentage">30%</span></h3>
                             <div class="grant-details"><ul><li>للاستمرارية: معدل 70% (75% للطب)</li><li>لكل طالب على حدة.</li></ul></div>
                         </div>
@@ -1145,7 +1127,7 @@
                             <h3>💼 منحة أبناء العاملين <span class="grant-percentage">50%</span></h3>
                             <div class="grant-details"><ul><li>للاستمرارية: معدل فصلي 65%</li><li>تشمل أبناء العاملين ومجلس الأمناء.</li></ul></div>
                         </div>
-                           <div class="grant-card">
+                            <div class="grant-card">
                             <h3>❤️ منح الأسرى والشهداء والأيتام <span class="grant-percentage">70%+</span></h3>
                             <div class="grant-details"><ul><li>للاستمرارية: معدل فصلي 80%</li><li>تتوفر منح مختلفة لهذه الفئات وتتطلب إثباتات رسمية.</li></ul></div>
                         </div>
@@ -1239,32 +1221,34 @@
         </div>
     </div>
 
-    <!-- ======== بداية مودال الإعلان ======== -->
     <div id="ad-modal" class="modal hidden">
         <div class="ad-modal-content">
             <span class="close-ad-btn">&times;</span>
             <img src="eng.webp" alt="إعلان كلية الهندسة">
         </div>
     </div>
-    <!-- ======== نهاية مودال الإعلان ======== -->
 
-    <!-- ======== بداية مودال الفيديو الترحيبي ======== -->
-    <div id="video-modal" class="modal hidden">
-        <div class="video-modal-content">
-            <div id="video-loader" class="loader-container">
-                <div class="loader"></div>
-                <p>جاري تحميل الفيديو...</p>
-            </div>
-            <video id="welcome-video" width="100%" style="display: none; border-radius: var(--border-radius-main);"></video>
-            <button id="skip-video-btn" class="skip-video-btn">تخطي الفيديو</button>
-        </div>
+    <div id="video-overlay" class="modal hidden">
+        <video id="welcome-video" width="90%" style="max-width: 800px; border-radius: 15px;">
+            <source src="hares 1.mp4" type="video/mp4">
+            متصفحك لا يدعم عرض الفيديو.
+        </video>
+        <button id="skip-video-btn" class="action-button">تخطي الفيديو</button>
     </div>
-    <!-- ======== نهاية مودال الفيديو الترحيبي ======== -->
-
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-lE41eY0lEWEOxZevGyTMxNbpY2zTmRzWa3DEAd5Dc6O72GgtMA/exec';
         
-        function registerPlayer(name, phone, year) {
+        
+// تعطيل زر البداية حتى يتم إدخال بيانات صحيحة
+const form = document.getElementById('player-form');
+if(form){
+    const startBtn = form.querySelector('button');
+    form.addEventListener('input', () => {
+        startBtn.disabled = !form.checkValidity();
+    });
+}
+
+function registerPlayer(name, phone, year) {
             const formData = new FormData();
             formData.append('action', 'register');
             formData.append('name', name);
@@ -1272,7 +1256,9 @@
             formData.append('year', year);
             return fetch(SCRIPT_URL, { method: 'POST', body: formData }).then(response => response.json());
         }
-        function updatePlayerScore(uniqueId, score) {
+        
+
+function updatePlayerScore(uniqueId, score) {
             if (!uniqueId) {
                 console.error("Attempted to update score without a uniqueId.");
                 return;
@@ -1567,12 +1553,14 @@
             const incorrectSound = document.getElementById('incorrect-sound');
             const transitionSound = document.getElementById('transition-sound');
             
-            // ======== متغيرات الإعلان والفيديو ========
-            const adModal = document.getElementById('ad-modal');
-            const videoModal = document.getElementById('video-modal');
+            // ======== متغيرات الفيديو الترحيبي ========
+            const videoOverlay = document.getElementById('video-overlay');
             const welcomeVideo = document.getElementById('welcome-video');
-            const videoLoader = document.getElementById('video-loader');
             const skipVideoBtn = document.getElementById('skip-video-btn');
+            // =====================================
+
+            // ======== متغيرات الإعلان ========
+            const adModal = document.getElementById('ad-modal');
             let adShownThisSession = false; 
             let adTriggerQuestionIndex = -1; 
             let isAudioUnlocked = false;
@@ -1694,14 +1682,14 @@
                     return;
                 }
                 const currentYear = new Date().getFullYear();
-                const phoneRegex = /^059\d{7}$/;
+                const phoneRegex = /^05[9|6|4]\d{7}$/;
                 const tawjihiYear = parseInt(tawjihiYearInput);
                 if (phoneInput === '' || tawjihiYearInput === '') {
                     showModal('خطأ في الإدخال', 'الرجاء تعبئة جميع الحقول.', null);
                     return;
                 }
                 if (!phoneRegex.test(phoneInput)) {
-                    showModal('خطأ في رقم الجوال', 'الرجاء إدخال رقم جوال صحيح يبدأ بـ 059.', null);
+                    showModal('خطأ في رقم الجوال', 'الرجاء إدخال رقم جوال صحيح يبدأ بـ 059 أو 056 أو 054.', null);
                     return;
                 }
                 if (tawjihiYear < 2000 || tawjihiYear > currentYear + 1) {
@@ -1962,7 +1950,7 @@
 
                     setTimeout(() => {
                         if (sceneId === 'gate') {
-                            playWelcomeVideo();
+                            playWelcomeVideo(); // <--- هذا هو التعديل
                         } else if (Array.isArray(gameData[sceneId])) {
                             const nextQuestionIndex = gameState.currentSubQuestionIndex + 1;
                             if (nextQuestionIndex < gameData[sceneId].length) {
@@ -2017,39 +2005,30 @@
                 };
             }
 
+            function endVideoAndProceed() {
+                welcomeVideo.pause(); // إيقاف الفيديو
+                welcomeVideo.currentTime = 0; // إرجاعه للبداية
+                videoOverlay.classList.add('hidden'); // إخفاء شاشة الفيديو
+                renderScene('map'); // الانتقال إلى الخريطة
+            }
+
+            function playWelcomeVideo() {
+                videoOverlay.classList.remove('hidden'); // إظهار شاشة الفيديو
+                welcomeVideo.play();
+
+                // عند انتهاء الفيديو تلقائياً
+                welcomeVideo.onended = endVideoAndProceed;
+
+                // عند الضغط على زر التخطي
+                skipVideoBtn.onclick = endVideoAndProceed;
+            }
+
             // ======== دالة إظهار مودال الإعلان ========
             function showAdModal() {
                 adModal.classList.remove('hidden');
                 adShownThisSession = true; // نضمن ظهوره مرة واحدة فقط
             }
             // =======================================
-            
-            // ======== دالة تشغيل الفيديو الترحيبي ========
-            function playWelcomeVideo() {
-                videoModal.classList.remove('hidden');
-                welcomeVideo.src = 'hares 1.mp4';
-                
-                welcomeVideo.oncanplay = function() {
-                    videoLoader.style.display = 'none';
-                    welcomeVideo.style.display = 'block';
-                    welcomeVideo.play();
-                };
-
-                welcomeVideo.onended = function() {
-                    videoModal.classList.add('hidden');
-                    welcomeVideo.pause();
-                    welcomeVideo.currentTime = 0;
-                    renderScene('map');
-                };
-
-                // Error handling for the video
-                welcomeVideo.onerror = function() {
-                    console.error("Video could not be loaded.");
-                    videoModal.classList.add('hidden');
-                    renderScene('map'); // Skip to map if video fails
-                };
-            }
-            // ==========================================
             
             function isStageCompleted(stageId) {
                 let stageData = gameData[stageId];
@@ -2167,15 +2146,6 @@
             });
             // =======================================================
             
-            // ======== إضافة Event Listener لزر تخطي الفيديو ========
-            skipVideoBtn.addEventListener('click', () => {
-                videoModal.classList.add('hidden');
-                welcomeVideo.pause();
-                welcomeVideo.currentTime = 0;
-                renderScene('map');
-            });
-            // =======================================================
-
             document.getElementById('new-player-btn').addEventListener('click', resetGameState);
 
             document.getElementById('reset-progress-btn').addEventListener('click', (e) => {
@@ -2198,9 +2168,9 @@
                     }
                 } else {
                     if (gameState.uniquePlayerId) {
-                       renderScene('map', 0, false);
+                      renderScene('map', 0, false);
                     } else {
-                       location.reload();
+                      location.reload();
                     }
                 }
             });
@@ -2301,6 +2271,7 @@
             
             restoreGameSession();
         });
-    </script>
+    
+</script>
 </body>
 </html>

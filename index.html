@@ -1380,13 +1380,6 @@ function updatePlayerScore(uniqueId, score) {
             return newArray;
         }
 
-        function preloadImages(urls) {
-            urls.forEach(url => {
-                const img = new Image();
-                img.src = url;
-            });
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
             const collegesData = [
                 { name: 'كلية الطب', description: 'الطب وعلومه وطبيبٌ للمستقبل', url: 'https://medicine.iugaza.edu.ps/', emoji: '⚕️' },
@@ -1500,6 +1493,51 @@ function updatePlayerScore(uniqueId, score) {
             let adShownThisSession = false; 
             let adTriggerQuestionIndex = -1; 
             let isAudioUnlocked = false;
+            
+            // --- START: New progressive image preloading logic ---
+            const preloadedImages = new Set();
+
+            function preloadImage(url) {
+                if (!url || preloadedImages.has(url)) {
+                    return; // Skip if no URL or already preloaded
+                }
+                const img = new Image();
+                img.src = url;
+                preloadedImages.add(url);
+                console.log(`Preloading: ${url}`);
+            }
+
+            function getUrlsForNextScenes(sceneId, questionIndex = 0) {
+                const urls = new Set();
+                if (sceneId === 'map') {
+                    // Preload images for all destinations on the map
+                    const mapButtons = document.querySelectorAll('#map-scene .option-btn');
+                    mapButtons.forEach(btn => {
+                        const dest = btn.dataset.destination;
+                        if (gameData[dest]) {
+                            const destData = Array.isArray(gameData[dest]) ? gameData[dest][0] : gameData[dest];
+                            if(destData.image) urls.add(destData.image);
+                        }
+                    });
+                } else {
+                    const sceneData = gameData[sceneId];
+                    if (Array.isArray(sceneData)) {
+                        const nextIndex = questionIndex + 1;
+                        if (nextIndex < sceneData.length) {
+                            // Preload the next question's image in the same sequence
+                            if(sceneData[nextIndex].image) urls.add(sceneData[nextIndex].image);
+                        }
+                    }
+                }
+                return Array.from(urls);
+            }
+            
+            function preloadNextImages(sceneId, questionIndex = 0) {
+                const urlsToLoad = getUrlsForNextScenes(sceneId, questionIndex);
+                urlsToLoad.forEach(preloadImage);
+            }
+            // --- END: New progressive image preloading logic ---
+
 
             async function unlockAudio() {
                 if (isAudioUnlocked) return;
@@ -1686,7 +1724,11 @@ function updatePlayerScore(uniqueId, score) {
                     }
                 }
 
-                if (sceneId === 'map') { document.getElementById('map-scene').classList.remove('hidden'); return; }
+                if (sceneId === 'map') {
+                    document.getElementById('map-scene').classList.remove('hidden');
+                    preloadNextImages('map'); // Preload images for all map destinations
+                    return;
+                }
                 if (sceneId === 'faculties-list') { renderFacultiesListScene(); return; }
                 if (sceneId === 'grants-info') { renderGrantsInfoScene(); return; }
                 if (sceneId === 'admission-info') { renderAdmissionInfoScene(); return; }
@@ -1825,9 +1867,11 @@ function updatePlayerScore(uniqueId, score) {
                     setTimeout(() => {
                         if (sceneId === 'gate') {
                             playWelcomeVideo();
+                            preloadNextImages('map'); // Preload for the next step (map)
                         } else if (Array.isArray(gameData[sceneId])) {
                             const nextQuestionIndex = gameState.currentSubQuestionIndex + 1;
                             if (nextQuestionIndex < gameData[sceneId].length) {
+                                preloadNextImages(sceneId, nextQuestionIndex); // Preload next question image
                                 renderScene(sceneId, nextQuestionIndex);
                             } else {
                                 const parentScene = sceneParentMap[sceneId];
@@ -1998,17 +2042,6 @@ function updatePlayerScore(uniqueId, score) {
                 }
             });
             
-            const allImageUrls = new Set();
-            Object.values(gameData).forEach(scene => {
-                if (Array.isArray(scene)) {
-                    scene.forEach(question => { if (question.image) allImageUrls.add(question.image); });
-                } else if (scene && scene.image) {
-                    allImageUrls.add(scene.image);
-                }
-            });
-            
-            window.addEventListener('load', () => preloadImages(Array.from(allImageUrls)));
-
             function populateFacultiesList() {
                 const container = document.getElementById('faculties-grid-container');
                 let content = '';

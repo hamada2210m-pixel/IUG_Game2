@@ -205,6 +205,7 @@
         .action-button:disabled {
             background-color: var(--text-light);
             cursor: not-allowed;
+            transform: none; /* إلغاء تأثير الـ hover عند التعطيل */
         }
         
         .btn-icon {
@@ -299,23 +300,27 @@
 
         .option-btn.correct::before { content: '✓'; }
         .option-btn.incorrect::before { content: '✗'; }
-
+        
+        /* --- UI/UX: Animation for feedback message - START --- */
         .feedback-message {
-            display: none;
             opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-        }
-        .feedback-message.show {
-            display: block !important;
-            opacity: 1;
+            transform: translateY(10px);
+            visibility: hidden;
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out, visibility 0.4s;
             margin-top: 20px;
             padding: 15px;
             border-radius: 10px;
             font-size: 18px;
             font-weight: bold;
             color: var(--white-color);
-            display: none;
         }
+
+        .feedback-message.show {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+        }
+        /* --- UI/UX: Animation for feedback message - END --- */
 
         .feedback-message.correct { background-color: var(--correct-color); }
         .feedback-message.incorrect { background-color: var(--incorrect-color); }
@@ -861,14 +866,21 @@
             .options-container {
                 grid-template-columns: 1fr;
             }
+
+            /* --- RESPONSIVE: .feature-card on small screens - START --- */
             .features-grid {
-                flex-direction: column;
-                align-items: center;
+                display: grid;
+                /* This creates a responsive grid where columns are at least 200px wide, 
+                   and they fill the available space evenly. */
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px; /* Adjust gap for smaller screens */
             }
             .feature-card {
-                width: 90%;
-                margin-bottom: 15px;
+                /* Remove fixed width to allow the grid to control the size */
+                width: auto; 
+                margin-bottom: 0; /* Gap on the grid handles spacing */
             }
+            /* --- RESPONSIVE: .feature-card on small screens - END --- */
 
             /* ======== بداية تصميم شريط الحالة المتجاوب ======== */
             #status-bar {
@@ -923,11 +935,11 @@
             <span id="player-score-display"></span>
         </div>
         <div class="status-section">
-            <a href="#" id="back-to-map-btn" class="status-bar-btn">
+            <a href="#" id="back-to-map-btn" class="status-bar-btn" aria-label="العودة إلى الخريطة">
                 <span class="icon">🗺️</span>
                 الخريطة
             </a>
-            <a href="#" id="logout-btn" class="status-bar-btn">
+            <a href="#" id="logout-btn" class="status-bar-btn" aria-label="الخروج وبدء رحلة جديدة">
                 <span class="icon">🚪</span>
                 خروج
             </a>
@@ -970,7 +982,7 @@
             <form id="player-form">
                 <div class="form-group">
                     <label for="name">الاسم الكامل:</label>
-                    <input type="text" id="name" placeholder="مثال: أحمد علي" required>
+                    <input type="text" id="name" placeholder="مثال: أحمد علي" required minlength="5">
                 </div>
                 <div class="form-group">
                     <label for="phone">رقم الجوال:</label>
@@ -978,7 +990,7 @@
                 </div>
                 <div class="form-group">
                     <label for="tawjihi-year">سنة التوجيهي:</label>
-                    <input type="number" id="tawjihi-year" placeholder="مثال: 2024" required>
+                    <input type="number" id="tawjihi-year" placeholder="مثال: 2024" required min="2000">
                 </div>
                 <button type="submit" class="action-button" disabled>ابدأ الرحلة!</button>
             </form>
@@ -1204,7 +1216,7 @@
             <div id="end-scene" class="game-stage hidden">
                 <div class="scene-content">
                     <h2 class="scene-title">🎉 تهانينا! 🎉</h2>
-                    <img src="https://placehold.co/400x250/28a745/FFFFFF?text=شهادة+شكر" alt="شهادة مشاركة" class="scene-image" style="max-width: 100%; border-radius: 10px; margin-bottom: 20px;">
+                    <img src="https://placehold.co/400x250/28a745/FFFFFF?text=شهادة+شكر" alt="شهادة مشاركة" class="scene-image" style="max-width: 100%; border-radius: 10px; margin-bottom: 20px;" loading="lazy">
                     <p id="final-message" style="font-size: 18px; line-height: 1.6;"></p>
                     <button id="share-btn" class="action-button">مشاركة على وسائل التواصل</button>
                     <button id="new-player-btn" class="action-button" style="margin-top: 10px; background-color: var(--text-light);">بدء رحلة جديدة (لاعب جديد)</button>
@@ -1224,7 +1236,7 @@
     <div id="ad-modal" class="modal hidden">
         <div class="ad-modal-content">
             <span class="close-ad-btn">&times;</span>
-            <img src="eng.webp" alt="إعلان كلية الهندسة">
+            <img src="eng.webp" alt="إعلان كلية الهندسة" loading="lazy">
         </div>
     </div>
 
@@ -1239,11 +1251,13 @@
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-lE41eY0lEWEOxZevGyTMxNbpY2zTmRzWa3DEAd5Dc6O72GgtMA/exec';
         
         
-// تعطيل زر البداية حتى يتم إدخال بيانات صحيحة
+// UI/UX: This code block ensures the "Start Journey" button is disabled until all required form fields are validly filled.
 const form = document.getElementById('player-form');
 if(form){
     const startBtn = form.querySelector('button');
+    const inputs = form.querySelectorAll('input[required]');
     form.addEventListener('input', () => {
+        // The checkValidity() method checks if all inputs with 'required', 'pattern', 'minlength' etc. are valid.
         startBtn.disabled = !form.checkValidity();
     });
 }
@@ -1670,32 +1684,37 @@ function updatePlayerScore(uniqueId, score) {
                 }
                 return false;
             }
-
+            
+            // --- SECURITY: Client-side validation is performed here before sending data ---
             function startGame(event) {
                 event.preventDefault();
                 const nameInput = document.getElementById('name').value.trim();
                 const phoneInput = document.getElementById('phone').value.trim();
                 const tawjihiYearInput = document.getElementById('tawjihi-year').value.trim();
+
+                // 1. Name Validation: Checks for minimum length and valid characters (letters and spaces only).
                 const nameRegex = /^[\u0600-\u06FFa-zA-Z\s]+$/;
                 if (nameInput.length < 5 || !nameRegex.test(nameInput)) {
                     showModal('تنبيه بخصوص الاسم', 'هذا الاسم سيتم استخدامه في الشهادة، الرجاء كتابته بشكل صحيح (5 حروف على الأقل، وبدون أرقام أو رموز).', null);
                     return;
                 }
-                const currentYear = new Date().getFullYear();
+                
+                // 2. Phone Validation: Uses a regular expression (Regex) to ensure the phone number is in a valid format.
                 const phoneRegex = /^05[9|6|4]\d{7}$/;
-                const tawjihiYear = parseInt(tawjihiYearInput);
-                if (phoneInput === '' || tawjihiYearInput === '') {
-                    showModal('خطأ في الإدخال', 'الرجاء تعبئة جميع الحقول.', null);
-                    return;
-                }
                 if (!phoneRegex.test(phoneInput)) {
                     showModal('خطأ في رقم الجوال', 'الرجاء إدخال رقم جوال صحيح يبدأ بـ 059 أو 056 أو 054.', null);
                     return;
                 }
-                if (tawjihiYear < 2000 || tawjihiYear > currentYear + 1) {
+
+                // 3. Year Validation: Checks if the year is within a logical range.
+                const currentYear = new Date().getFullYear();
+                const tawjihiYear = parseInt(tawjihiYearInput);
+                if (isNaN(tawjihiYear) || tawjihiYear < 2000 || tawjihiYear > currentYear + 1) {
                     showModal('خطأ في سنة التوجيهي', 'الرجاء إدخال سنة توجيهي منطقية (مثال: 2024).', null);
                     return;
                 }
+                
+                // All checks passed, proceed to register the player.
                 const startButton = event.target.querySelector('.action-button');
                 startButton.disabled = true;
                 startButton.textContent = 'جاري التسجيل...';
@@ -1726,6 +1745,7 @@ function updatePlayerScore(uniqueId, score) {
                         startButton.textContent = 'ابدأ الرحلة!';
                     });
             }
+
 
             function showEndScene() {
                 document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
@@ -1826,7 +1846,7 @@ function updatePlayerScore(uniqueId, score) {
                 }
 
                 sceneElement.innerHTML = `
-                    <img src="${sceneData.image}" alt="صورة مشهد ${sceneId}" class="scene-image">
+                    <img src="${sceneData.image}" alt="صورة مشهد ${sceneId}" class="scene-image" loading="lazy">
                     <div class="scene-content">
                         ${progressBarHTML}
                         <p class="scene-title">${sceneData.question}</p>
@@ -1881,7 +1901,7 @@ function updatePlayerScore(uniqueId, score) {
                  gameState.currentScene = 'grants-info';
                  saveGameState();
                  document.getElementById('start-grants-quiz-btn').onclick = () => {
-                    renderScene('grants');
+                     renderScene('grants');
                  };
             }
             
@@ -1891,7 +1911,7 @@ function updatePlayerScore(uniqueId, score) {
                  gameState.currentScene = 'exchange-info';
                  saveGameState();
                  document.getElementById('start-exchange-quiz-btn').onclick = () => {
-                    renderScene('exchange');
+                     renderScene('exchange');
                  };
             }
 
@@ -1936,8 +1956,9 @@ function updatePlayerScore(uniqueId, score) {
                     
                     targetButton.classList.add('correct');
                     feedbackElement.textContent = sceneData.correctFeedback || 'إجابة صحيحة!';
-                    feedbackElement.className = 'feedback-message correct';
-                    feedbackElement.style.display = 'block';
+                    
+                    // UI/UX: Use classes for animation
+                    feedbackElement.className = 'feedback-message correct show';
 
                     // ======== منطق إظهار الإعلان ========
                     if ((sceneId === 'tf_questions' || sceneId === 'mc_questions') && !adShownThisSession) {
@@ -1979,13 +2000,15 @@ function updatePlayerScore(uniqueId, score) {
                     targetButton.disabled = true;  
                     targetButton.classList.add('incorrect');
                     feedbackElement.textContent = sceneData.incorrectFeedback || 'إجابة غير صحيحة. حاول مرة أخرى!';
-                    feedbackElement.className = 'feedback-message incorrect';
-                    feedbackElement.style.display = 'block';
+                    
+                    // UI/UX: Use classes for animation
+                    feedbackElement.className = 'feedback-message incorrect show';
 
                     setTimeout(() => {
                         targetButton.disabled = false;
                         targetButton.classList.remove('incorrect');
-                        feedbackElement.style.display = 'none';
+                        // UI/UX: Hide feedback by removing the 'show' class
+                        feedbackElement.classList.remove('show');
                     }, 1500);
                 }
             }

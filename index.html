@@ -721,77 +721,77 @@
             color: var(--text-dark);
         }
 
-		#status-bar {
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			background-color: var(--primary-dark);
-			color: var(--white-color);
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			padding: 12px 25px;
-			box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
-			z-index: 1000;
-			box-sizing: border-box;
-			border-bottom: 3px solid var(--secondary-color);
-			transition: top 0.3s ease-in-out;
-		}
+        #status-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--primary-dark);
+            color: var(--white-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 25px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            box-sizing: border-box;
+            border-bottom: 3px solid var(--secondary-color);
+            transition: top 0.3s ease-in-out;
+        }
 
-		#status-bar.hidden {
-			top: -100px;
-		}
+        #status-bar.hidden {
+            top: -100px;
+        }
 
-		.status-section {
-			display: flex;
-			align-items: center;
-			gap: 15px;
-		}
+        .status-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
-		#player-name-display {
-			font-weight: bold;
-			font-size: 17px;
-		}
+        #player-name-display {
+            font-weight: bold;
+            font-size: 17px;
+        }
 
-		#player-score-display {
-			background-color: var(--secondary-color);
-			color: var(--text-dark);
-			padding: 6px 15px;
-			border-radius: 20px;
-			font-weight: bold;
-			font-size: 16px;
-		}
+        #player-score-display {
+            background-color: var(--secondary-color);
+            color: var(--text-dark);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 16px;
+        }
 
-		.status-bar-btn {
-			background-color: rgba(255, 255, 255, 0.1);
-			color: var(--white-color);
-			text-decoration: none;
-			padding: 8px 15px;
-			border-radius: 8px;
-			font-size: 15px;
-			font-weight: bold;
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			border: 1px solid rgba(255, 255, 255, 0.3);
-			transition: all 0.3s ease;
-		}
+        .status-bar-btn {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white-color);
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
 
-		.status-bar-btn:hover {
-			background-color: var(--incorrect-color);
-			border-color: var(--incorrect-color);
-			transform: translateY(-2px);
-		}
+        .status-bar-btn:hover {
+            background-color: var(--incorrect-color);
+            border-color: var(--incorrect-color);
+            transform: translateY(-2px);
+        }
         
         .status-bar-btn#back-to-map-btn:hover {
             background-color: var(--info-color);
             border-color: var(--info-color);
         }
 
-		.status-section .icon {
-			font-size: 22px;
-		}
+        .status-section .icon {
+            font-size: 22px;
+        }
 
         .ad-modal-content {
             position: relative;
@@ -852,25 +852,26 @@
             background-color: #a71d2a;
         }
         
-        /* --- بداية ستايل شاشة اختيار المرشد --- */
+        /* --- بداية ستايل شاشة اختيار المرشد (محدّث) --- */
         .guides-container {
-            display: flex;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 20px;
             margin-top: 25px;
-            flex-wrap: wrap;
         }
 
         .guide-card {
-            background-color: #f9f9f9;
+            background-color: var(--white-color);
             border: 3px solid transparent;
             border-radius: var(--border-radius-main);
             padding: 20px;
-            width: 180px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .guide-card:hover {
@@ -884,13 +885,18 @@
             transform: translateY(-8px);
         }
 
-        .guide-card img {
+        .guide-icon {
+            font-size: 64px; /* حجم الإيموجي */
+            line-height: 1;
+            margin-bottom: 15px;
+            background-color: var(--light-bg);
             width: 100px;
             height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border-radius: 50%;
             border: 4px solid var(--primary-color);
-            margin-bottom: 15px;
-            object-fit: cover;
         }
 
         .guide-card h3 {
@@ -905,6 +911,7 @@
             color: var(--primary-color);
             display: block;
             margin-bottom: 10px;
+            min-height: 20px;
         }
 
         .guide-card p {
@@ -912,6 +919,7 @@
             color: var(--text-light);
             line-height: 1.5;
             margin: 0;
+            flex-grow: 1;
         }
         /* --- نهاية ستايل شاشة اختيار المرشد --- */
         
@@ -964,6 +972,9 @@
 
             body {
                 padding-top: 125px;
+            }
+            .guides-container {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -1045,27 +1056,9 @@
         <div id="guide-selection-screen" class="game-stage hidden">
             <div class="scene-content">
                 <h2 class="scene-title">اختر مرشدك في الرحلة</h2>
-                <p>كل مرشد سيقدم لك نصائح من منظور تخصصه!</p>
+                <p>كل مرشد سيقدم لك نصائح من منظور تخصصه الفريد!</p>
                 <div class="guides-container">
-                    <div class="guide-card" data-guide="engineer">
-                        <img src="https://i.ibb.co/6rW3g1F/engineer-avatar.png" alt="مرشد الهندسة" loading="lazy">
-                        <h3>أحمد</h3>
-                        <span>كلية الهندسة</span>
-                        <p>شغوف بالبرمجة والابتكار، سأساعدك على حل المشاكل بمنطق وهدوء.</p>
                     </div>
-                    <div class="guide-card" data-guide="doctor">
-                        <img src="https://i.ibb.co/D57Jq1K/doctor-avatar.png" alt="مرشدة الطب" loading="lazy">
-                        <h3>فاطمة</h3>
-                        <span>كلية الطب</span>
-                        <p>الدقة والتركيز هما سر النجاح. سأكون بجانبك لأضمن أن تكون رحلتك صحية!</p>
-                    </div>
-                    <div class="guide-card" data-guide="artist">
-                        <img src="https://i.ibb.co/dKSmcJs/artist-avatar.png" alt="مرشد الآداب" loading="lazy">
-                        <h3>ليلى</h3>
-                        <span>كلية الآداب</span>
-                        <p>أحب القصص والكلمات. سأجعل رحلتك مليئة بالإبداع والمعاني الجميلة.</p>
-                    </div>
-                </div>
                 <button id="confirm-guide-btn" class="action-button" disabled style="margin-top: 30px;">
                     تأكيد المرشد والبدء
                 </button>
@@ -1326,16 +1319,16 @@
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-lE41eY0lEWEOxZevGyTMxNbpY2zTmRzWa3DEAd5Dc6O72GgtMA/exec';
         
-const form = document.getElementById('player-form');
-if(form){
-    const startBtn = form.querySelector('button');
-    const inputs = form.querySelectorAll('input[required]');
-    form.addEventListener('input', () => {
-        startBtn.disabled = !form.checkValidity();
-    });
-}
+        const form = document.getElementById('player-form');
+        if(form){
+            const startBtn = form.querySelector('button');
+            const inputs = form.querySelectorAll('input[required]');
+            form.addEventListener('input', () => {
+                startBtn.disabled = !form.checkValidity();
+            });
+        }
 
-function registerPlayer(name, phone, year) {
+        function registerPlayer(name, phone, year) {
             const formData = new FormData();
             formData.append('action', 'register');
             formData.append('name', name);
@@ -1344,8 +1337,7 @@ function registerPlayer(name, phone, year) {
             return fetch(SCRIPT_URL, { method: 'POST', body: formData }).then(response => response.json());
         }
         
-
-function updatePlayerScore(uniqueId, score) {
+        function updatePlayerScore(uniqueId, score) {
             if (!uniqueId) {
                 console.error("Attempted to update score without a uniqueId.");
                 return;
@@ -1368,7 +1360,7 @@ function updatePlayerScore(uniqueId, score) {
 
         function shuffleArray(array) {
             let currentIndex = array.length, randomIndex;
-            const newArray = [...array];  
+            const newArray = [...array]; 
             
             while (currentIndex !== 0) {
                 randomIndex = Math.floor(Math.random() * currentIndex);
@@ -1395,38 +1387,63 @@ function updatePlayerScore(uniqueId, score) {
                 { name: 'كلية الاقتصاد والعلوم الإدارية', description: 'بناء الاقتصاد والإدارة السليمة والمال', url: 'https://commerce.iugaza.edu.ps/', emoji: '💼' }
             ];
 
-            const guideData = {
-                engineer: {
-                    name: "أحمد",
-                    image: "https://i.ibb.co/6rW3g1F/engineer-avatar.png"
-                },
-                doctor: {
-                    name: "فاطمة",
-                    image: "https://i.ibb.co/D57Jq1K/doctor-avatar.png"
-                },
-                artist: {
-                    name: "ليلى",
-                    image: "https://i.ibb.co/dKSmcJs/artist-avatar.png"
-                }
-            };
+            // --- START: بيانات المرشدين المحدّثة ---
+            const allGuides = [
+                { id: 'medicine', name: 'د. خالد', college: 'كلية الطب', emoji: '⚕️', description: 'الدقة والتشخيص السليم هما مفتاح النجاح. سأرشدك في رحلة معرفية صحية.' },
+                { id: 'engineering', name: 'م. سارة', college: 'كلية الهندسة', emoji: '🏗️', description: 'كل مشروع عظيم يبدأ بتصميم دقيق. لنبني مستقبلك خطوة بخطوة.' },
+                { id: 'it', name: 'مبرمج بدر', college: 'كلية تكنولوجيا المعلومات', emoji: '💻', description: 'في عالم الأكواد، كل مشكلة لها حل. سأساعدك على التفكير بمنطقية وإيجاد الحلول.' },
+                { id: 'nursing', name: 'ممرضة أمل', college: 'كلية التمريض', emoji: '🩺', description: 'الرحمة والعناية هما أساس مهنتنا. سأكون بجانبك لألهمك العطاء.' },
+                { id: 'health_sciences', name: 'أخصائي رامي', college: 'كلية العلوم الصحية', emoji: '🧬', description: 'صحة المجتمع تبدأ من المختبر. معًا سنكتشف أسرار الوقاية والعلاج.' },
+                { id: 'sciences', name: 'عالمة نور', college: 'كلية العلوم', emoji: '🔬', description: 'الكون مليء بالأسئلة، والعلوم هي وسيلتنا للإجابة. دعنا نستكشف بشغف.' },
+                { id: 'arts', name: 'أديبة ليلى', college: 'كلية الآداب', emoji: '📚', description: 'الكلمات تبني الحضارات. سأجعل رحلتك مليئة بالإبداع والمعاني الجميلة.' },
+                { id: 'law', name: 'فقيه يوسف', college: 'كلية الشريعة والقانون', emoji: '⚖️', description: 'العدل هو أساس الملك. سأعلمك كيف توازن بين الحقوق والواجبات.' },
+                { id: 'religion', name: 'داعية إيمان', college: 'كلية أصول الدين', emoji: '🕌', description: 'العلم بالدين ينير الدرب. سأرافقك في رحلة لفهم مقاصد شريعتنا السمحة.' },
+                { id: 'education', name: 'أستاذة هدى', college: 'كلية التربية', emoji: '👩‍🏫', description: 'بناء الأجيال هو أسمى الرسالات. معًا سنتعلم كيف نلهم العقول ونبني المستقبل.' },
+                { id: 'economics', name: 'خبير مالي', college: 'كلية الاقتصاد', emoji: '💼', description: 'فهم المال والاقتصاد هو مفتاح بناء مستقبل مزدهر. دعنا نخطط لنجاحك.' }
+            ];
 
             const guideMessages = {
                 'gate': {
-                    engineer: "البوابة هي مدخلك لعالم الابتكار. كل مشروع عظيم يبدأ بخطوة أولى منظمة. بالتوفيق!",
-                    doctor: "تمامًا مثل تشخيص الحالة، الإجابة الصحيحة تتطلب دقة وملاحظة. ركز جيدًا!",
-                    artist: "كل رحلة هي قصة. وهذه هي بداية قصتك في الجامعة. اجعلها بداية ملهمة!"
+                    medicine: "مرحباً بك! الدخول للجامعة يشبه التشخيص الأول، يجب أن يكون دقيقاً. ركز جيداً.",
+                    engineering: "أهلاً بك. هذه البوابة هي أساس مشروعك التعليمي. لنبدأ ببناء متين!",
+                    it: "مصادقة ناجحة! لقد تجاوزت جدار الحماية الأول. أهلاً بك في نظام الجامعة.",
+                    nursing: "تماماً مثل استقبال المريض، نرحب بك بحرارة. رحلتك نحو العطاء تبدأ الآن.",
+                    health_sciences: "العينة الأولى هي سؤال الدخول! حلله بعناية لتكشف الإجابة الصحيحة.",
+                    sciences: "مرحباً أيها الباحث! كل اكتشاف عظيم يبدأ بفرضية. ما هي فرضيتك للإجابة الصحيحة؟",
+                    arts: "لكل قصة بداية، وهذه بداية قصتك الجامعية. اجعلها بداية مُلهمة.",
+                    law: "قبل الدخول، يجب التأكد من استيفاء الشروط. هل أنت مستعد لإثبات جدارتك؟",
+                    religion: "بسم الله نبدأ. هذه البوابة هي مدخلك إلى صرح من صروح العلم والإيمان.",
+                    education: "أهلاً بك في الفصل الأول من رحلتك. كل إجابة صحيحة هي خطوة نحو إلهام الآخرين.",
+                    economics: "هذه أول صفقة لك! استثمر تركيزك جيداً لتحقيق أول ربح في رصيدك."
                 },
                 'library': {
-                    engineer: "المكتبة كنز للمهندسين! هنا تجد أحدث المراجع التي تساعدنا في بناء المستقبل.",
-                    doctor: "المعرفة الطبية تتجدد باستمرار. المكتبة هي المكان الأمثل للبقاء على اطلاع دائم.",
-                    artist: "الكتب هي غذاء الروح. استلهم من قصص العظماء هنا لتكتب قصتك الخاصة."
+                    medicine: "المكتبة هي مصدر الأبحاث الطبية الحديثة. كل كتاب هنا قد ينقذ حياة في المستقبل.",
+                    engineering: "هنا تجد المخططات والمراجع لبناء أي شيء تتخيله. المعرفة هي أقوى مواد البناء.",
+                    it: "المكتبة هي قاعدة بياناتنا الضخمة. ابحث جيداً وستجد الخوارزمية الصحيحة لحل أي تحدٍ.",
+                    nursing: "كما نحتاج للمراجع لمعرفة أفضل طرق الرعاية، ستجد هنا كل ما تحتاجه لتغذية عقلك.",
+                    health_sciences: "نتائج أبحاثنا تعتمد على دقة مصادرنا. المكتبة هي مختبرك النظري الأول.",
+                    sciences: "هنا تجد أبحاث من سبقونا. قف على أكتاف العمالقة لترى أبعد.",
+                    arts: "الكتب هي غذاء الروح. استلهم من قصص العظماء هنا لتكتب قصتك الخاصة.",
+                    law: "هنا تجد نصوص القوانين والسوابق القضائية. كل قضية ناجحة تبدأ ببحث دقيق.",
+                    religion: "هذه رياض من رياض الجنة. هنا كتب التفسير والحديث التي تنير العقل والقلب.",
+                    education: "المكتبة هي مصدر إعداد الدروس للمستقبل. كلما قرأت أكثر، زادت قدرتك على التعليم.",
+                    economics: "هنا تجد نظريات كبار الاقتصاديين. دراسة الماضي هي أفضل طريقة للتنبؤ بالمستقبل."
                 },
                 'faculties-list': {
-                    engineer: "هذه منطقة الكليات، وكليتي (الهندسة) هنا! كل مبنى يحمل معرفة مختلفة. استكشف بشغف.",
-                    doctor: "ستجد كلية الطب هنا، حيث نتعلم كيف ننقذ الأرواح. اختر بحكمة وشغف.",
-                    artist: "كل كلية هنا تمثل لونًا فريدًا في لوحة الجامعة الكبيرة. أي لون ستختار؟"
+                    medicine: "ستجد كلية الطب هنا، حيث نتعلم كيف ننقذ الأرواح. اختر بحكمة وشغف.",
+                    engineering: "هذه منطقة الكليات، وكليتي (الهندسة) هنا! كل مبنى يحمل معرفة مختلفة. استكشف بشغف.",
+                    it: "هذه هي الشبكة الرئيسية للكليات. كل كلية تمثل خادماً (Server) للمعرفة. إلى أي واحد ستتصل؟",
+                    nursing: "هنا تتوزع أقسام المستشفى التعليمي... عفواً، أقصد كليات الجامعة. كل كلية تقدم نوعاً فريداً من الرعاية.",
+                    health_sciences: "كل كلية هنا تختص بمجال حيوي. استكشفها لتجد المجال الذي يثير شغفك.",
+                    sciences: "هذه الكليات تمثل فروع شجرة المعرفة. أي فرع ستختار لتتسلقه؟",
+                    arts: "كل كلية هنا تمثل فصلاً في كتاب الجامعة الكبير. أي فصل ستختار أن تقرأ؟",
+                    law: "أمامك هيئات تشريعية مختلفة للمعرفة. اختر الهيئة التي ستنتمي إليها.",
+                    religion: "كل كلية هنا هي منبر علم. اختر المنبر الذي ستنهل منه العلم الشرعي.",
+                    education: "هذه هي الفصول الدراسية للجامعة. اختر الفصل الذي ستتعلم فيه لكي تُعلِّم.",
+                    economics: "هذه هي أسواق المعرفة المختلفة. كل كلية لها أصولها وقيمتها. استثمر في مستقبلك."
                 }
             };
+            // --- END: بيانات المرشدين المحدّثة ---
 
             const gameData = {
                 'gate': { id: 'gate_q1', image: 'hares 1.webp', question: 'أهلاً بك في الجامعة الإسلامية! للدخول، أجب عن السؤال التالي: في أي عام تأسست الجامعة؟', options: { '1978': '1978', '1982': '1982', '1960': '1960', '1990': '1990' }, correctAnswer: '1978', points: 1, correctFeedback: 'رائع! لقد حصلت على جنيه واحد. البوابة الآن مفتوحة أمامك!', incorrectFeedback: 'إجابة غير صحيحة. حاول مرة أخرى!' },
@@ -1538,7 +1555,6 @@ function updatePlayerScore(uniqueId, score) {
             }
             // --- END: New progressive image preloading logic ---
 
-
             async function unlockAudio() {
                 if (isAudioUnlocked) return;
                 const sounds = [correctSound, incorrectSound, transitionSound];
@@ -1562,7 +1578,8 @@ function updatePlayerScore(uniqueId, score) {
                     });
                 }
             }
-
+            
+            // --- START: دالة محدثة لعرض رسائل المرشدين الجدد ---
             function showGuideMessage(sceneId) {
                 const guideId = gameState.selectedGuide;
                 if (!guideId || !guideMessages[sceneId] || !guideMessages[sceneId][guideId]) {
@@ -1570,11 +1587,13 @@ function updatePlayerScore(uniqueId, score) {
                 }
 
                 const message = guideMessages[sceneId][guideId];
-                const guideInfo = guideData[guideId];
+                const guideInfo = allGuides.find(g => g.id === guideId);
+                
+                if (!guideInfo) return;
 
                 const modalContent = `
                     <div style="text-align: center;">
-                        <img src="${guideInfo.image}" alt="${guideInfo.name}" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--primary-color); margin-bottom: 10px;">
+                        <div class="guide-icon" style="margin: 0 auto 10px; font-size: 48px; width: 80px; height: 80px;">${guideInfo.emoji}</div>
                         <h3 style="color: var(--primary-dark); margin: 0;">${guideInfo.name} يقول:</h3>
                         <p style="font-size: 16px; color: var(--text-light); margin-top: 10px;">"${message}"</p>
                     </div>
@@ -1582,6 +1601,7 @@ function updatePlayerScore(uniqueId, score) {
                 
                 showModal('رسالة من مرشدك', modalContent, null);
             }
+            // --- END: دالة محدثة لعرض رسائل المرشدين الجدد ---
 
             function saveGameState() {
                 try {
@@ -1894,7 +1914,7 @@ function updatePlayerScore(uniqueId, score) {
 
                 } else {
                     playSound(incorrectSound);
-                    targetButton.disabled = true;  
+                    targetButton.disabled = true; 
                     targetButton.classList.add('incorrect');
                     feedbackElement.textContent = sceneData.incorrectFeedback || 'إجابة غير صحيحة. حاول مرة أخرى!';
                     feedbackElement.className = 'feedback-message incorrect show';
@@ -2067,7 +2087,7 @@ function updatePlayerScore(uniqueId, score) {
                 websiteScene.innerHTML = `<div class="scene-content"><div class="website-view-header"><button id="back-to-list-btn" class="action-button" style="width: auto; padding: 10px 20px;"><span class="btn-icon">➡️</span> رجوع لقائمة الكليات</button></div><div class="loader-container" id="loader-container"><div class="loader"></div><p>جاري تحميل صفحة الكلية...</p></div></div>`;
                 document.getElementById('back-to-list-btn').addEventListener('click', () => {
                     websiteScene.classList.add('hidden');
-                    websiteScene.innerHTML = '';  
+                    websiteScene.innerHTML = ''; 
                     document.getElementById('faculties-list-scene').classList.remove('hidden');
                 });
                 document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
@@ -2089,21 +2109,40 @@ function updatePlayerScore(uniqueId, score) {
                 renderScene('faculties');
             });
 
+            // --- START: منطق شاشة اختيار المرشد المحدّث ---
+            function populateGuideSelection() {
+                const container = document.querySelector('#guide-selection-screen .guides-container');
+                container.innerHTML = ''; 
+                allGuides.forEach(guide => {
+                    const cardHTML = `
+                        <div class="guide-card" data-guide="${guide.id}">
+                            <div class="guide-icon">${guide.emoji}</div>
+                            <h3>${guide.name}</h3>
+                            <span>${guide.college}</span>
+                            <p>${guide.description}</p>
+                        </div>
+                    `;
+                    container.innerHTML += cardHTML;
+                });
+            }
+
             const guideSelectionScreen = document.getElementById('guide-selection-screen');
             const guidesContainer = guideSelectionScreen.querySelector('.guides-container');
             const confirmGuideBtn = document.getElementById('confirm-guide-btn');
-            let chosenGuide = null;
+            
             guidesContainer.addEventListener('click', (e) => {
                 const selectedCard = e.target.closest('.guide-card');
                 if (!selectedCard) return;
+                
                 guidesContainer.querySelectorAll('.guide-card').forEach(card => card.classList.remove('selected'));
                 selectedCard.classList.add('selected');
-                chosenGuide = selectedCard.dataset.guide;
+                
+                gameState.selectedGuide = selectedCard.dataset.guide;
                 confirmGuideBtn.disabled = false;
             });
+
             confirmGuideBtn.addEventListener('click', () => {
-                if (chosenGuide) {
-                    gameState.selectedGuide = chosenGuide;
+                if (gameState.selectedGuide) {
                     saveGameState();
                     guideSelectionScreen.classList.add('hidden');
                     gameSceneContainer.classList.remove('hidden');
@@ -2113,9 +2152,11 @@ function updatePlayerScore(uniqueId, score) {
                     });
                 }
             });
+            // --- END: منطق شاشة اختيار المرشد المحدّث ---
 
             document.body.addEventListener('click', unlockAudio, { once: true });
             populateFacultiesList();
+            populateGuideSelection(); // استدعاء الدالة الجديدة لملء شاشة المرشدين
             restoreGameSession();
         });
     </script>

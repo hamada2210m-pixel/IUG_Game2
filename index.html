@@ -261,6 +261,7 @@
             align-items: center;
             gap: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            -webkit-tap-highlight-color: transparent; /* Fix for mobile tap highlight */
         }
         .guide-help-button:hover {
             background-color: #117a8b;
@@ -376,6 +377,33 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             animation: slide-down 0.4s ease-out;
         }
+
+        /* START: New Logout Modal Styles */
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            justify-content: center;
+        }
+        .modal-actions .action-button {
+            width: auto;
+            max-width: none;
+            padding: 12px 30px;
+            flex-grow: 1;
+        }
+        .modal-actions .action-button.danger {
+            background-color: var(--incorrect-color);
+        }
+        .modal-actions .action-button.danger:hover {
+            background-color: #a71d2a;
+        }
+        .modal-actions .action-button.secondary {
+            background-color: #6c757d;
+        }
+        .modal-actions .action-button.secondary:hover {
+            background-color: #5a6268;
+        }
+        /* END: New Logout Modal Styles */
 
         @keyframes slide-down {
             from { transform: translateY(-50px); opacity: 0; }
@@ -660,7 +688,7 @@
         }
         .grant-details li::before,
         .exchange-details li::before {
-            content: '🔹';
+            content: '�';
             position: absolute;
             right: 0;
             top: 0;
@@ -784,6 +812,20 @@
             animation: spin 1s linear infinite;
             margin-bottom: 15px;
         }
+
+        /* START: Spinner for login button */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+        /* END: Spinner for login button */
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -1460,6 +1502,19 @@
         </div>
     </div>
 
+    <!-- START: New Logout Confirmation Modal -->
+    <div id="logout-confirm-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>تأكيد الخروج</h2>
+            <p>هل أنت متأكد أنك تريد بدء رحلة جديدة؟ سيتم حذف كل تقدمك الحالي.</p>
+            <div class="modal-actions">
+                <button id="confirm-logout-btn" class="action-button danger">نعم، اخرج</button>
+                <button id="cancel-logout-btn" class="action-button secondary">لا، ابقَ هنا</button>
+            </div>
+        </div>
+    </div>
+    <!-- END: New Logout Confirmation Modal -->
+
     <div id="ad-modal" class="modal hidden">
         <div class="ad-modal-content">
             <span class="close-ad-btn">&times;</span>
@@ -1781,19 +1836,19 @@
             }
             
             function showGuideModal(title, message) {
-                 const guideInfo = allGuides.find(g => g.id === gameState.selectedGuide);
-                 if (!guideInfo) return;
-                 playSound(guideAppearsSound);
+                const guideInfo = allGuides.find(g => g.id === gameState.selectedGuide);
+                if (!guideInfo) return;
+                playSound(guideAppearsSound);
 
-                 const modalContent = `
-                     <div style="text-align: center;">
-                         <div class="guide-icon" style="margin: 0 auto 10px; font-size: 48px; width: 80px; height: 80px;">${guideInfo.emoji}</div>
-                         <h3 style="color: var(--primary-dark); margin: 0;">${guideInfo.name} يقول:</h3>
-                         <p style="font-size: 16px; color: var(--text-light); margin-top: 10px;">"${message}"</p>
-                     </div>
-                 `;
-                 
-                 showModal(title, modalContent, null);
+                const modalContent = `
+                    <div style="text-align: center;">
+                        <div class="guide-icon" style="margin: 0 auto 10px; font-size: 48px; width: 80px; height: 80px;">${guideInfo.emoji}</div>
+                        <h3 style="color: var(--primary-dark); margin: 0;">${guideInfo.name} يقول:</h3>
+                        <p style="font-size: 16px; color: var(--text-light); margin-top: 10px;">"${message}"</p>
+                    </div>
+                `;
+                
+                showModal(title, modalContent, null);
             }
             
             function saveGameState() {
@@ -1821,12 +1876,17 @@
                 }
             }
 
-            function resetGameState() {
-                if (confirm("هل أنت متأكد أنك تريد بدء رحلة جديدة؟ سيتم حذف كل تقدمك الحالي.")) {
-                    localStorage.removeItem('iugGameProgress');
-                    location.reload();
-                }
+            // --- START: Logout Logic Update ---
+            function performLogout() {
+                localStorage.removeItem('iugGameProgress');
+                location.reload();
             }
+
+            function showLogoutConfirmation() {
+                const logoutModal = document.getElementById('logout-confirm-modal');
+                logoutModal.classList.remove('hidden');
+            }
+            // --- END: Logout Logic Update ---
 
             function restoreGameSession() {
                 if (loadGameState() && gameState.uniquePlayerId) {
@@ -1854,7 +1914,7 @@
                         if (sceneMappings[parentScene]) {
                             sceneMappings[parentScene]();
                         } else if (gameData[parentScene] && gameData[parentScene].nextScene) {
-                             renderScene(parentScene, indexToRender, false);
+                                renderScene(parentScene, indexToRender, false);
                         }
                         else if (sceneToRender) {
                             renderScene(sceneToRender, indexToRender, false);
@@ -1890,7 +1950,10 @@
                 }
                 const startButton = event.target.querySelector('.action-button');
                 startButton.disabled = true;
-                startButton.textContent = 'جاري التسجيل...';
+                // --- START: Login Speed Feel Improvement ---
+                startButton.innerHTML = 'جاري التسجيل... <span class="spinner"></span>';
+                // --- END: Login Speed Feel Improvement ---
+
                 registerPlayer(nameInput, phoneInput, tawjihiYearInput)
                     .then(data => {
                         if (data.result === 'success' && data.uniqueId) {
@@ -1905,13 +1968,13 @@
                         } else {
                             showModal('خطأ في التسجيل', 'حدث خطأ أثناء التسجيل. الرجاء المحاولة مرة أخرى.', null);
                             startButton.disabled = false;
-                            startButton.textContent = 'ابدأ الرحلة!';
+                            startButton.innerHTML = 'ابدأ الرحلة!';
                         }
                     })
                     .catch(error => {
                         showModal('خطأ في الاتصال', 'فشل الاتصال بالخادم. الرجاء التحقق من اتصالك بالإنترنت.', null);
                         startButton.disabled = false;
-                        startButton.textContent = 'ابدأ الرحلة!';
+                        startButton.innerHTML = 'ابدأ الرحلة!';
                     });
             }
 
@@ -1930,10 +1993,10 @@
 
             function renderScene(sceneId, questionIndex = 0, pushState = true) {
                 if (questionIndex === 0 && sceneId !== 'map' && guideMessages[sceneId]) {
-                     const messageSceneId = sceneParentMap[sceneId] || sceneId;
-                     if(guideMessages[messageSceneId] && guideMessages[messageSceneId][gameState.selectedGuide]) {
-                        setTimeout(() => showGuideModal('رسالة من مرشدك', guideMessages[messageSceneId][gameState.selectedGuide]), 500);
-                     }
+                        const messageSceneId = sceneParentMap[sceneId] || sceneId;
+                        if(guideMessages[messageSceneId] && guideMessages[messageSceneId][gameState.selectedGuide]) {
+                            setTimeout(() => showGuideModal('رسالة من مرشدك', guideMessages[messageSceneId][gameState.selectedGuide]), 500);
+                        }
                 }
                 playSound(transitionSound);
                 
@@ -2010,7 +2073,17 @@
                 
                 if (sceneData.correctAnswer !== null) {
                     const helpBtn = document.getElementById('guide-help-btn');
-                    if(helpBtn) helpBtn.addEventListener('click', useGuideHelp);
+                    // --- START: Hint Button Mobile Fix ---
+                    if(helpBtn) {
+                        // Using 'click' is generally robust. The touchend listener is added as a fallback.
+                        // We prevent default on touchend to stop the browser from firing a 'click' event right after.
+                        helpBtn.addEventListener('click', useGuideHelp);
+                        helpBtn.addEventListener('touchend', (e) => {
+                            e.preventDefault();
+                            useGuideHelp();
+                        });
+                    }
+                    // --- END: Hint Button Mobile Fix ---
                 }
             }
 
@@ -2158,19 +2231,19 @@
             }
 
             function renderGrantsInfoScene() {
-                 document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
-                 document.getElementById('grants-info-scene').classList.remove('hidden');
-                 gameState.currentScene = 'grants-info';
-                 saveGameState();
-                 document.getElementById('start-grants-quiz-btn').onclick = () => renderScene('grants');
+                document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
+                document.getElementById('grants-info-scene').classList.remove('hidden');
+                gameState.currentScene = 'grants-info';
+                saveGameState();
+                document.getElementById('start-grants-quiz-btn').onclick = () => renderScene('grants');
             }
             
             function renderExchangeInfoScene() {
-                 document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
-                 document.getElementById('exchange-info-scene').classList.remove('hidden');
-                 gameState.currentScene = 'exchange-info';
-                 saveGameState();
-                 document.getElementById('start-exchange-quiz-btn').onclick = () => renderScene('exchange');
+                document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
+                document.getElementById('exchange-info-scene').classList.remove('hidden');
+                gameState.currentScene = 'exchange-info';
+                saveGameState();
+                document.getElementById('start-exchange-quiz-btn').onclick = () => renderScene('exchange');
             }
 
             function handleAnswer(event) {
@@ -2406,10 +2479,16 @@
                     landingScreen.classList.add('hidden');
                     startScreen.classList.remove('hidden');
                 }
+                // --- START: Logout Logic Update ---
                 if (event.target.closest('#logout-btn')) {
                     event.preventDefault();
-                    resetGameState();
+                    showLogoutConfirmation();
                 }
+                if (event.target.closest('#reset-progress-btn')) {
+                    event.preventDefault();
+                    showLogoutConfirmation();
+                }
+                // --- END: Logout Logic Update ---
                 if (event.target.closest('#back-to-map-btn')) {
                     event.preventDefault();
                     renderScene('map');
@@ -2422,11 +2501,15 @@
                 }
             });
             
-            document.getElementById('new-player-btn').addEventListener('click', resetGameState);
-            document.getElementById('reset-progress-btn').addEventListener('click', (e) => {
-                e.preventDefault();
-                resetGameState();
+            document.getElementById('new-player-btn').addEventListener('click', performLogout);
+
+            // --- START: Logout Modal Listeners ---
+            const logoutModal = document.getElementById('logout-confirm-modal');
+            document.getElementById('confirm-logout-btn').addEventListener('click', performLogout);
+            document.getElementById('cancel-logout-btn').addEventListener('click', () => {
+                logoutModal.classList.add('hidden');
             });
+            // --- END: Logout Modal Listeners ---
             
             window.addEventListener('popstate', (event) => {
                 if (event.state && event.state.scene) {

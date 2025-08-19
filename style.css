@@ -1,0 +1,47 @@
+/* كل كود الـ CSS الذي أرسلته يوضع هنا بالكامل */
+:root {
+    --primary-color: #006633;
+    --primary-dark: #004422;
+    --secondary-color: #fdd835;
+    --light-bg: #e6f3ee;
+    --correct-color: #28a745;
+    --incorrect-color: #dc3545;
+    --info-color: #17a2b8;
+    --font-family: 'Cairo', sans-serif;
+    --text-dark: #333;
+    --text-light: #555;
+    --white-color: #fff;
+    --border-radius-main: 15px;
+}
+
+body {
+    font-family: var(--font-family);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    color: var(--text-dark);
+    padding: 10px;
+    padding-top: 80px;
+    box-sizing: border-box;
+    background-image: url('First.webp'); /* <<< تم تصحيح الخطأ الإملائي */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(240, 244, 248, 0.85);
+    z-index: -1;
+}
+
+/* ... أكمل لصق باقي كود الـ CSS هنا ... */
+/* ... كل الكود الذي أرسلته سابقاً بدون أي تغيير ... */

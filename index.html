@@ -43,7 +43,7 @@
 
         body::before {
             content: '';
-           position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             right: 0;
@@ -1802,30 +1802,6 @@
                 preloadedImages.add(url);
                 console.log(`Preloading: ${url}`);
             }
-
-            function getUrlsForNextScenes(sceneId, questionIndex = 0) {
-                const urls = new Set();
-                if (sceneId === 'map') {
-                    // Preload images for all destinations on the map
-                    const mapButtons = document.querySelectorAll('#map-scene .option-btn');
-                    mapButtons.forEach(btn => {
-                        const dest = btn.dataset.destination;
-                        if (gameData[dest]) {
-                            const destData = Array.isArray(gameData[dest]) ? gameData[dest][0] : gameData[dest];
-                            if(destData.image) urls.add(destData.image);
-                        }
-                    });
-                } else {
-                    const sceneData = gameData[sceneId];
-                    if (Array.isArray(sceneData)) {
-                        const nextIndex = questionIndex + 1;
-                        if (nextIndex < sceneData.length) {
-                            if(sceneData[nextIndex].image) urls.add(sceneData[nextIndex].image);
-                        }
-                    }
-                }
-                return Array.from(urls);
-            }
             
             function preloadNextImages(sceneId, questionIndex = 0) {
                 const urlsToLoad = getUrlsForNextScenes(sceneId, questionIndex);
@@ -2013,7 +1989,6 @@
                 }
             }
 
-            // --- START: renderScene Update (with counter) ---
             function renderScene(sceneId, questionIndex = 0, pushState = true) {
                 if (questionIndex === 0 && sceneId !== 'map' && guideMessages[sceneId]) {
                         const messageSceneId = sceneParentMap[sceneId] || sceneId;
@@ -2114,7 +2089,6 @@
                     }
                 }
             }
-            // --- END: renderScene Update (with counter) ---
 
             function renderStudentAffairsInfoScene() {
                 document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
@@ -2507,7 +2481,6 @@
                     landingScreen.classList.add('hidden');
                     startScreen.classList.remove('hidden');
                 }
-                // --- START: Logout Logic Update ---
                 if (event.target.closest('#logout-btn')) {
                     event.preventDefault();
                     showLogoutConfirmation();
@@ -2516,7 +2489,6 @@
                     event.preventDefault();
                     showLogoutConfirmation();
                 }
-                // --- END: Logout Logic Update ---
                 if (event.target.closest('#back-to-map-btn')) {
                     event.preventDefault();
                     renderScene('map');
@@ -2531,13 +2503,11 @@
             
             document.getElementById('new-player-btn').addEventListener('click', performLogout);
 
-            // --- START: Logout Modal Listeners ---
             const logoutModal = document.getElementById('logout-confirm-modal');
             document.getElementById('confirm-logout-btn').addEventListener('click', performLogout);
             document.getElementById('cancel-logout-btn').addEventListener('click', () => {
                 logoutModal.classList.add('hidden');
             });
-            // --- END: Logout Modal Listeners ---
             
             window.addEventListener('popstate', (event) => {
                 if (event.state && event.state.scene) {
@@ -2650,6 +2620,17 @@
             });
             
             document.body.addEventListener('click', unlockAudio, { once: true });
+            
+            // --- START: Image Preloading Optimization ---
+            // Preload common images once the DOM is ready to improve performance.
+            preloadImage('all_q.webp');
+            preloadImage('hares 1.webp');
+            preloadImage('library_question.webp');
+            preloadImage('library_question_2.webp');
+            preloadImage('library_question_3.webp');
+            preloadImage('library_question_4.webp');
+            // --- END: Image Preloading Optimization ---
+
             populateFacultiesList();
             populateGuideSelection();
             restoreGameSession();

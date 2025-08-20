@@ -32,7 +32,7 @@
             margin: 0;
             color: var(--text-dark);
             padding: 10px;
-            padding-top: 80px; /* <<< هذا السطر مهم لإعطاء مساحة للشريط العلوي */
+            padding-top: 80px;
             box-sizing: border-box;
             background-image: url('Ferst.webp');
             background-size: cover;
@@ -48,7 +48,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(240, 244, 248, 0.85);
+            background-color: transparent;
             z-index: -1;
         }
 
@@ -205,7 +205,7 @@
         .action-button:disabled {
             background-color: var(--text-light);
             cursor: not-allowed;
-            transform: none; /* إلغاء تأثير الـ hover عند التعطيل */
+            transform: none;
         }
         
         .btn-icon {
@@ -245,7 +245,6 @@
             margin-bottom: 20px;
         }
 
-        /* --- START: Guide Help Button Style --- */
         .guide-help-button {
             background-color: var(--info-color);
             color: white;
@@ -261,7 +260,7 @@
             align-items: center;
             gap: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            -webkit-tap-highlight-color: transparent; /* Fix for mobile tap highlight */
+            -webkit-tap-highlight-color: transparent;
         }
         .guide-help-button:hover {
             background-color: #117a8b;
@@ -272,7 +271,6 @@
             cursor: not-allowed;
             transform: none;
         }
-        /* --- END: Guide Help Button Style --- */
 
         .options-container {
             display: grid;
@@ -378,7 +376,6 @@
             animation: slide-down 0.4s ease-out;
         }
 
-        /* START: New Logout Modal Styles */
         .modal-actions {
             display: flex;
             gap: 15px;
@@ -403,7 +400,6 @@
         .modal-actions .action-button.secondary:hover {
             background-color: #5a6268;
         }
-        /* END: New Logout Modal Styles */
 
         @keyframes slide-down {
             from { transform: translateY(-50px); opacity: 0; }
@@ -442,7 +438,6 @@
             margin-bottom: 5px;
         }
 
-        /* --- START: Progress Bar & Counter Styles --- */
         .progress-info {
             display: flex;
             align-items: center;
@@ -475,13 +470,12 @@
             color: var(--text-light);
             white-space: nowrap;
         }
-        /* --- END: Progress Bar & Counter Styles --- */
 
 
         #faculties-scene .options-container,
         #exchange-scene .options-container,
         #admission-scene .options-container,
-        #studentaffairs-scene .options-container { /* Added studentaffairs */
+        #studentaffairs-scene .options-container {
             grid-template-columns: 1fr;
             max-width: 400px;
             margin: 25px auto 0;
@@ -490,7 +484,7 @@
         #faculties-scene .option-btn,
         #exchange-scene .option-btn,
         #admission-scene .option-btn,
-        #studentaffairs-scene .option-btn { /* Added studentaffairs */
+        #studentaffairs-scene .option-btn {
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -504,7 +498,7 @@
         #faculties-scene .option-btn:hover,
         #exchange-scene .option-btn:hover,
         #admission-scene .option-btn:hover,
-        #studentaffairs-scene .option-btn:hover { /* Added studentaffairs */
+        #studentaffairs-scene .option-btn:hover {
             transform: scale(1.03);
             background-color: var(--primary-color);
             color: var(--white-color);
@@ -513,13 +507,13 @@
         #faculties-scene .option-btn span,
         #exchange-scene .option-btn span,
         #admission-scene .option-btn span,
-        #studentaffairs-scene .option-btn span { /* Added studentaffairs */
+        #studentaffairs-scene .option-btn span {
             font-size: 30px;
         }
 
         #grants-info-scene .scene-content,
         #faculties-info-scene .scene-content,
-        #studentaffairs-info-scene .scene-content { /* Added studentaffairs */
+        #studentaffairs-info-scene .scene-content {
             padding: 0;
         }
 
@@ -535,7 +529,6 @@
             text-align: right;
         }
 
-        /* START: New Styles for Student Affairs Info Scene */
         #studentaffairs-info-scene .tabs-nav {
             display: flex;
             border-bottom: 1px solid #ddd;
@@ -636,7 +629,6 @@
         #studentaffairs-info-scene .accordion-item.active .accordion-content {
             padding: 15px;
         }
-        /* END: New Styles for Student Affairs Info Scene */
         
         .grant-category,
         .exchange-category {
@@ -832,7 +824,6 @@
             margin-bottom: 15px;
         }
 
-        /* START: Spinner for login button */
         .spinner {
             display: inline-block;
             width: 20px;
@@ -844,7 +835,6 @@
             vertical-align: middle;
             margin-right: 5px;
         }
-        /* END: Spinner for login button */
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -1049,7 +1039,6 @@
             background-color: #a71d2a;
         }
         
-        /* --- بداية ستايل شاشة اختيار المرشد (محدّث) --- */
         .guides-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -1083,7 +1072,7 @@
         }
 
         .guide-icon {
-            font-size: 64px; /* حجم الإيموجي */
+            font-size: 64px;
             line-height: 1;
             margin-bottom: 15px;
             background-color: var(--light-bg);
@@ -1118,7 +1107,6 @@
             margin: 0;
             flex-grow: 1;
         }
-        /* --- نهاية ستايل شاشة اختيار المرشد --- */
         
         @media (max-width: 600px) {
             .options-container {
@@ -1521,7 +1509,6 @@
         </div>
     </div>
 
-    <!-- START: New Logout Confirmation Modal -->
     <div id="logout-confirm-modal" class="modal hidden">
         <div class="modal-content">
             <h2>تأكيد الخروج</h2>
@@ -1532,7 +1519,6 @@
             </div>
         </div>
     </div>
-    <!-- END: New Logout Confirmation Modal -->
 
     <div id="ad-modal" class="modal hidden">
         <div class="ad-modal-content">
@@ -1542,9 +1528,7 @@
     </div>
 
     <div id="video-overlay" class="modal hidden">
-        <!-- START: Video Preload Update -->
         <video id="welcome-video" width="90%" style="max-width: 800px; border-radius: 15px;" preload="auto">
-        <!-- END: Video Preload Update -->
             <source src="hares 1.mp4" type="video/mp4">
             متصفحك لا يدعم عرض الفيديو.
         </video>
@@ -1715,7 +1699,7 @@
                 } ],
                 'faculties-list': { isInfoScreen: true, nextScene: 'faculties' },
                 'faculties': { image: 'first_faculties_q.webp', question: 'اختر نوع التحدي الذي تود خوضه هنا:', options: { 'tf_questions': '<span class="icon">✔️❌</span> أسئلة صح وخطأ', 'mc_questions': '<span class="icon">❓</span> أسئلة اختيار من متعدد' }, correctAnswer: null, points: 0, nextScene: { 'tf_questions': 'tf_questions', 'mc_questions': 'mc_questions' } },
-                'tf_questions': [ { id: 'tf_q1', image: 'all_q.webp', question: 'تأسست الجامعة الإسلامية بغزة عام 1978.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint:{default: "هذا السؤال يشبه سؤال البوابة، هل تتذكره؟"} }, { id: 'tf_q2', image: 'all_q.webp', question: 'الجامعة لديها 11 كلية.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint:{default: "قمنا بعدّ الكليات في شاشة استكشاف الكليات، العدد فردي."} }, { id: 'tf_q3', image: 'all_q.webp', question: 'كلية الطب تأسست عام 2006.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint:{medicine: "تاريخ تأسيس كليتي حديث نسبياً."} }, { id: 'tf_q4', image: 'all_q.webp', question: 'كلية تكنولوجيا المعلومات أُسست قبل كلية التجارة.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'incorrect', points: 1, hint: {economics: "كلية التجارة (الاقتصاد) من الكليات القديمة في الجامعة."} }, { id: 'tf_q5', image: 'all_q.webp', question: 'الجامعة تقدم شهادات دكتوراة (PhD) في الإدارة، الاقتصاد، الهندسة، الفنون، وتكنولوجيا المعلومات.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint: {default: "الجامعة تقدم برامج دراسات عليا متقدمة في معظم كلياتها الرئيسية."} }, { id: 'tf_q6', image: 'all_q.webp', question: 'الجامعة الأولى على مستوى غزة من حيث الترتيب العالمي.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint: {default: "الجامعة تفتخر بتصنيفها المتقدم."} }, { id: 'tf_q7', image: 'all_q.webp', question: 'في كلية الطب، يجب على الطالب نشر بحث علمي في مجلة محكّمة كجزء من متطلبات التخرج.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint: {medicine: "البحث العلمي جزء أساسي من تكوين الطبيب الناجح."} }, { id: 'tf_q8', image: 'all_q.webp', question: 'كلية الطب هي المركز الوحيد المعتمد لإجراء امتحانات IFOM داخل غزة.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint: {medicine: "هذا الامتحان الدولي مهم لتقييم العلوم الطبية الأساسية والسريرية."} }, { id: 'tf_q9', image: 'all_q.webp', question: 'الجامعة مقرها فقط في مدينة غزة، ولا يوجد لها فروع أخرى.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'incorrect', points: 1, hint: {default: "هل تصل خدمات الجامعة التعليمية إلى مناطق أخرى في القطاع؟"} }, { id: 'tf_q10', image: 'all_q.webp', question: 'الجامعة عضو في الاتحاد الدولي للجامعات ومجموعة جامعات البحر الأبيض المتوسط.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint: {default: "الانتماء لهذه الاتحادات يعزز من مكانة الجامعة العالمية."} } ],
+                'tf_questions': [ { id: 'tf_q1', image: 'all_q.webp', question: 'تأسست الجامعة الإسلامية بغزة عام 1978.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint:{default: "هذا السؤال يشبه سؤال البوابة، هل تتذكره?"} }, { id: 'tf_q2', image: 'all_q.webp', question: 'الجامعة لديها 11 كلية.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint:{default: "قمنا بعدّ الكليات في شاشة استكشاف الكليات، العدد فردي."} }, { id: 'tf_q3', image: 'all_q.webp', question: 'كلية الطب تأسست عام 2006.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint:{medicine: "تاريخ تأسيس كليتي حديث نسبياً."} }, { id: 'tf_q4', image: 'all_q.webp', question: 'كلية تكنولوجيا المعلومات أُسست قبل كلية التجارة.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'incorrect', points: 1, hint: {economics: "كلية التجارة (الاقتصاد) من الكليات القديمة في الجامعة."} }, { id: 'tf_q5', image: 'all_q.webp', question: 'الجامعة تقدم شهادات دكتوراة (PhD) في الإدارة، الاقتصاد، الهندسة، الفنون، وتكنولوجيا المعلومات.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint: {default: "الجامعة تقدم برامج دراسات عليا متقدمة في معظم كلياتها الرئيسية."} }, { id: 'tf_q6', image: 'all_q.webp', question: 'الجامعة الأولى على مستوى غزة من حيث الترتيب العالمي.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint: {default: "الجامعة تفتخر بتصنيفها المتقدم."} }, { id: 'tf_q7', image: 'all_q.webp', question: 'في كلية الطب، يجب على الطالب نشر بحث علمي في مجلة محكّمة كجزء من متطلبات التخرج.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint: {medicine: "البحث العلمي جزء أساسي من تكوين الطبيب الناجح."} }, { id: 'tf_q8', image: 'all_q.webp', question: 'كلية الطب هي المركز الوحيد المعتمد لإجراء امتحانات IFOM داخل غزة.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint: {medicine: "هذا الامتحان الدولي مهم لتقييم العلوم الطبية الأساسية والسريرية."} }, { id: 'tf_q9', image: 'all_q.webp', question: 'الجامعة مقرها فقط في مدينة غزة، ولا يوجد لها فروع أخرى.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'incorrect', points: 1, hint: {default: "هل تصل خدمات الجامعة التعليمية إلى مناطق أخرى في القطاع؟"} }, { id: 'tf_q10', image: 'all_q.webp', question: 'الجامعة عضو في الاتحاد الدولي للجامعات ومجموعة جامعات البحر الأبيض المتوسط.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint: {default: "الانتماء لهذه الاتحادات يعزز من مكانة الجامعة العالمية."} } ],
                 'mc_questions': [ { id: 'mc_q1', image: 'all_q.webp', question: 'كم عدد الكليات في الجامعة الإسلامية بغزة؟', options: { '11': '11', '9': '9', '10': '10', '12': '12' }, correctAnswer: '11', points: 1, hint:{default: "الرقم فردي وأكبر من 10."} }, { id: 'mc_q2', image: 'all_q.webp', question: 'أي من الكليات التالية ليست من كليات الجامعة؟', options: { 'it': 'تكنولوجيا المعلومات', 'الفنون': 'الفنون', 'الطب': 'الطب', 'الهندسة': 'الهندسة' }, correctAnswer: 'الفنون', points: 1, hint:{arts: "كليتي هي 'الآداب'، وهي تختلف عن الفنون الجميلة."} }, { id: 'mc_q3', image: 'all_q.webp', question: 'متى تأسست كلية الطب بالجامعة؟', options: { '2006': '2006', '1980': '1980', '1993': '1993', '2005': '2005' }, correctAnswer: '2006', points: 1, hint:{default: "كان ذلك في منتصف العقد الأول من الألفية الجديدة."} }, { id: 'mc_q4', image: 'all_q.webp', question: 'أي من التالي يصف مكانة الجامعة على مستوى غزة؟', options: { 'الأولى': 'الأولى', 'الثالثة': 'الثالثة', 'الرابعة': 'الرابعة', 'الثانية': 'الثانية' }, correctAnswer: 'الأولى', points: 1, hint: {default: "الجامعة رائدة في قطاع غزة."} }, { id: 'mc_q5', image: 'all_q.webp', question: 'في أي كلية يجب على الطالب اجتياز امتحاني IFOM-BSE وIFOM-CSE للتخرج؟', options: { 'الطب': 'الطب', 'الهندسة': 'الهندسة', 'it': 'تكنولوجيا المعلومات', 'التربية': 'التربية' }, correctAnswer: 'الطب', points: 1, hint: {medicine: "هذه امتحانات دولية لقياس الكفاءة الطبية، وهي ضرورية في كليتي."} }, { id: 'mc_q6', image: 'all_q.webp', question: 'من بين هذه الكليات، أيها تأسست أولاً؟', options: { 'التربية (1980)': 'التربية (1980)', 'تكنولوجيا المعلومات (2005)': 'تكنولوجيا المعلومات (2005)', 'التجارة (1981)': 'التجارة (1981)', 'الطب (2006)': 'الطب (2006)' }, correctAnswer: 'التربية (1980)', points: 1, hint: {education: "كليتنا من الكليات المؤسسة للجامعة."} }, { id: 'mc_q7', image: 'all_q.webp', question: 'أي من الاتحادات التالية الجامعة عضو فيها؟', options: { 'اتحاد البحر المتوسط لجامعات': 'اتحاد البحر المتوسط لجامعات', 'رابطة الجامعات الأمريكية': 'رابطة الجامعات الأمريكية', 'روسيا الجامعات الإسلامية': 'روسيا الجامعات الإسلامية', 'رابطة الجامعات الصينية': 'رابطة الجامعات الصينية' }, correctAnswer: 'اتحاد البحر المتوسط لجامعات', points: 1, hint: {default: "موقع فلسطين الجغرافي قد يساعدك في تحديد الإجابة."} }, { id: 'mc_q8', image: 'all_q.webp', question: 'كم عدد المراكز والمعاهد البحثية بالجامعة؟', options: { 'أكثر من 20': 'أكثر من 20', 'أقل من 10': 'أقل من 10', 'حوالي 15': 'حوالي 15', '30 فقط': '30 فقط' }, correctAnswer: 'أكثر من 20', points: 1, hint: {sciences: "البحث العلمي أولوية، لذا عدد المراكز كبير ويدعم تخصصات مختلفة."} } ],
                 'exchange-info': { isInfoScreen: true, nextScene: 'exchange' },
                 'exchange': { image: 'all_q.webp', question: 'اختر نوع التحدي الذي تود خوضه هنا:', options: { 'exchange_tf_questions': '<span class="icon">✔️❌</span> أسئلة صح وخطأ', 'exchange_mc_questions': '<span class="icon">❓</span> أسئلة اختيار من متعدد' }, correctAnswer: null, points: 0, nextScene: { 'exchange_tf_questions': 'exchange_tf_questions', 'exchange_mc_questions': 'exchange_mc_questions' } },
@@ -1781,7 +1765,7 @@
             const modalCloseBtn = document.getElementById('modal-close-btn');
             const correctSound = document.getElementById('correct-sound');
             const incorrectSound = document.getElementById('incorrect-sound');
-            const transitionSound = document.getElementById('transition-sound');
+            const transitionSound = document.getElementById('turning.mp3');
             const guideAppearsSound = document.getElementById('guide-appears-sound');
             const videoOverlay = document.getElementById('video-overlay');
             const welcomeVideo = document.getElementById('welcome-video');
@@ -1795,7 +1779,7 @@
 
             function preloadImage(url) {
                 if (!url || preloadedImages.has(url)) {
-                    return; // Skip if no URL or already preloaded
+                    return;
                 }
                 const img = new Image();
                 img.src = url;
@@ -1991,10 +1975,10 @@
 
             function renderScene(sceneId, questionIndex = 0, pushState = true) {
                 if (questionIndex === 0 && sceneId !== 'map' && guideMessages[sceneId]) {
-                        const messageSceneId = sceneParentMap[sceneId] || sceneId;
-                        if(guideMessages[messageSceneId] && guideMessages[messageSceneId][gameState.selectedGuide]) {
-                            setTimeout(() => showGuideModal('رسالة من مرشدك', guideMessages[messageSceneId][gameState.selectedGuide]), 500);
-                        }
+                    const messageSceneId = sceneParentMap[sceneId] || sceneId;
+                    if(guideMessages[messageSceneId] && guideMessages[messageSceneId][gameState.selectedGuide]) {
+                        setTimeout(() => showGuideModal('رسالة من مرشدك', guideMessages[messageSceneId][gameState.selectedGuide]), 500);
+                    }
                 }
                 playSound(transitionSound);
                 
@@ -2107,7 +2091,7 @@
                     <div class="tabs-content">
                         <div id="tab-about" class="tab-pane active">
                             <div class="info-scene-container">
-                                <p>أهلاً وسهلاً بكم في عمادة شئون الطلبة بالجامعة الإسلامية. تعد عمادة شؤون الطلبة من أهم العمادات بالجامعة المختصة بالطلبة، فهي  تعنى بتقديم الخدمات الطلابية، والتي تسهم في تنظيم الأنشطة اللامنهجية والأعمال التطوعية، وتساعد الطالب في إنجاز المعاملات وتسهيل عملية التسجيل والتسجيل للمنح الداخلية والخارجية والقروض الجامعية.</p>
+                                <p>أهلاً وسهلاً بكم في عمادة شئون الطلبة بالجامعة الإسلامية. تعد عمادة شؤون الطلبة من أهم العمادات بالجامعة المختصة بالطلبة، فهي  تعنى بتقديم الخدمات الطلابية، والتي تسهم في تنظيم الأنشطة اللامنهجية والأعمال التطوعية، وتساعد الطالب في إنجاز المعاملات وتسهيل عملية التسجيل والتسجيل للمنح الداخلية والخارجية والقروض الجامعية.</p>
                                 <h3 class="info-section-title">تاريخ ومهام</h3>
                                 <p>أنشئت عمادة شؤون الطلبة في عام 1981م. وقد أنيطت بها المهام التالية:</p>
                                 <ul class="info-list">
@@ -2166,14 +2150,14 @@
                         <div id="tab-gallery" class="tab-pane">
                             <div class="info-scene-container">
                                <div class="photo-gallery">
-                                    <img src="https://i.imgur.com/uStyY1N.jpeg" alt="استقبال الطلبة">
-                                    <img src="https://i.imgur.com/vHqB3Tj.jpeg" alt="زيارة طلبة الثانوية">
-                                    <img src="https://i.imgur.com/1mYdPo3.jpeg" alt="فريق الدبكة">
-                                    <img src="https://i.imgur.com/QhXpBmg.jpeg" alt="زيارة الصالة الرياضية">
-                                    <img src="https://i.imgur.com/A6mJTOq.jpeg" alt="زيارة لرئيس الجامعة">
-                                    <img src="https://i.imgur.com/o1bFjHj.jpeg" alt="استقبال في الأيام الترفيهية">
-                                    <img src="https://i.imgur.com/L8JgY1g.jpeg" alt="فريق شئون الطلبة">
-                                    <img src="https://i.imgur.com/w2Y9w5E.jpeg" alt="ضيافة طلبة الثانوية">
+                                    <img src="https://i.imgur.com/uStyY1N.jpeg" alt="استقبال الطلبة" loading="lazy">
+                                    <img src="https://i.imgur.com/vHqB3Tj.jpeg" alt="زيارة طلبة الثانوية" loading="lazy">
+                                    <img src="https://i.imgur.com/1mYdPo3.jpeg" alt="فريق الدبكة" loading="lazy">
+                                    <img src="https://i.imgur.com/QhXpBmg.jpeg" alt="زيارة الصالة الرياضية" loading="lazy">
+                                    <img src="https://i.imgur.com/A6mJTOq.jpeg" alt="زيارة لرئيس الجامعة" loading="lazy">
+                                    <img src="https://i.imgur.com/o1bFjHj.jpeg" alt="استقبال في الأيام الترفيهية" loading="lazy">
+                                    <img src="https://i.imgur.com/L8JgY1g.jpeg" alt="فريق شئون الطلبة" loading="lazy">
+                                    <img src="https://i.imgur.com/w2Y9w5E.jpeg" alt="ضيافة طلبة الثانوية" loading="lazy">
                                </div>
                             </div>
                         </div>
@@ -2301,7 +2285,7 @@
                     }
 
                     setTimeout(() => {
-                        modal.classList.add('hidden'); // Close guide modal before transition
+                        modal.classList.add('hidden');
                         if (sceneId === 'gate') {
                             playWelcomeVideo();
                             preloadNextImages('map');
@@ -2353,7 +2337,7 @@
                     return;
                 }
 
-                helpBtn.disabled = true; // Disable immediately
+                helpBtn.disabled = true;
                 gameState.score -= 0.5;
                 updatePlayerStats();
                 updatePlayerScore(gameState.uniquePlayerId, gameState.score);
@@ -2375,7 +2359,7 @@
 
             function showModal(title, text, callback) {
                 modalTitle.textContent = title;
-                modalText.innerHTML = text; // Use innerHTML to render styled guide messages
+                modalText.innerHTML = text;
                 modal.classList.remove('hidden');
                 modalCloseBtn.onclick = () => {
                     modal.classList.add('hidden');
@@ -2412,8 +2396,7 @@
                 if (Array.isArray(stageData)) {
                     return stageData.every(q => gameState.answeredQuestions.has(q.id));
                 }
-                 // For single-question stages like 'gate'
-                if (stageData.id) {
+                 if (stageData.id) {
                     return gameState.answeredQuestions.has(stageData.id);
                 }
                 return false;
@@ -2621,15 +2604,35 @@
             
             document.body.addEventListener('click', unlockAudio, { once: true });
             
-            // --- START: Image Preloading Optimization ---
-            // Preload common images once the DOM is ready to improve performance.
+            function getUrlsForNextScenes(sceneId, questionIndex = 0) {
+                const urls = [];
+                const sceneData = gameData[sceneId];
+                if (Array.isArray(sceneData)) {
+                    // Preload the next 2 questions' images to be safe
+                    for (let i = questionIndex + 1; i < Math.min(questionIndex + 3, sceneData.length); i++) {
+                        if (sceneData[i] && sceneData[i].image) {
+                            urls.push(sceneData[i].image);
+                        }
+                    }
+                } else if (sceneData && sceneData.nextScene) {
+                    // Preload images for all potential next scenes (e.g., from a choice screen)
+                    const nextSceneIds = Object.values(sceneData.nextScene);
+                    nextSceneIds.forEach(id => {
+                        const nextSceneData = gameData[id];
+                        if (Array.isArray(nextSceneData) && nextSceneData[0] && nextSceneData[0].image) {
+                            urls.push(nextSceneData[0].image);
+                        }
+                    });
+                }
+                return urls;
+            }
+
             preloadImage('all_q.webp');
             preloadImage('hares 1.webp');
             preloadImage('library_question.webp');
             preloadImage('library_question_2.webp');
             preloadImage('library_question_3.webp');
             preloadImage('library_question_4.webp');
-            // --- END: Image Preloading Optimization ---
 
             populateFacultiesList();
             populateGuideSelection();

@@ -1602,7 +1602,6 @@
                 { name: 'كلية الاقتصاد والعلوم الإدارية', description: 'بناء الاقتصاد والإدارة السليمة والمال', url: 'https://commerce.iugaza.edu.ps/', emoji: '💼' }
             ];
 
-            // --- START: Guide Gender Update ---
             const allGuides = [
                 { id: 'medicine', name: 'د. خالد', gender: 'male', college: 'كلية الطب', emoji: '⚕️', description: 'الدقة والتشخيص السليم هما مفتاح النجاح. سأرشدك في رحلة معرفية صحية.' },
                 { id: 'engineering', name: 'م. سارة', gender: 'female', college: 'كلية الهندسة', emoji: '🏗️', description: 'كل مشروع عظيم يبدأ بتصميم دقيق. لنبني مستقبلك خطوة بخطوة.' },
@@ -1616,7 +1615,6 @@
                 { id: 'education', name: 'أستاذة هدى', gender: 'female', college: 'كلية التربية', emoji: '👩‍🏫', description: 'بناء الأجيال هو أسمى الرسالات. معًا سنتعلم كيف نلهم العقول ونبني المستقبل.' },
                 { id: 'economics', name: 'خبير مالي', gender: 'male', college: 'كلية الاقتصاد', emoji: '💼', description: 'فهم المال والاقتصاد هو مفتاح بناء مستقبل مزدهر. دعنا نخطط لنجاحك.' }
             ];
-            // --- END: Guide Gender Update ---
 
             const guideMessages = {
                 'gate': {
@@ -1673,7 +1671,6 @@
                 }
             };
 
-            // --- START: Hints Update ---
             const gameData = {
                 'gate': { id: 'gate_q1', image: 'hares 1.webp', question: 'أهلاً بك في الجامعة الإسلامية! للدخول، أجب عن السؤال التالي: في أي عام تأسست الجامعة؟', options: { '1978': '1978', '1982': '1982', '1960': '1960', '1990': '1990' }, correctAnswer: '1978', points: 1, 
                     hint: { default: "التاريخ قريب من نهاية السبعينيات." },
@@ -1841,12 +1838,14 @@
                 }
             }
             
-            // --- START: Guide Modal Gender & Sound Update ---
-            function showGuideModal(title, message) {
+            // --- START: Guide Modal Sound Update ---
+            function showGuideModal(title, message, playSoundEffect = true) {
                 const guideInfo = allGuides.find(g => g.id === gameState.selectedGuide);
                 if (!guideInfo) return;
                 
-                playSound(guideAppearsSound);
+                if (playSoundEffect) {
+                    playSound(guideAppearsSound);
+                }
 
                 const verb = guideInfo.gender === 'female' ? 'تقول' : 'يقول';
 
@@ -1860,7 +1859,7 @@
                 
                 showModal(title, modalContent, null);
             }
-            // --- END: Guide Modal Gender & Sound Update ---
+            // --- END: Guide Modal Sound Update ---
             
             function saveGameState() {
                 try {
@@ -2082,15 +2081,12 @@
                 sceneElement.classList.remove('hidden');
                 sceneElement.querySelector('.options-container').addEventListener('click', handleAnswer);
                 
-                // --- START: Hint Button Mobile Fix ---
-                // Replaced the complex double-listener with a single, reliable 'click' listener.
                 if (sceneData.correctAnswer !== null) {
                     const helpBtn = document.getElementById('guide-help-btn');
                     if (helpBtn) {
                         helpBtn.addEventListener('click', useGuideHelp);
                     }
                 }
-                // --- END: Hint Button Mobile Fix ---
             }
 
             function renderStudentAffairsInfoScene() {
@@ -2368,7 +2364,7 @@
                 }
 
                 const hint = (sceneData.hint && (sceneData.hint[gameState.selectedGuide] || sceneData.hint.default)) || 'فكر جيداً، يمكنك فعلها!';
-                showGuideModal("مساعدة من مرشدك", hint);
+                showGuideModal("مساعدة من مرشدك", hint, false);
             }
 
             function updatePlayerStats() {

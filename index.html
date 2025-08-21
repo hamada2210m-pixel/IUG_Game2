@@ -1911,6 +1911,10 @@
                 return false;
             }
             
+            // ==========================================================
+            // التعديل الأول: تسريع عملية التسجيل
+            // تم تعديل هذه الدالة لتنتقل باللاعب فوراً ثم ترسل البيانات في الخلفية
+            // ==========================================================
             function startGame(event) {
                 event.preventDefault();
                 const nameInput = document.getElementById('name').value.trim();
@@ -1932,31 +1936,30 @@
                     showModal('خطأ في سنة التوجيهي', 'الرجاء إدخال سنة توجيهي منطقية (مثال: 2024).', null);
                     return;
                 }
-                const startButton = event.target.querySelector('.action-button');
-                startButton.disabled = true;
-                startButton.innerHTML = 'جاري التسجيل... <span class="spinner"></span>';
+                
+                // --- الخطوة 1: حفظ البيانات والانتقال الفوري ---
+                gameState.playerName = nameInput;
+                gameState.playerPhone = phoneInput;
+                gameState.tawjihiYear = tawjihiYearInput;
+                updatePlayerStats();
+                startScreen.classList.add('hidden');
+                document.getElementById('guide-selection-screen').classList.remove('hidden');
 
+                // --- الخطوة 2: إرسال بيانات التسجيل في الخلفية ---
+                // اللاعب لن ينتظر انتهاء هذه العملية
                 registerPlayer(nameInput, phoneInput, tawjihiYearInput)
                     .then(data => {
                         if (data.result === 'success' && data.uniqueId) {
-                            gameState.playerName = nameInput;
-                            gameState.playerPhone = phoneInput;
-                            gameState.tawjihiYear = tawjihiYearInput;
+                            console.log('تم التسجيل بنجاح في الخلفية. ID:', data.uniqueId);
                             gameState.uniquePlayerId = data.uniqueId;
-                            saveGameState();
-                            updatePlayerStats();
-                            startScreen.classList.add('hidden');
-                            document.getElementById('guide-selection-screen').classList.remove('hidden');
+                            saveGameState(); // نحفظ الحالة بعد الحصول على ID
                         } else {
-                            showModal('خطأ في التسجيل', 'حدث خطأ أثناء التسجيل. الرجاء المحاولة مرة أخرى.', null);
-                            startButton.disabled = false;
-                            startButton.innerHTML = 'ابدأ الرحلة!';
+                            console.error('فشل التسجيل في الخلفية:', data.message);
+                            // يمكنك إظهار رسالة خطأ غير مزعجة هنا إذا أردت
                         }
                     })
                     .catch(error => {
-                        showModal('خطأ في الاتصال', 'فشل الاتصال بالخادم. الرجاء التحقق من اتصالك بالإنترنت.', null);
-                        startButton.disabled = false;
-                        startButton.innerHTML = 'ابدأ الرحلة!';
+                        console.error('خطأ في الاتصال أثناء التسجيل في الخلفية:', error);
                     });
             }
 
@@ -2064,14 +2067,6 @@
                     </div>`;
 
                 sceneElement.classList.remove('hidden');
-                sceneElement.querySelector('.options-container').addEventListener('click', handleAnswer);
-                
-                if (sceneData.correctAnswer !== null) {
-                    const helpBtn = document.getElementById('guide-help-btn');
-                    if (helpBtn) {
-                        helpBtn.addEventListener('click', useGuideHelp);
-                    }
-                }
             }
 
             function renderStudentAffairsInfoScene() {
@@ -2324,6 +2319,7 @@
                     if(targetButton.classList.contains('incorrect')){
                         setTimeout(() => {
                             targetButton.classList.remove('incorrect');
+                            targetButton.disabled = false; // <<< تم إضافة سطر لإعادة تفعيل الزر بعد فترة
                             modal.classList.add('hidden');
                         }, 2000);
                     }
@@ -2477,6 +2473,26 @@
                 if (event.target.closest('#back-to-map-btn')) {
                     event.preventDefault();
                     renderScene('map');
+                }
+            });
+
+            // ==========================================================
+            // التعديل الثاني: تحسين آلية عمل زر المساعدة والأجوبة
+            // هذا الكود يستخدم "تفويض الأحداث" لضمان عمل الأزرار دائماً
+            // ==========================================================
+            gameSceneContainer.addEventListener('click', function(event) {
+                // التحقق إذا كان الزر المضغوط هو زر إجابة
+                const optionButton = event.target.closest('.option-btn');
+                if (optionButton) {
+                    handleAnswer(event);
+                    return; // نوقف التنفيذ هنا
+                }
+
+                // التحقق إذا كان الزر المضغوط هو زر مساعدة المرشد
+                const helpButton = event.target.closest('#guide-help-btn');
+                if (helpButton) {
+                    useGuideHelp();
+                    return; // نوقف التنفيذ هنا
                 }
             });
 

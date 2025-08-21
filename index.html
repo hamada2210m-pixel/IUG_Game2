@@ -254,6 +254,8 @@
             font-family: var(--font-family);
             font-size: 16px;
             cursor: pointer;
+            position: relative; /* ضروري لعمل z-index */
+            z-index: 10;      /* رقم مرتفع لوضع الزر في طبقة علوية */
             transition: all 0.3s ease;
             margin: -10px auto 20px;
             display: flex;

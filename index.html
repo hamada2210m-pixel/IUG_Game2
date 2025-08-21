@@ -41,8 +41,6 @@
             position: relative;
         }
 
-        /* --- التعديل الأول: إصلاح مشكلة الشفافية --- */
-        /* تم تغيير position من absolute إلى fixed لضمان تغطية كامل الشاشة على جميع الأجهزة */
         body::before {
             content: '';
             position: fixed;
@@ -247,8 +245,6 @@
             margin-bottom: 20px;
         }
 
-        /* --- التعديل الثاني: إصلاح مشكلة زر التلميح --- */
-        /* تم إضافة touch-action لضمان استجابة الزر بشكل صحيح على أجهزة اللمس */
         .guide-help-button {
             background-color: var(--info-color);
             color: white;
@@ -265,7 +261,7 @@
             gap: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.15);
             -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation; /* تمت إضافة هذه الخاصية */
+            touch-action: manipulation;
         }
         .guide-help-button:hover {
             background-color: #117a8b;
@@ -2074,7 +2070,13 @@
                 if (sceneData.correctAnswer !== null) {
                     const helpBtn = document.getElementById('guide-help-btn');
                     if (helpBtn) {
+                        // --- التعديل النهائي: إضافة معالج حدث اللمس ---
+                        // هذا يضمن استجابة الزر على أجهزة الجوال بشكل موثوق
                         helpBtn.addEventListener('click', useGuideHelp);
+                        helpBtn.addEventListener('touchstart', (event) => {
+                            event.preventDefault(); // لمنع السلوك الافتراضي للمتصفح وتكرار الحدث
+                            useGuideHelp();
+                        });
                     }
                 }
             }

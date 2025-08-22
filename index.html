@@ -1462,6 +1462,78 @@
 .shot-dot.saved { background-color: #dc3545; }
 
 /* ========== نهاية تنسيقات لعبة الملعب ========== */
+/* ========== بداية تنسيقات لعبة الذاكرة ========== */
+#memory-game-scene .scene-content {
+    padding: 20px;
+    background-color: #e6f3ee; /* light-bg color */
+}
+
+.memory-game-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-dark);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.memory-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    perspective: 1000px; /* For 3D flip effect */
+}
+
+.memory-card {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+    cursor: pointer;
+}
+
+.memory-card.flipped,
+.memory-card.matched {
+    transform: rotateY(180deg);
+}
+
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.card-front {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    font-size: 3em;
+    background-image: url('logo.webp'); /* Using existing logo */
+    background-size: 60%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.card-back {
+    background-color: var(--white-color);
+    color: var(--primary-dark);
+    transform: rotateY(180deg);
+    font-size: 2.5em;
+}
+
+.memory-card.matched .card-back {
+    background-color: #d4edda; /* Light green for matched cards */
+    border: 2px solid var(--correct-color);
+}
+/* ========== نهاية تنسيقات لعبة الذاكرة ========== */
     </style>
 </head>
 <body>
@@ -1829,6 +1901,22 @@
             <div id="studentaffairs_mc_questions-scene" class="game-stage hidden"></div>
             <div id="stadium-scene" class="game-stage hidden">
                  </div>
+             <div id="stadium-scene" class="game-stage hidden">
+                </div>
+            <div id="memory-game-scene" class="game-stage hidden">
+                </div>
+            ```
+
+**ليصبح شكل الملف في النهاية هكذا:**
+    </div>
+
+
+    <div id="stadium-scene" class="game-stage hidden">
+        </div>
+    <div id="memory-game-scene" class="game-stage hidden">
+        </div>
+    <div id="end-scene" class="game-stage hidden">
+        </div>    
             <div id="end-scene" class="game-stage hidden">
                 <div class="scene-content">
                     <h2 class="scene-title">🎉 تهانينا! 🎉</h2>
@@ -2077,7 +2165,7 @@
             'cafeteria': { isUnderConstruction: true },
             'hospital': { isUnderConstruction: true },
             'conference': { isUnderConstruction: true },
-            'stadium': { isUnderConstruction: false } // *** تعديل: تم تفعيل الملعب
+            'stadium': { isUnderConstruction: false }
         };
 
         const badgesData = [
@@ -2492,12 +2580,12 @@
                 'admission-info': renderAdmissionInfoScene,
                 'exchange-info': renderExchangeInfoScene,
                 'studentaffairs-info': renderStudentAffairsInfoScene,
-                'player-profile': renderPlayerProfile
+                'player-profile': renderPlayerProfile,
+                'stadium': renderStadiumGame,
             };
 
             if (sceneMappings[sceneId]) {
                 sceneMappings[sceneId]();
-                preloadNextImages(sceneId);
                 return;
             }
 
@@ -2933,7 +3021,6 @@
         function isStageCompleted(stageId) {
             let stageData = gameData[stageId];
             if (!stageData) return false;
-            // *** تعديل: إضافة التحقق من إكمال لعبة الملعب ***
             if (stageId === 'stadium') {
                 return gameState.answeredQuestions.has('stadium-game-completed');
             }
@@ -2959,7 +3046,6 @@
             
             const mainDestinationId = destination.replace('-info', '').replace('-list', '');
 
-            // *** بداية التعديل: تفعيل زر الملعب ***
             if (destination === 'stadium') {
                 if (isStageCompleted('stadium')) {
                     showModal("لقد لعبت بالفعل!", "أكملت تحدي الملعب من قبل. استكشف مكاناً آخر!", null);
@@ -2968,7 +3054,6 @@
                 }
                 return;
             }
-            // *** نهاية التعديل ***
 
             if (isStageCompleted(mainDestinationId) && destination !== 'certificate') {
                 showModal("مكان مألوف!", "لقد أكملت جميع تحديات هذا المكان. اختر وجهة أخرى.", null);
@@ -3207,7 +3292,7 @@
             saveGameState();
         }
 
-        // ========== بداية كود لعبة الملعب الجديد ==========
+        // ========== بداية كود لعبة الملعب ==========
         function renderStadiumGame() {
             const sceneElement = document.getElementById('stadium-scene');
             document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
@@ -3256,23 +3341,19 @@
                 goal.removeEventListener('click', handleShot);
                 instructions.textContent = '...';
 
-                // 1. تحديد مكان التسديد
                 const rect = goal.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
 
-                // 2. تحريك الحارس عشوائياً
-                const keeperPositions = [-80, 0, 80]; // يسار، وسط، يمين (بالـ %)
+                const keeperPositions = [-80, 0, 80];
                 const randomPos = keeperPositions[Math.floor(Math.random() * keeperPositions.length)];
                 keeper.style.left = `calc(50% + ${randomPos}px)`;
 
-                // 3. تحريك الكرة
                 ball.style.bottom = `${(rect.height - y) + (gameBoard.clientHeight - rect.height)}px`;
                 ball.style.left = `${(x / rect.width) * 100}%`;
                 ball.style.transform = `translateX(-50%) scale(0.5)`;
 
                 setTimeout(() => {
-                    // 4. تحديد النتيجة
                     const goalThird = rect.width / 3;
                     const shotPosition = x < goalThird ? -80 : (x > goalThird * 2 ? 80 : 0);
                     
@@ -3293,7 +3374,6 @@
                     playerScoreDisplay.textContent = `أنت: ${playerScore}`;
                     keeperScoreDisplay.textContent = `الحارس: ${keeperScore}`;
 
-                    // 5. التحقق من نهاية اللعبة أو إعادة الكرة
                     if (shotsTaken >= totalShots) {
                         endStadiumGame();
                     } else {
@@ -3333,13 +3413,105 @@
                 }
                 saveGameState();
                 setTimeout(() => {
-                    showModal(title, message, () => renderScene('map'));
+                    // *** تعديل: الانتقال إلى لعبة الذاكرة بدلاً من الخريطة ***
+                    showModal(title, message + "<br><br>استعد الآن لتحدي الذاكرة!", () => renderMemoryGame());
                 }, 1500);
             };
 
             goal.addEventListener('click', handleShot);
         }
-        // ========== نهاية كود لعبة الملعب الجديد ==========
+        // ========== نهاية كود لعبة الملعب ==========
+
+        // ========== بداية كود لعبة الذاكرة ==========
+        function renderMemoryGame() {
+            const sceneElement = document.getElementById('memory-game-scene');
+            document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
+            sceneElement.classList.remove('hidden');
+            gameState.currentScene = 'memory-game';
+            saveGameState();
+
+            const cardEmojis = shuffleArray(collegesData).slice(0, 8).map(c => c.emoji);
+            const gameCards = shuffleArray([...cardEmojis, ...cardEmojis]);
+
+            let gridHTML = '';
+            gameCards.forEach(emoji => {
+                gridHTML += `
+                    <div class="memory-card" data-emoji="${emoji}">
+                        <div class="card-face card-front"></div>
+                        <div class="card-face card-back">${emoji}</div>
+                    </div>`;
+            });
+
+            sceneElement.innerHTML = `
+                <div class="scene-content">
+                    <h2 class="memory-game-title">تحدي الذاكرة!</h2>
+                    <p style="text-align:center; margin-bottom: 20px;">ابحث عن أزواج الرموز المتشابهة لكليات الجامعة.</p>
+                    <div class="memory-grid">${gridHTML}</div>
+                </div>`;
+                
+            const grid = sceneElement.querySelector('.memory-grid');
+            let flippedCards = [];
+            let matchedPairs = 0;
+            let lockBoard = false;
+
+            const handleCardClick = (e) => {
+                const clickedCard = e.target.closest('.memory-card');
+                if (lockBoard || !clickedCard || clickedCard.classList.contains('flipped')) return;
+
+                clickedCard.classList.add('flipped');
+                flippedCards.push(clickedCard);
+
+                if (flippedCards.length === 2) {
+                    lockBoard = true;
+                    checkForMatch();
+                }
+            };
+
+            const checkForMatch = () => {
+                const [cardOne, cardTwo] = flippedCards;
+                const isMatch = cardOne.dataset.emoji === cardTwo.dataset.emoji;
+
+                if (isMatch) {
+                    disableCards();
+                } else {
+                    unflipCards();
+                }
+            };
+            
+            const disableCards = () => {
+                playSound(correctSound);
+                flippedCards.forEach(card => {
+                    card.classList.add('matched');
+                });
+                matchedPairs++;
+                resetTurn();
+                if (matchedPairs === cardEmojis.length) {
+                    endMemoryGame();
+                }
+            };
+
+            const unflipCards = () => {
+                setTimeout(() => {
+                    playSound(incorrectSound);
+                    flippedCards.forEach(card => card.classList.remove('flipped'));
+                    resetTurn();
+                }, 1000);
+            };
+
+            const resetTurn = () => {
+                flippedCards = [];
+                lockBoard = false;
+            };
+
+            const endMemoryGame = () => {
+                setTimeout(() => {
+                    showModal('🧠 ذاكرة قوية!', 'لقد أتممت تحدي الذاكرة بنجاح. أنت الآن عائد إلى الخريطة.', () => renderScene('map'));
+                }, 500);
+            };
+            
+            grid.addEventListener('click', handleCardClick);
+        }
+        // ========== نهاية كود لعبة الذاكرة ==========
 
         document.body.addEventListener('click', unlockAudio, { once: true });
         

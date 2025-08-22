@@ -1337,6 +1337,131 @@
                 transform: translateY(-15px);
             }
         }
+        /* ========== بداية تنسيقات لعبة الملعب ========== */
+#stadium-scene .scene-content {
+    padding: 15px;
+    background-color: #388E3C; /* لون عشبي */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.stadium-game-board {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    aspect-ratio: 4 / 3;
+    background-image: 
+        linear-gradient(rgba(255,255,255,0.1) 2px, transparent 2px),
+        linear-gradient(90deg, rgba(255,255,255,0.1) 2px, transparent 2px);
+    background-size: 40px 40px;
+    background-color: #4CAF50;
+    position: relative;
+    border: 5px solid #FFF;
+    border-top: none;
+    overflow: hidden;
+}
+
+.stadium-goal {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 60%;
+    border: 5px solid #FFF;
+    border-bottom: none;
+    box-sizing: border-box;
+}
+.stadium-goal::before, .stadium-goal::after { /* Net pattern */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px);
+    background-size: 20px 20px;
+    z-index: 1;
+}
+
+.stadium-keeper {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 50px;
+    height: 70px;
+    background-color: #fdd835; /* أصفر */
+    border: 2px solid var(--primary-dark);
+    border-radius: 5px;
+    transform: translateX(-50%);
+    transition: left 0.3s ease-in-out;
+    z-index: 3;
+}
+
+.stadium-ball {
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    width: 25px;
+    height: 25px;
+    background-color: #fff;
+    border-radius: 50%;
+    border: 2px solid #000;
+    transform: translateX(-50%);
+    transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: 2;
+}
+
+.stadium-controls {
+    text-align: center;
+    width: 100%;
+}
+
+.stadium-instructions {
+    color: var(--white-color);
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+.stadium-score-board {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    max-width: 400px;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+.stadium-shots-indicator {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.shot-dot {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: rgba(255,255,255,0.5);
+    border: 1px solid white;
+}
+.shot-dot.goal { background-color: #28a745; }
+.shot-dot.saved { background-color: #dc3545; }
+
+/* ========== نهاية تنسيقات لعبة الملعب ========== */
     </style>
 </head>
 <body>
@@ -1702,6 +1827,8 @@
             <div id="studentaffairs-scene" class="game-stage hidden"></div>
             <div id="studentaffairs_tf_questions-scene" class="game-stage hidden"></div>
             <div id="studentaffairs_mc_questions-scene" class="game-stage hidden"></div>
+            <div id="stadium-scene" class="game-stage hidden">
+                 </div>
             <div id="end-scene" class="game-stage hidden">
                 <div class="scene-content">
                     <h2 class="scene-title">🎉 تهانينا! 🎉</h2>
@@ -1756,7 +1883,7 @@
         </video>
         <button id="skip-video-btn" class="action-button">تخطي الفيديو</button>
     </div>
-    <script>
+ <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-lE41eY0lEWEOxZevGyTMxNbpY2zTmRzWa3DEAd5Dc6O72GgtMA/exec';
     
     const form = document.getElementById('player-form');
@@ -1950,15 +2077,13 @@
             'cafeteria': { isUnderConstruction: true },
             'hospital': { isUnderConstruction: true },
             'conference': { isUnderConstruction: true },
-            'stadium': { isUnderConstruction: true }
+            'stadium': { isUnderConstruction: false } // *** تعديل: تم تفعيل الملعب
         };
 
         const badgesData = [
-            // الشارات القديمة
             { id: 'library-expert', name: 'شارة المثقف', emoji: '🏅', stageId: 'library' },
             { id: 'faculties-expert', name: 'شارة الخبير الهندسي', emoji: '🏅', stageId: 'faculties' },
             { id: 'speed-runner', name: 'شارة البرق', emoji: '⚡', stageId: 'any-timed-stage' },
-            // الشارات الجديدة
             { id: 'grants-master', name: 'شارة المنح', emoji: '✨', stageId: 'grants' },
             { id: 'exchange-master', name: 'شارة الجسر', emoji: '🌉', stageId: 'exchange' },
             { id: 'student-affairs-master', name: 'شارة القائد', emoji: '🎯', stageId: 'studentaffairs' },
@@ -1986,22 +2111,20 @@
             answeredQuestions: new Set(), selectedGuide: null,
             powerUps: {}, 
             badges: [],
-            currentQuestionAttempts: 0 // لتتبع عدد المحاولات في السؤال الحالي
+            currentQuestionAttempts: 0
         };
         
-        // متغيرات المؤقت
         let questionTimer = null;
         const TIME_LIMIT = 25;
         let timeLeft = TIME_LIMIT;
-        let startTime = 0; // لزمن بدء المرحلة من أجل شارة البرق
-        let stagePoints = 0; // لعدّ النقاط في المرحلة الحالية من أجل شارة العلامة الكاملة
+        let startTime = 0;
+        let stagePoints = 0;
 
        const sceneParentMap = {
            'tf_questions': 'faculties', 'mc_questions': 'faculties', 
             'exchange_tf_questions': 'exchange', 'exchange_mc_questions': 'exchange', 
            'admission_tf_questions': 'admission', 'admission_mc_questions': 'admission',
             'studentaffairs_tf_questions': 'studentaffairs', 'studentaffairs_mc_questions': 'studentaffairs'
-           
        };
        
         const landingScreen = document.getElementById('landing-screen');
@@ -2031,13 +2154,10 @@
         const preloadedImages = new Set();
 
         function preloadImage(url) {
-            if (!url || preloadedImages.has(url)) {
-                return;
-            }
+            if (!url || preloadedImages.has(url)) return;
             const img = new Image();
             img.src = url;
             preloadedImages.add(url);
-            console.log(`Preloading: ${url}`);
         }
         
         async function unlockAudio() {
@@ -2048,11 +2168,10 @@
                     await sound.play();
                     sound.pause();
                 } catch (error) {
-                    console.warn("Audio unlock failed for one sound, this is expected.", error.name);
+                    // console.warn("Audio unlock failed for one sound, this is expected.", error.name);
                 }
             }
             isAudioUnlocked = true;
-            console.log("Audio context unlocked.");
         }
 
         function playSound(soundElement) {
@@ -2105,13 +2224,8 @@
                     const savedState = JSON.parse(savedStateJSON);
                     Object.assign(gameState, savedState);
                     gameState.answeredQuestions = new Set(savedState.answeredQuestions);
-                    // Ensure powerUps and badges objects exist
-                    if (!gameState.powerUps) {
-                        gameState.powerUps = {};
-                    }
-                    if (!gameState.badges) {
-                        gameState.badges = [];
-                    }
+                    if (!gameState.powerUps) gameState.powerUps = {};
+                    if (!gameState.badges) gameState.badges = [];
                     return true;
                 }
                 return false;
@@ -2140,9 +2254,7 @@
 
             badgeIcon.textContent = emoji;
             badgeName.textContent = name;
-            
             playSound(badgeSound);
-
             badgeModal.classList.remove('hidden');
 
             badgeCloseBtn.onclick = () => {
@@ -2321,44 +2433,36 @@
         }
 
         function startTimer() {
-        clearTimer();
+            clearTimer();
+            const currentSceneEl = document.getElementById(`${gameState.currentScene}-scene`);
+            if (!currentSceneEl) return; 
 
-        const currentSceneEl = document.getElementById(`${gameState.currentScene}-scene`);
-        if (!currentSceneEl) return; 
+            const timerContainer = currentSceneEl.querySelector('#timer-container');
+            const timerDisplay = currentSceneEl.querySelector('#timer-display');
+            if (!timerDisplay || !timerContainer) return;
 
-        const timerContainer = currentSceneEl.querySelector('#timer-container');
-        const timerDisplay = currentSceneEl.querySelector('#timer-display');
-
-        if (!timerDisplay || !timerContainer) return;
-
-        timeLeft = TIME_LIMIT;
-        startTime = Date.now();
-        timerDisplay.textContent = timeLeft;
-        timerContainer.classList.remove('low-time');
-
-        questionTimer = setInterval(() => {
-            timeLeft--;
+            timeLeft = TIME_LIMIT;
+            startTime = Date.now();
             timerDisplay.textContent = timeLeft;
+            timerContainer.classList.remove('low-time');
 
-            if (timeLeft <= 5 && timeLeft > 0) {
-                timerContainer.classList.add('low-time');
-            }
-
-            if (timeLeft < 0) {
-                clearTimer();
-                handleTimeUp();
-            }
-        }, 1000);
+            questionTimer = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft;
+                if (timeLeft <= 5 && timeLeft > 0) {
+                    timerContainer.classList.add('low-time');
+                }
+                if (timeLeft < 0) {
+                    clearTimer();
+                    handleTimeUp();
+                }
+            }, 1000);
         }
 
         function renderScene(sceneId, questionIndex = 0, pushState = true) {
             clearTimer();
-            
             gameState.currentQuestionAttempts = 0;
-            
-            if (questionIndex === 0) {
-                stagePoints = 0;
-            }
+            if (questionIndex === 0) stagePoints = 0;
 
             if (questionIndex === 0 && sceneId !== 'map' && guideMessages[sceneId]) {
                 const messageSceneId = sceneParentMap[sceneId] || sceneId;
@@ -2421,11 +2525,9 @@
                 const totalQuestions = gameData[sceneId].length;
                 const currentQuestionNumber = questionIndex + 1;
                 const currentProgress = (currentQuestionNumber / totalQuestions) * 100;
-                
                 const progressBarHTML = `<div class="progress-bar-container"><div class="progress-bar" style="width: ${currentProgress}%"></div></div>`;
                 const questionCounterHTML = `<div class="question-counter">السؤال ${currentQuestionNumber} من ${totalQuestions}</div>`;
                 const timerHTML = `<div id="timer-container" class="timer-container"><span id="timer-display">${TIME_LIMIT}</span></div>`;
-
                 progressInfoHTML = `<div class="progress-info">${progressBarHTML}${timerHTML}${questionCounterHTML}</div>`;
             }
             
@@ -2448,23 +2550,14 @@
                 }
                 const stagePowerUps = gameState.powerUps[stageId];
                 const isMCQ4 = Object.keys(sceneData.options).length === 4;
-
                 powerUpsHTML = `
                     <div class="power-ups-container">
                         <button id="guide-help-btn" class="guide-help-button">💡 مساعدة المرشد (-0.5 نقطة)</button>
-                        <button id="fifty-fifty-btn" class="power-up-btn" ${stagePowerUps.fiftyFifty > 0 && isMCQ4 ? '' : 'disabled'}>
-                            50/50 <span class="power-up-counter">${stagePowerUps.fiftyFifty}</span>
-                        </button>
-                        <button id="extra-time-btn" class="power-up-btn" ${stagePowerUps.extraTime > 0 ? '' : 'disabled'}>
-                            ⏱️ +15 <span class="power-up-counter">${stagePowerUps.extraTime}</span>
-                        </button>
-                        <button id="skip-q-btn" class="power-up-btn" ${stagePowerUps.skip > 0 ? '' : 'disabled'}>
-                            ⏭️ تخطي <span class="power-up-counter">${stagePowerUps.skip}</span>
-                        </button>
-                    </div>
-                `;
+                        <button id="fifty-fifty-btn" class="power-up-btn" ${stagePowerUps.fiftyFifty > 0 && isMCQ4 ? '' : 'disabled'}>50/50 <span class="power-up-counter">${stagePowerUps.fiftyFifty}</span></button>
+                        <button id="extra-time-btn" class="power-up-btn" ${stagePowerUps.extraTime > 0 ? '' : 'disabled'}>⏱️ +15 <span class="power-up-counter">${stagePowerUps.extraTime}</span></button>
+                        <button id="skip-q-btn" class="power-up-btn" ${stagePowerUps.skip > 0 ? '' : 'disabled'}>⏭️ تخطي <span class="power-up-counter">${stagePowerUps.skip}</span></button>
+                    </div>`;
             }
-
 
             sceneElement.innerHTML = `
                 <img src="${sceneData.image}" alt="صورة مشهد ${sceneId}" class="scene-image" loading="lazy">
@@ -2483,26 +2576,16 @@
                 powerUpsContainer.addEventListener('click', (event) => {
                     const button = event.target.closest('.power-up-btn, .guide-help-button');
                     if (!button) return;
-
                     switch (button.id) {
-                        case 'guide-help-btn':
-                            useGuideHelp();
-                            break;
-                        case 'fifty-fifty-btn':
-                            useFiftyFifty();
-                            break;
-                        case 'extra-time-btn':
-                            useExtraTime();
-                            break;
-                        case 'skip-q-btn':
-                            useSkipQuestion();
-                            break;
+                        case 'guide-help-btn': useGuideHelp(); break;
+                        case 'fifty-fifty-btn': useFiftyFifty(); break;
+                        case 'extra-time-btn': useExtraTime(); break;
+                        case 'skip-q-btn': useSkipQuestion(); break;
                     }
                 });
             }
-            
             startTimer();
-            }
+        }
 
         function renderStudentAffairsInfoScene() {
             document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
@@ -2512,87 +2595,7 @@
             saveGameState();
 
             const container = document.getElementById('studentaffairs-info-container');
-            container.innerHTML = `
-                <nav class="tabs-nav">
-                    <button class="tab-btn active" data-tab="about">عن العمادة</button>
-                    <button class="tab-btn" data-tab="services">الأقسام والخدمات</button>
-                    <button class="tab-btn" data-tab="gallery">ألبوم الصور</button>
-                </nav>
-                <div class="tabs-content">
-                    <div id="tab-about" class="tab-pane active">
-                        <div class="info-scene-container">
-                            <p>أهلاً وسهلاً بكم في عمادة شئون الطلبة بالجامعة الإسلامية. تعد عمادة شؤون الطلبة من أهم العمادات بالجامعة المختصة بالطلبة، فهي  تعنى بتقديم الخدمات الطلابية، والتي تسهم في تنظيم الأنشطة اللامنهجية والأعمال التطوعية، وتساعد الطالب في إنجاز المعاملات وتسهيل عملية التسجيل والتسجيل للمنح الداخلية والخارجية والقروض الجامعية.</p>
-                            <h3 class="info-section-title">تاريخ ومهام</h3>
-                            <p>أنشئت عمادة شؤون الطلبة في عام 1981م. وقد أنيطت بها المهام التالية:</p>
-                            <ul class="info-list">
-                                <li>دراسة مشكلات الطلبة الاقتصادية، ووضع الحلول لها من خلال قسم البحث الاجتماعي.</li>
-                                <li>الإشراف على النشاط الثقافي والاجتماعي والرياضي والفني بالتنسيق مع مجالس الطلبة.</li>
-                                <li>متابعة اجتماعيات مجالس الطلبة، وإرشادهم إلى طريق العمل السليم.</li>
-                                <li>النظر في مشكلات الطلبة اليومية العامة والخاصة، وتنسيب الحلول الملائمة لها.</li>
-                                <li>الإشراف على حسن استخدام مرافق الجامعة استخداماً سليماً.</li>
-                                <li>مراقبة انتظام الدراسة، وبحث ظاهرة التغيب، وتنسيب الحلول الملائمة لها.</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div id="tab-services" class="tab-pane">
-                        <div class="info-scene-container">
-                            <div class="accordion-item">
-                                <div class="accordion-header">قسم البحث الاجتماعي "خدمات الطلبة"</div>
-                                <div class="accordion-content">
-                                    <p>يعد قسم البحث الاجتماعي البوابة الأساسية لمساعدة الطلبة ماليا بهدف إكمال المسيرة التعليمية. وبناءً عليه يتم الاستفادة من خدمات العمادة المتعلقة بالمنح الخارجية والقروض الجامعية.</p>
-                                    <strong>الخطوات المتبعة للاستفادة:</strong>
-                                    <ul class="info-list">
-                                        <li>يتم توجيه الطلبة لتعبئة استمارة البحث الاجتماعي الكترونيا.</li>
-                                        <li>يقوم الطالب بإرفاق الأوراق الثبوتية الأصلية الكترونيا.</li>
-                                        <li>يقوم الطالب بإحضار الأوراق الثبوتية وتسلميها لموظفي البحث الاجتماعي، لتدقيقها.</li>
-                                        <li>يتم تصنيف حالات الطلبة وفق معايير خاصة تحدد الحالة الاجتماعية للطالب.</li>
-                                        <li>بناء على نتيجة البحث الاجتماعي لكل طالب يتم ترشيح الطلبة للمنح الخارجية.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <div class="accordion-header">الأنشطة اللامنهجية والعمل التطوعي</div>
-                                <div class="accordion-content">
-                                    <p>هي مجموعة من الفعاليات المتنوعة الثقافية – الفنية – التدريبية – العلمية والترويحية التي تهدف إلى تنمية شخصية الطالب الجامعي وتزويده بالمهارات والخبرات واستثمار اوقات الفراغ. أما العمل التطوعي فهو أحد المساقات التي تشرف عليها العمادة لتكليف الطلبة بأنشطة وفعاليات تطوعية تصقل مواهبهم.</p>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <div class="accordion-header">قسم النشاط الرياضي</div>
-                                <div class="accordion-content">
-                                    <p>لقد أولت عمادة شئون الطلبة الأنشطة الرياضية الفردية والجماعية اهتماما كبيرا لما لها من أثر في صقل وتهذيب شخصية الطالب. ومن أهدافه بث الروح الرياضية، تنمية مواهب الطلبة، غرس المفاهيم الصحيحة للتربية البدنية، نشر الوعي الرياضي، وإعداد المنتخبات لتمثيل الجامعة.</p>
-                                </div>
-                            </div>
-                                <div class="accordion-item">
-                                <div class="accordion-header">وحدة التوجيه والارشاد</div>
-                                <div class="accordion-content">
-                                    <p>تقدم الوحدة الخدمات التالية للطلبة:</p>
-                                    <ul class="info-list">
-                                        <li>إرشاد وتوجيه وتوعية.</li>
-                                        <li>استشارات.</li>
-                                        <li>ندوات ومحاضرات.</li>
-                                        <li>ورش عمل.</li>
-                                        <li>دورات ذات علاقة.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="tab-gallery" class="tab-pane">
-                        <div class="info-scene-container">
-                           <div class="photo-gallery">
-                                <img src="https://i.imgur.com/uStyY1N.jpeg" alt="استقبال الطلبة" loading="lazy">
-                                <img src="https://i.imgur.com/vHqB3Tj.jpeg" alt="زيارة طلبة الثانوية" loading="lazy">
-                                <img src="https://i.imgur.com/1mYdPo3.jpeg" alt="فريق الدبكة" loading="lazy">
-                                <img src="https://i.imgur.com/QhXpBmg.jpeg" alt="زيارة الصالة الرياضية" loading="lazy">
-                                <img src="https://i.imgur.com/A6mJTOq.jpeg" alt="زيارة لرئيس الجامعة" loading="lazy">
-                                <img src="https://i.imgur.com/o1bFjHj.jpeg" alt="استقبال في الأيام الترفيهية" loading="lazy">
-                                <img src="https://i.imgur.com/L8JgY1g.jpeg" alt="فريق شئون الطلبة" loading="lazy">
-                                <img src="https://i.imgur.com/w2Y9w5E.jpeg" alt="ضيافة طلبة الثانوية" loading="lazy">
-                           </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+            container.innerHTML = `<nav class="tabs-nav"><button class="tab-btn active" data-tab="about">عن العمادة</button><button class="tab-btn" data-tab="services">الأقسام والخدمات</button><button class="tab-btn" data-tab="gallery">ألبوم الصور</button></nav><div class="tabs-content"><div id="tab-about" class="tab-pane active"><div class="info-scene-container"><p>أهلاً وسهلاً بكم في عمادة شئون الطلبة بالجامعة الإسلامية. تعد عمادة شؤون الطلبة من أهم العمادات بالجامعة المختصة بالطلبة، فهي  تعنى بتقديم الخدمات الطلابية، والتي تسهم في تنظيم الأنشطة اللامنهجية والأعمال التطوعية، وتساعد الطالب في إنجاز المعاملات وتسهيل عملية التسجيل والتسجيل للمنح الداخلية والخارجية والقروض الجامعية.</p><h3 class="info-section-title">تاريخ ومهام</h3><p>أنشئت عمادة شؤون الطلبة في عام 1981م. وقد أنيطت بها المهام التالية:</p><ul class="info-list"><li>دراسة مشكلات الطلبة الاقتصادية، ووضع الحلول لها من خلال قسم البحث الاجتماعي.</li><li>الإشراف على النشاط الثقافي والاجتماعي والرياضي والفني بالتنسيق مع مجالس الطلبة.</li><li>متابعة اجتماعيات مجالس الطلبة، وإرشادهم إلى طريق العمل السليم.</li><li>النظر في مشكلات الطلبة اليومية العامة والخاصة، وتنسيب الحلول الملائمة لها.</li><li>الإشراف على حسن استخدام مرافق الجامعة استخداماً سليماً.</li><li>مراقبة انتظام الدراسة، وبحث ظاهرة التغيب، وتنسيب الحلول الملائمة لها.</li></ul></div></div><div id="tab-services" class="tab-pane"><div class="info-scene-container"><div class="accordion-item"><div class="accordion-header">قسم البحث الاجتماعي "خدمات الطلبة"</div><div class="accordion-content"><p>يعد قسم البحث الاجتماعي البوابة الأساسية لمساعدة الطلبة ماليا بهدف إكمال المسيرة التعليمية. وبناءً عليه يتم الاستفادة من خدمات العمادة المتعلقة بالمنح الخارجية والقروض الجامعية.</p><strong>الخطوات المتبعة للاستفادة:</strong><ul class="info-list"><li>يتم توجيه الطلبة لتعبئة استمارة البحث الاجتماعي الكترونيا.</li><li>يقوم الطالب بإرفاق الأوراق الثبوتية الأصلية الكترونيا.</li><li>يقوم الطالب بإحضار الأوراق الثبوتية وتسلميها لموظفي البحث الاجتماعي، لتدقيقها.</li><li>يتم تصنيف حالات الطلبة وفق معايير خاصة تحدد الحالة الاجتماعية للطالب.</li><li>بناء على نتيجة البحث الاجتماعي لكل طالب يتم ترشيح الطلبة للمنح الخارجية.</li></ul></div></div><div class="accordion-item"><div class="accordion-header">الأنشطة اللامنهجية والعمل التطوعي</div><div class="accordion-content"><p>هي مجموعة من الفعاليات المتنوعة الثقافية – الفنية – التدريبية – العلمية والترويحية التي تهدف إلى تنمية شخصية الطالب الجامعي وتزويده بالمهارات والخبرات واستثمار اوقات الفراغ. أما العمل التطوعي فهو أحد المساقات التي تشرف عليها العمادة لتكليف الطلبة بأنشطة وفعاليات تطوعية تصقل مواهبهم.</p></div></div><div class="accordion-item"><div class="accordion-header">قسم النشاط الرياضي</div><div class="accordion-content"><p>لقد أولت عمادة شئون الطلبة الأنشطة الرياضية الفردية والجماعية اهتماما كبيرا لما لها من أثر في صقل وتهذيب شخصية الطالب. ومن أهدافه بث الروح الرياضية، تنمية مواهب الطلبة، غرس المفاهيم الصحيحة للتربية البدنية، نشر الوعي الرياضي، وإعداد المنتخبات لتمثيل الجامعة.</p></div></div><div class="accordion-item"><div class="accordion-header">وحدة التوجيه والارشاد</div><div class="accordion-content"><p>تقدم الوحدة الخدمات التالية للطلبة:</p><ul class="info-list"><li>إرشاد وتوجيه وتوعية.</li><li>استشارات.</li><li>ندوات ومحاضرات.</li><li>ورش عمل.</li><li>دورات ذات علاقة.</li></ul></div></div></div></div><div id="tab-gallery" class="tab-pane"><div class="info-scene-container"><div class="photo-gallery"><img src="https://i.imgur.com/uStyY1N.jpeg" alt="استقبال الطلبة" loading="lazy"><img src="https://i.imgur.com/vHqB3Tj.jpeg" alt="زيارة طلبة الثانوية" loading="lazy"><img src="https://i.imgur.com/1mYdPo3.jpeg" alt="فريق الدبكة" loading="lazy"><img src="https://i.imgur.com/QhXpBmg.jpeg" alt="زيارة الصالة الرياضية" loading="lazy"><img src="https://i.imgur.com/A6mJTOq.jpeg" alt="زيارة لرئيس الجامعة" loading="lazy"><img src="https://i.imgur.com/o1bFjHj.jpeg" alt="استقبال في الأيام الترفيهية" loading="lazy"><img src="https://i.imgur.com/L8JgY1g.jpeg" alt="فريق شئون الطلبة" loading="lazy"><img src="https://i.imgur.com/w2Y9w5E.jpeg" alt="ضيافة طلبة الثانوية" loading="lazy"></div></div></div></div>`;
             
             const tabsContainer = sceneElement.querySelector('.tabs-nav');
             const accordions = sceneElement.querySelectorAll('.accordion-item');
@@ -2601,7 +2604,6 @@
                 if (e.target.classList.contains('tab-btn')) {
                     tabsContainer.querySelector('.active').classList.remove('active');
                     e.target.classList.add('active');
-                    
                     sceneElement.querySelector('.tab-pane.active').classList.remove('active');
                     const targetTab = e.target.dataset.tab;
                     sceneElement.querySelector(`#tab-${targetTab}`).classList.add('active');
@@ -2773,24 +2775,12 @@
             
             const mainStageId = sceneParentMap[stageId] || stageId;
             switch (mainStageId) {
-                case 'library':
-                    addBadge('library-expert');
-                    break;
-                case 'faculties':
-                    addBadge('faculties-expert');
-                    break;
-                case 'grants':
-                    addBadge('grants-master');
-                    break;
-                case 'exchange':
-                    addBadge('exchange-master');
-                    break;
-                case 'studentaffairs':
-                    addBadge('student-affairs-master');
-                    break;
-                case 'admission':
-                    addBadge('admission-master');
-                    break;
+                case 'library': addBadge('library-expert'); break;
+                case 'faculties': addBadge('faculties-expert'); break;
+                case 'grants': addBadge('grants-master'); break;
+                case 'exchange': addBadge('exchange-master'); break;
+                case 'studentaffairs': addBadge('student-affairs-master'); break;
+                case 'admission': addBadge('admission-master'); break;
             }
             
             const completionTime = (Date.now() - startTime) / 1000;
@@ -2799,11 +2789,9 @@
             }
         }
 
-        // =================== بداية الكود المُعدّل (إصلاح مشكلة المرشد) ===================
         function useGuideHelp() {
-            // البحث المحدد داخل المشهد الحالي النشط فقط لضمان إيجاد الزر الصحيح
             const currentSceneEl = document.getElementById(`${gameState.currentScene}-scene`);
-            if (!currentSceneEl) return; // حماية إضافية في حال لم يتم العثور على المشهد
+            if (!currentSceneEl) return;
             const helpBtn = currentSceneEl.querySelector('#guide-help-btn');
 
             if (!helpBtn || helpBtn.disabled) return;
@@ -2827,7 +2815,6 @@
             const hint = (sceneData.hint && (sceneData.hint[gameState.selectedGuide] || sceneData.hint.default)) || 'فكر جيداً، يمكنك فعلها!';
             showGuideModal("مساعدة من مرشدك", hint, false);
         }
-        // =================== نهاية الكود المُعدّل ===================
 
         function useFiftyFifty() {
             const currentSceneEl = document.getElementById(`${gameState.currentScene}-scene`);
@@ -2897,7 +2884,6 @@
             updatePlayerStats();
             updatePlayerScore(gameState.uniquePlayerId, gameState.score);
             saveGameState();
-
             clearTimer();
             
             const sceneId = gameState.currentScene;
@@ -2947,6 +2933,10 @@
         function isStageCompleted(stageId) {
             let stageData = gameData[stageId];
             if (!stageData) return false;
+            // *** تعديل: إضافة التحقق من إكمال لعبة الملعب ***
+            if (stageId === 'stadium') {
+                return gameState.answeredQuestions.has('stadium-game-completed');
+            }
             if (stageId === 'faculties' || stageId === 'exchange' || stageId === 'admission' || stageId === 'studentaffairs') {
                 const subScenes = Object.values(stageData.nextScene);
                 return subScenes.every(s => isStageCompleted(s));
@@ -2968,6 +2958,17 @@
             const destination = button.dataset.destination;
             
             const mainDestinationId = destination.replace('-info', '').replace('-list', '');
+
+            // *** بداية التعديل: تفعيل زر الملعب ***
+            if (destination === 'stadium') {
+                if (isStageCompleted('stadium')) {
+                    showModal("لقد لعبت بالفعل!", "أكملت تحدي الملعب من قبل. استكشف مكاناً آخر!", null);
+                } else {
+                    renderStadiumGame();
+                }
+                return;
+            }
+            // *** نهاية التعديل ***
 
             if (isStageCompleted(mainDestinationId) && destination !== 'certificate') {
                 showModal("مكان مألوف!", "لقد أكملت جميع تحديات هذا المكان. اختر وجهة أخرى.", null);
@@ -3150,10 +3151,8 @@
         guidesContainer.addEventListener('click', (e) => {
             const selectedCard = e.target.closest('.guide-card');
             if (!selectedCard) return;
-            
             guidesContainer.querySelectorAll('.guide-card').forEach(card => card.classList.remove('selected'));
             selectedCard.classList.add('selected');
-            
             gameState.selectedGuide = selectedCard.dataset.guide;
             confirmGuideBtn.disabled = false;
         });
@@ -3197,20 +3196,150 @@
                     if (badgeInfo) {
                         const badgeCard = document.createElement('div');
                         badgeCard.className = 'badge-card';
-                        badgeCard.innerHTML = `
-                            <span class="badge-icon">${badgeInfo.emoji}</span>
-                            <p>${badgeInfo.name}</p>
-                        `;
+                        badgeCard.innerHTML = `<span class="badge-icon">${badgeInfo.emoji}</span><p>${badgeInfo.name}</p>`;
                         badgesContainer.appendChild(badgeCard);
                     }
                 });
             } else {
                 noBadgesMsg.classList.remove('hidden');
             }
-
             gameState.currentScene = 'player-profile';
             saveGameState();
         }
+
+        // ========== بداية كود لعبة الملعب الجديد ==========
+        function renderStadiumGame() {
+            const sceneElement = document.getElementById('stadium-scene');
+            document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
+            sceneElement.classList.remove('hidden');
+            gameState.currentScene = 'stadium';
+            saveGameState();
+
+            let playerScore = 0;
+            let keeperScore = 0;
+            let shotsTaken = 0;
+            const totalShots = 5;
+
+            sceneElement.innerHTML = `
+                <div class="scene-content">
+                    <div class="stadium-score-board">
+                        <div id="stadium-player-score">أنت: 0</div>
+                        <div id="stadium-keeper-score">الحارس: 0</div>
+                    </div>
+                    <div class="stadium-game-board" id="stadium-game-board">
+                        <div class="stadium-goal" id="stadium-goal">
+                            <div class="stadium-keeper" id="stadium-keeper"></div>
+                        </div>
+                        <div class="stadium-ball" id="stadium-ball"></div>
+                    </div>
+                    <div class="stadium-controls">
+                        <p class="stadium-instructions" id="stadium-instructions">انقر على المرمى للتسديد!</p>
+                        <div class="stadium-shots-indicator" id="stadium-shots-indicator"></div>
+                    </div>
+                </div>`;
+
+            const gameBoard = document.getElementById('stadium-game-board');
+            const goal = document.getElementById('stadium-goal');
+            const ball = document.getElementById('stadium-ball');
+            const keeper = document.getElementById('stadium-keeper');
+            const instructions = document.getElementById('stadium-instructions');
+            const playerScoreDisplay = document.getElementById('stadium-player-score');
+            const keeperScoreDisplay = document.getElementById('stadium-keeper-score');
+            const shotsIndicator = document.getElementById('stadium-shots-indicator');
+            
+            for (let i = 0; i < totalShots; i++) {
+                shotsIndicator.innerHTML += `<div class="shot-dot" id="shot-dot-${i}"></div>`;
+            }
+
+            const handleShot = (e) => {
+                if (shotsTaken >= totalShots) return;
+                goal.removeEventListener('click', handleShot);
+                instructions.textContent = '...';
+
+                // 1. تحديد مكان التسديد
+                const rect = goal.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                // 2. تحريك الحارس عشوائياً
+                const keeperPositions = [-80, 0, 80]; // يسار، وسط، يمين (بالـ %)
+                const randomPos = keeperPositions[Math.floor(Math.random() * keeperPositions.length)];
+                keeper.style.left = `calc(50% + ${randomPos}px)`;
+
+                // 3. تحريك الكرة
+                ball.style.bottom = `${(rect.height - y) + (gameBoard.clientHeight - rect.height)}px`;
+                ball.style.left = `${(x / rect.width) * 100}%`;
+                ball.style.transform = `translateX(-50%) scale(0.5)`;
+
+                setTimeout(() => {
+                    // 4. تحديد النتيجة
+                    const goalThird = rect.width / 3;
+                    const shotPosition = x < goalThird ? -80 : (x > goalThird * 2 ? 80 : 0);
+                    
+                    const dot = document.getElementById(`shot-dot-${shotsTaken}`);
+                    if (shotPosition !== randomPos) {
+                        playSound(correctSound);
+                        playerScore++;
+                        instructions.textContent = '⚽ هــــدف!';
+                        dot.classList.add('goal');
+                    } else {
+                        playSound(incorrectSound);
+                        keeperScore++;
+                        instructions.textContent = '🧤 تصدى لها الحارس!';
+                        dot.classList.add('saved');
+                    }
+
+                    shotsTaken++;
+                    playerScoreDisplay.textContent = `أنت: ${playerScore}`;
+                    keeperScoreDisplay.textContent = `الحارس: ${keeperScore}`;
+
+                    // 5. التحقق من نهاية اللعبة أو إعادة الكرة
+                    if (shotsTaken >= totalShots) {
+                        endStadiumGame();
+                    } else {
+                        resetShot();
+                    }
+                }, 600);
+            };
+            
+            const resetShot = () => {
+                setTimeout(() => {
+                    ball.style.transition = 'none';
+                    ball.style.bottom = '-50px';
+                    ball.style.left = '50%';
+                    ball.style.transform = 'translateX(-50%) scale(1)';
+                    keeper.style.left = '50%';
+                    
+                    setTimeout(() => {
+                        ball.style.transition = 'all 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
+                        instructions.textContent = `التسديدة ${shotsTaken + 1}/${totalShots}. انقر على المرمى!`;
+                        goal.addEventListener('click', handleShot);
+                    }, 50);
+                }, 1000);
+            };
+
+            const endStadiumGame = () => {
+                gameState.answeredQuestions.add('stadium-game-completed');
+                let title, message;
+                if (playerScore > keeperScore) {
+                    title = '🏆 فوز رائع!';
+                    message = `لقد فزت بنتيجة ${playerScore} - ${keeperScore}. تم إضافة 5 نقاط إلى رصيدك!`;
+                    gameState.score += 5;
+                    updatePlayerStats();
+                    updatePlayerScore(gameState.uniquePlayerId, gameState.score);
+                } else {
+                    title = '🥅 محاولة جيدة!';
+                    message = `انتهت المباراة بالتعادل أو الخسارة. حظاً أوفر في المرة القادمة!`;
+                }
+                saveGameState();
+                setTimeout(() => {
+                    showModal(title, message, () => renderScene('map'));
+                }, 1500);
+            };
+
+            goal.addEventListener('click', handleShot);
+        }
+        // ========== نهاية كود لعبة الملعب الجديد ==========
 
         document.body.addEventListener('click', unlockAudio, { once: true });
         
@@ -3219,9 +3348,7 @@
             const sceneData = gameData[sceneId];
             if (Array.isArray(sceneData)) {
                 for (let i = questionIndex + 1; i < Math.min(questionIndex + 3, sceneData.length); i++) {
-                    if (sceneData[i] && sceneData[i].image) {
-                        urls.push(sceneData[i].image);
-                    }
+                    if (sceneData[i] && sceneData[i].image) urls.push(sceneData[i].image);
                 }
             } else if (sceneData && sceneData.nextScene) {
                 const nextSceneIds = Object.values(sceneData.nextScene);
@@ -3238,15 +3365,12 @@
         preloadImage('all_q.webp');
         preloadImage('hares 1.webp');
         preloadImage('library_question.webp');
-        preloadImage('library_question_2.webp');
-        preloadImage('library_question_3.webp');
-        preloadImage('library_question_4.webp');
 
         populateFacultiesList();
         populateGuideSelection();
         restoreGameSession();
     });
-</script>
+</script>   
      
 </body>
 </html>

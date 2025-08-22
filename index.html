@@ -254,10 +254,10 @@
             font-family: var(--font-family);
             font-size: 16px;
             cursor: pointer;
-            position: relative; /* ضروري لعمل z-index */
-            z-index: 10;      /* رقم مرتفع لوضع الزر في طبقة علوية */
+            position: relative;
+            z-index: 10;
             transition: all 0.3s ease;
-            margin: -10px auto 20px;
+            margin: 0;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -274,6 +274,50 @@
             cursor: not-allowed;
             transform: none;
         }
+
+        .power-ups-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .power-up-btn {
+            background-color: #ffc107;
+            color: var(--text-dark);
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-family: var(--font-family);
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .power-up-btn:hover:not(:disabled) {
+            background-color: #e0a800;
+            transform: translateY(-2px);
+        }
+        .power-up-btn:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+        }
+        .power-up-counter {
+            background-color: rgba(0,0,0,0.2);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            line-height: 20px;
+            text-align: center;
+        }
+
 
         .options-container {
             display: grid;
@@ -1779,11 +1823,17 @@
                 { faculty: "التربية", specializations: [ { name: "تعليم اللغة العربية، تعليم اللغة الإنجليزية، تعليم العلوم، تعليم الرياضيات، تعليم اجتماعيات، تعليم التربية الإسلامية، المرحلة الأساسية، الإرشاد النفسي والتوجيه التربوي، الكيمياء وأساليب تدريسها، الفيزياء وأساليب تدريسها، الأحياء وأساليب تدريسها، الحاسوب وأساليب تدريسه، اللغة العربية وأساليب تدريسها، اللغة الإنجليزية وأساليب تدريسها، التاريخ وأساليب تدريسه، الجغرافيا وأساليب تدريسها، الرياضيات وأساليب تدريسها", score: "65% علمي وأدبي" } ] }
             ];
 
-            const gameState = { playerName: '', playerPhone: '', tawjihiYear: '', uniquePlayerId: null, score: 0, currentScene: null, currentSubQuestionIndex: 0, answeredQuestions: new Set(), selectedGuide: null };
+            const gameState = { 
+                playerName: '', playerPhone: '', tawjihiYear: '', uniquePlayerId: null, 
+                score: 0, currentScene: null, currentSubQuestionIndex: 0, 
+                answeredQuestions: new Set(), selectedGuide: null,
+                powerUps: {} // إضافة كائن لتتبع المساعدات
+            };
             
             // متغيرات المؤقت
             let questionTimer = null;
             const TIME_LIMIT = 25;
+            let timeLeft = TIME_LIMIT;
 
             const sceneParentMap = {
                 'tf_questions': 'faculties', 'mc_questions': 'faculties', 'exchange_tf_questions': 'exchange', 'exchange_mc_questions': 'exchange', 'admission_tf_questions': 'admission', 'admission_mc_questions': 'admission',
@@ -1891,6 +1941,10 @@
                         const savedState = JSON.parse(savedStateJSON);
                         Object.assign(gameState, savedState);
                         gameState.answeredQuestions = new Set(savedState.answeredQuestions);
+                        // Ensure powerUps object exists
+                        if (!gameState.powerUps) {
+                            gameState.powerUps = {};
+                        }
                         return true;
                     }
                     return false;
@@ -2011,7 +2065,6 @@
                 }
             }
 
-            // --- دالات المؤقت الجديدة ---
             function clearTimer() {
                 if (questionTimer) {
                     clearInterval(questionTimer);
@@ -2039,7 +2092,7 @@
                 const correctAnswer = sceneData.correctAnswer;
                 const correctButton = sceneElement.querySelector(`.option-btn[data-answer="${correctAnswer}"]`);
                 if (correctButton) {
-                    correctButton.classList.add('correct'); // إظهار الإجابة الصحيحة
+                    correctButton.classList.add('correct');
                 }
 
                 const modalCallback = () => {
@@ -2076,7 +2129,7 @@
                 const timerDisplay = document.getElementById('timer-display');
                 if (!timerDisplay || !timerContainer) return;
 
-                let timeLeft = TIME_LIMIT;
+                timeLeft = TIME_LIMIT;
                 timerDisplay.textContent = timeLeft;
                 timerContainer.classList.remove('low-time');
 
@@ -2094,11 +2147,9 @@
                     }
                 }, 1000);
             }
-            // --- نهاية دالات المؤقت ---
-
 
             function renderScene(sceneId, questionIndex = 0, pushState = true) {
-                clearTimer(); // إيقاف أي مؤقت سابق فوراً
+                clearTimer();
 
                 if (questionIndex === 0 && sceneId !== 'map' && guideMessages[sceneId]) {
                     const messageSceneId = sceneParentMap[sceneId] || sceneId;
@@ -2179,14 +2230,39 @@
                     delay += 0.1;
                 }
                 
-                const helpButtonHTML = sceneData.correctAnswer !== null ? `<button id="guide-help-btn" class="guide-help-button">💡 مساعدة المرشد (-0.5 نقطة)</button>` : '';
+                // --- إنشاء HTML للمساعدات ---
+                let powerUpsHTML = '';
+                if (sceneData.correctAnswer !== null) {
+                    const stageId = sceneParentMap[sceneId] || sceneId;
+                    if (!gameState.powerUps[stageId]) {
+                        gameState.powerUps[stageId] = { fiftyFifty: 3, extraTime: 3, skip: 3 };
+                    }
+                    const stagePowerUps = gameState.powerUps[stageId];
+                    const isMCQ4 = Object.keys(sceneData.options).length === 4;
+
+                    powerUpsHTML = `
+                        <div class="power-ups-container">
+                            <button id="guide-help-btn" class="guide-help-button">💡 مساعدة المرشد (-0.5 نقطة)</button>
+                            <button id="fifty-fifty-btn" class="power-up-btn" ${stagePowerUps.fiftyFifty > 0 && isMCQ4 ? '' : 'disabled'}>
+                                50/50 <span class="power-up-counter">${stagePowerUps.fiftyFifty}</span>
+                            </button>
+                            <button id="extra-time-btn" class="power-up-btn" ${stagePowerUps.extraTime > 0 ? '' : 'disabled'}>
+                                ⏱️ +15 <span class="power-up-counter">${stagePowerUps.extraTime}</span>
+                            </button>
+                            <button id="skip-q-btn" class="power-up-btn" ${stagePowerUps.skip > 0 ? '' : 'disabled'}>
+                                ⏭️ تخطي <span class="power-up-counter">${stagePowerUps.skip}</span>
+                            </button>
+                        </div>
+                    `;
+                }
+
 
                 sceneElement.innerHTML = `
                     <img src="${sceneData.image}" alt="صورة مشهد ${sceneId}" class="scene-image" loading="lazy">
                     <div class="scene-content">
                         ${progressInfoHTML}
                         <p class="scene-title">${sceneData.question}</p>
-                        ${helpButtonHTML}
+                        ${powerUpsHTML}
                         <div class="options-container">${optionsHTML}</div>
                     </div>`;
 
@@ -2194,15 +2270,20 @@
                 sceneElement.querySelector('.options-container').addEventListener('click', handleAnswer);
                 
                 if (sceneData.correctAnswer !== null) {
+                    // --- ربط الأحداث بأزرار المساعدات ---
                     const helpBtn = document.getElementById('guide-help-btn');
-                    if (helpBtn) {
-                        helpBtn.addEventListener('click', useGuideHelp);
-                        helpBtn.addEventListener('touchstart', (event) => {
-                            event.preventDefault(); 
-                            useGuideHelp();
-                        });
-                    }
-                    startTimer(); // بدء المؤقت للمشهد الجديد
+                    if (helpBtn) helpBtn.addEventListener('click', useGuideHelp);
+                    
+                    const fiftyFiftyBtn = document.getElementById('fifty-fifty-btn');
+                    if (fiftyFiftyBtn) fiftyFiftyBtn.addEventListener('click', useFiftyFifty);
+
+                    const extraTimeBtn = document.getElementById('extra-time-btn');
+                    if (extraTimeBtn) extraTimeBtn.addEventListener('click', useExtraTime);
+
+                    const skipBtn = document.getElementById('skip-q-btn');
+                    if (skipBtn) skipBtn.addEventListener('click', useSkipQuestion);
+                    
+                    startTimer();
                 }
             }
 
@@ -2368,7 +2449,7 @@
                 const targetButton = event.target.closest('.option-btn');
                 if (!targetButton || targetButton.disabled) return;
                 
-                clearTimer(); // إيقاف المؤقت فور الإجابة
+                clearTimer();
 
                 const sceneId = gameState.currentScene;
                 let sceneData = gameData[sceneId];
@@ -2487,6 +2568,86 @@
                 const hint = (sceneData.hint && (sceneData.hint[gameState.selectedGuide] || sceneData.hint.default)) || 'فكر جيداً، يمكنك فعلها!';
                 showGuideModal("مساعدة من مرشدك", hint, false);
             }
+
+            // --- دالات المساعدات الجديدة ---
+            function useFiftyFifty() {
+                const btn = document.getElementById('fifty-fifty-btn');
+                if (!btn || btn.disabled) return;
+
+                const stageId = sceneParentMap[gameState.currentScene] || gameState.currentScene;
+                if (gameState.powerUps[stageId].fiftyFifty <= 0) return;
+
+                gameState.powerUps[stageId].fiftyFifty--;
+                saveGameState();
+                btn.querySelector('.power-up-counter').textContent = gameState.powerUps[stageId].fiftyFifty;
+                btn.disabled = true;
+
+                let sceneData = gameData[gameState.currentScene];
+                if (Array.isArray(sceneData)) {
+                    sceneData = sceneData[gameState.currentSubQuestionIndex];
+                }
+                
+                const options = document.querySelectorAll(`#${gameState.currentScene}-scene .option-btn`);
+                const wrongAnswers = [];
+                options.forEach(opt => {
+                    if (opt.dataset.answer !== sceneData.correctAnswer) {
+                        wrongAnswers.push(opt);
+                    }
+                });
+
+                shuffleArray(wrongAnswers).slice(0, 2).forEach(opt => {
+                    opt.disabled = true;
+                    opt.style.opacity = '0.5';
+                });
+            }
+
+            function useExtraTime() {
+                const btn = document.getElementById('extra-time-btn');
+                if (!btn || btn.disabled) return;
+
+                const stageId = sceneParentMap[gameState.currentScene] || gameState.currentScene;
+                if (gameState.powerUps[stageId].extraTime <= 0) return;
+
+                gameState.powerUps[stageId].extraTime--;
+                saveGameState();
+                btn.querySelector('.power-up-counter').textContent = gameState.powerUps[stageId].extraTime;
+                btn.disabled = true;
+                
+                timeLeft += 15;
+                const timerDisplay = document.getElementById('timer-display');
+                if(timerDisplay) timerDisplay.textContent = timeLeft;
+            }
+
+            function useSkipQuestion() {
+                const btn = document.getElementById('skip-q-btn');
+                if (!btn || btn.disabled) return;
+
+                const stageId = sceneParentMap[gameState.currentScene] || gameState.currentScene;
+                if (gameState.powerUps[stageId].skip <= 0) return;
+                
+                if (gameState.score < 0.5) {
+                    showModal("رصيد غير كافٍ", "عذراً، لا تملك نصف نقطة لتخطي السؤال.", null);
+                    return;
+                }
+
+                gameState.powerUps[stageId].skip--;
+                gameState.score -= 0.5;
+                updatePlayerStats();
+                updatePlayerScore(gameState.uniquePlayerId, gameState.score);
+                saveGameState();
+
+                clearTimer();
+                
+                const sceneId = gameState.currentScene;
+                const nextQuestionIndex = gameState.currentSubQuestionIndex + 1;
+
+                if (nextQuestionIndex < gameData[sceneId].length) {
+                    renderScene(sceneId, nextQuestionIndex);
+                } else {
+                    showModal("انتهت الأسئلة", "لقد أنهيت هذه المرحلة.", () => renderScene('map'));
+                }
+            }
+
 
             function updatePlayerStats() {
                 playerNameDisplay.textContent = gameState.playerName;

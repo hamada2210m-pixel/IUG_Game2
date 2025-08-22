@@ -2669,128 +2669,112 @@
                 document.getElementById('start-exchange-quiz-btn').onclick = () => renderScene('exchange');
             }
 
-           // =================== بداية الكود الجديد ===================
+            function handleAnswer(event) {
+                const targetButton = event.target.closest('.option-btn');
+                if (!targetButton || targetButton.disabled) return;
+                
+                clearTimer();
 
-            /**
-             * الدالة الجديدة والمحسّنة لمعالجة إجابات اللاعب
-             */
-            function handleAnswer(event) {
-                const targetButton = event.target.closest('.option-btn');
-                if (!targetButton || targetButton.disabled) return;
-                
-                clearTimer();
+                const sceneId = gameState.currentScene;
+                let sceneData = gameData[sceneId];
+                let questionId;
 
-                const sceneId = gameState.currentScene;
-                let sceneData = gameData[sceneId];
-                let questionId;
+                if (Array.isArray(sceneData)) {
+                    sceneData = sceneData[gameState.currentSubQuestionIndex];
+                    questionId = sceneData.id;
+                } else {
+                    questionId = sceneData.id || sceneId;
+                }
+                
+                const selectedAnswer = targetButton.dataset.answer;
+                
+                if (sceneData.nextScene && sceneData.nextScene[selectedAnswer]) {
+                    renderScene(sceneData.nextScene[selectedAnswer]);
+                    return;
+                }
 
-                if (Array.isArray(sceneData)) {
-                    sceneData = sceneData[gameState.currentSubQuestionIndex];
-                    questionId = sceneData.id;
-                } else {
-                    questionId = sceneData.id || sceneId;
-                }
-                
-                const selectedAnswer = targetButton.dataset.answer;
-                
-                if (sceneData.nextScene && sceneData.nextScene[selectedAnswer]) {
-                    renderScene(sceneData.nextScene[selectedAnswer]);
-                    return;
-                }
+                const allOptionButtons = document.querySelectorAll(`#${sceneId}-scene .option-btn`);
+                const helpBtn = document.getElementById('guide-help-btn');
 
-                const allOptionButtons = document.querySelectorAll(`#${sceneId}-scene .option-btn`);
-                const helpBtn = document.getElementById('guide-help-btn');
-                allOptionButtons.forEach(btn => btn.disabled = true);
-                if (helpBtn) helpBtn.disabled = true;
+                const isCorrect = selectedAnswer === sceneData.correctAnswer;
+                
+                if (isCorrect) {
+                    playSound(correctSound);
 
-                const isCorrect = selectedAnswer === sceneData.correctAnswer;
-                
-                // **الإصلاح الرئيسي هنا:** دالة للانتقال للسؤال التالي سيتم استدعاؤها بعد إغلاق النافذة
-                const proceedToNextStep = () => {
-                    if ((sceneId.includes('questions')) && !adShownThisSession && gameState.currentSubQuestionIndex === adTriggerQuestionIndex) {
-                        setTimeout(showAdModal, 500);
-                    }
+                    if (!gameState.answeredQuestions.has(questionId)) {
+                        gameState.score += sceneData.points;
+                        stagePoints += sceneData.points;
+                        gameState.answeredQuestions.add(questionId);
+                        saveGameState();
+                        updatePlayerStats();
+                        if (gameState.uniquePlayerId) {
+                            updatePlayerScore(gameState.uniquePlayerId, gameState.score);
+                        }
+                    }
+                    
+                    targetButton.classList.add('correct');
+                    let feedback = (sceneData.correctFeedback && (sceneData.correctFeedback[gameState.selectedGuide] || sceneData.correctFeedback.default)) || 'إجابة صحيحة!';
+                    showGuideModal("إجابة صحيحة!", feedback);
 
-                    if (sceneId === 'gate') {
-                        playWelcomeVideo();
-                    } else if (Array.isArray(gameData[sceneId])) {
-                        const nextQuestionIndex = gameState.currentSubQuestionIndex + 1;
-                        if (nextQuestionIndex >= gameData[sceneId].length) {
-                            giveBadgesForStage(sceneId);
-                        }
-                        if (nextQuestionIndex < gameData[sceneId].length) {
-                            renderScene(sceneId, nextQuestionIndex);
-                        } else {
-                            const parentScene = sceneParentMap[sceneId];
-                            if (parentScene) {
-                                const allSiblingsCompleted = Object.values(gameData[parentScene].nextScene).every(isStageCompleted);
-                                if (allSiblingsCompleted) {
-                                    showModal("إنجاز مذهل!", `لقد أكملت كل تحديات هذا القسم بنجاح. لنعد إلى الخريطة.`, () => renderScene('map'));
-                                } else {
-                                    showModal("رائع!", `لقد أتممت هذا التحدي. يمكنك الآن تجربة النوع الآخر من الأسئلة أو العودة للخريطة.`, () => renderScene(parentScene));
-                                }
-                            } else {
-                                showModal("إنجاز رائع!", `لقد أكملت جميع تحديات هذا القسم بنجاح. لنعد إلى الخريطة.`, () => renderScene('map'));
-                            }
-                        }
-                    } else {
-                        renderScene('map');
-                    }
-                };
-                
-                if (isCorrect) {
-                    playSound(correctSound);
-                    if (!gameState.answeredQuestions.has(questionId)) {
-                        gameState.score += sceneData.points;
-                        stagePoints += sceneData.points;
-                        gameState.answeredQuestions.add(questionId);
-                        updatePlayerStats();
-                        updatePlayerScore(gameState.uniquePlayerId, gameState.score);
-                        saveGameState();
-                    }
-                    targetButton.classList.add('correct');
-                    let feedback = (sceneData.correctFeedback && (sceneData.correctFeedback[gameState.selectedGuide] || sceneData.correctFeedback.default)) || 'إجابة صحيحة!';
-                    showGuideModal("إجابة صحيحة!", feedback, proceedToNextStep); // **تم التعديل هنا**
-                } else {
-                    playSound(incorrectSound);
-                    targetButton.classList.add('incorrect');
-                    const correctButton = document.querySelector(`#${sceneId}-scene .option-btn[data-answer="${sceneData.correctAnswer}"]`);
-                    if (correctButton) {
-                        correctButton.classList.add('correct');
-                    }
-                    let feedback = (sceneData.incorrectFeedback && (sceneData.incorrectFeedback[gameState.selectedGuide] || sceneData.incorrectFeedback.default)) || 'إجابة غير صحيحة.';
-                    showGuideModal("إجابة خاطئة", feedback + "<br>الإجابة الصحيحة تم تحديدها بالأخضر.", proceedToNextStep); // **تم التعديل هنا أيضاً**
-                }
-            }
+                    if ((sceneId.includes('questions')) && !adShownThisSession) {
+                        if (gameState.currentSubQuestionIndex === adTriggerQuestionIndex) {
+                            setTimeout(showAdModal, 1000);
+                        }
+                    }
 
-            /**
-             * الدالة الجديدة لعرض نافذة المرشد مع ربطها بالانتقال التلقائي
-             */
-            function showGuideModal(title, message, callback) {
-                const guideInfo = allGuides.find(g => g.id === gameState.selectedGuide);
-                if (!guideInfo) {
-                    if (callback) callback();
-                    return;
-                }
-                
-                // لا نشغل صوت ظهور المرشد مع صوت الإجابة الصحيحة/الخاطئة لمنع التداخل
-                // playSound(guideAppearsSound); 
+                    allOptionButtons.forEach(btn => btn.disabled = true);
+                    if (helpBtn) helpBtn.disabled = true;
 
-                const verb = guideInfo.gender === 'female' ? 'تقول' : 'يقول';
+                    setTimeout(() => {
+                        modal.classList.add('hidden');
+                        if (sceneId === 'gate') {
+                            playWelcomeVideo();
+                            preloadNextImages('map');
+                        } else if (Array.isArray(gameData[sceneId])) {
+                            const nextQuestionIndex = gameState.currentSubQuestionIndex + 1;
+                            
+                            // تحقق من إنجازات المرحلة بعد الإجابة الأخيرة
+                            if (nextQuestionIndex >= gameData[sceneId].length) {
+                                giveBadgesForStage(sceneId);
+                            }
+                            
+                            if (nextQuestionIndex < gameData[sceneId].length) {
+                                preloadNextImages(sceneId, nextQuestionIndex);
+                                renderScene(sceneId, nextQuestionIndex);
+                            } else {
+                                const parentScene = sceneParentMap[sceneId];
+                                if (parentScene) {
+                                    const siblingScenes = Object.values(gameData[parentScene].nextScene);
+                                    const allSiblingsCompleted = siblingScenes.every(siblingId => isStageCompleted(siblingId));
+                                    if (allSiblingsCompleted) {
+                                        showModal("إنجاز مذهل!", `لقد أكملت كل تحديات هذا القسم بنجاح. لنعد إلى الخريطة.`, () => renderScene('map'));
+                                    } else {
+                                        showModal("رائع!", `لقد أتممت هذا التحدي. يمكنك الآن تجربة النوع الآخر من الأسئلة أو العودة للخريطة.`, () => renderScene(parentScene));
+                                    }
+                                } else {
+                                    showModal("إنجاز رائع!", `لقد أكملت جميع تحديات هذا القسم بنجاح. لنعد إلى الخريطة.`, () => renderScene('map'));
+                                }
+                            }
+                        } else {
+                            renderScene('map');
+                        }
+                    }, 2500);
 
-                const modalContent = `
-                    <div style="text-align: center;">
-                        <div class="guide-icon" style="margin: 0 auto 10px; font-size: 48px; width: 80px; height: 80px;">${guideInfo.emoji}</div>
-                        <h3 style="color: var(--primary-dark); margin: 0;">${guideInfo.name} ${verb}:</h3>
-                        <p style="font-size: 16px; color: var(--text-light); margin-top: 10px;">"${message}"</p>
-                    </div>
-                `;
-                
-                // **الإصلاح الرئيسي هنا:** نمرر دالة الانتقال (callback) إلى النافذة مباشرة
-                showModal(title, modalContent, callback);
-            }
-
-            // =================== نهاية الكود الجديد ===================
+                } else {
+                    playSound(incorrectSound);
+                    targetButton.classList.add('incorrect');
+                    let feedback = (sceneData.incorrectFeedback && (sceneData.incorrectFeedback[gameState.selectedGuide] || sceneData.incorrectFeedback.default)) || 'إجابة غير صحيحة. حاول مرة أخرى!';
+                    showGuideModal("إجابة خاطئة", feedback);
+                    
+                    targetButton.disabled = true;
+                    if(targetButton.classList.contains('incorrect')){
+                        setTimeout(() => {
+                            targetButton.classList.remove('incorrect');
+                            modal.classList.add('hidden');
+                        }, 2000);
+                    }
+                }
+            }
             
             // دالة جديدة للتحقق من الشارات بعد انتهاء المرحلة
             function giveBadgesForStage(stageId) {

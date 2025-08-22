@@ -2123,13 +2123,22 @@
             }
 
             function startTimer() {
-                clearTimer(); 
+            clearTimer();
 
-                const timerContainer = document.getElementById('timer-container');
-                const timerDisplay = document.getElementById('timer-display');
-                if (!timerDisplay || !timerContainer) return;
+            // --- بداية التعديل ---
+            // نحدد أولاً شاشة المشهد النشط حالياً
+            const currentSceneEl = document.getElementById(`${gameState.currentScene}-scene`);
+            if (!currentSceneEl) return; // حماية في حال لم يتم العثور على المشهد
 
-                timeLeft = TIME_LIMIT;
+            // الآن نبحث عن المؤقت داخل هذا المشهد النشط فقط
+            const timerContainer = currentSceneEl.querySelector('#timer-container');
+            const timerDisplay = currentSceneEl.querySelector('#timer-display');
+            // --- نهاية التعديل ---
+
+            if (!timerDisplay || !timerContainer) return;
+
+            timeLeft = TIME_LIMIT;
+// ... باقي الكود
                 timerDisplay.textContent = timeLeft;
                 timerContainer.classList.remove('low-time');
 

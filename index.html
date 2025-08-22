@@ -1897,8 +1897,7 @@
                 </div>
             <div id="memory-game-scene" class="game-stage hidden">
                 </div>
-            ```
-
+        
 
     </div>
 
@@ -3281,7 +3280,6 @@
             gameState.currentScene = 'player-profile';
             saveGameState();
         }
-
         // ========== بداية كود لعبة الملعب ==========
         function renderStadiumGame() {
             const sceneElement = document.getElementById('stadium-scene');
@@ -3294,25 +3292,26 @@
             let keeperScore = 0;
             let shotsTaken = 0;
             const totalShots = 5;
+
+            // -- الكود الصحيح والمُنقح هنا --
             sceneElement.innerHTML = `
-    <div class="scene-content">
-        <div class="stadium-score-board">
-            <div id="stadium-player-score">أنت: 0</div>
-            <div id="stadium-keeper-score">الحارس: 0</div>
-        </div>
-        <div class="stadium-game-board" id="stadium-game-board">
-            <div class="stadium-goal" id="stadium-goal">
-                <div class="stadium-keeper" id="stadium-keeper">🧍‍♂️✋</div>
-            </div>
-            <div class="stadium-ball" id="stadium-ball">🏃‍♂️⚽</div>
-        </div>
-        <div class="stadium-controls">
-            <p class="stadium-instructions" id="stadium-instructions">انقر على المرمى للتسديد!</p>
-            <div class="stadium-shots-indicator" id="stadium-shots-indicator"></div>
-        </div>
-    </div>`;
-
-
+                <div class="scene-content">
+                    <div class="stadium-score-board">
+                        <div id="stadium-player-score">أنت: 0</div>
+                        <div id="stadium-keeper-score">الحارس: 0</div>
+                    </div>
+                    <div class="stadium-game-board" id="stadium-game-board">
+                        <div class="stadium-goal" id="stadium-goal">
+                            <div class="stadium-keeper" id="stadium-keeper">🧍‍♂️✋</div>
+                        </div>
+                        
+                        <div class="stadium-ball" id="stadium-ball">🏃‍♂️⚽</div>
+                    </div>
+                    <div class="stadium-controls">
+                        <p class="stadium-instructions" id="stadium-instructions">انقر على المرمى للتسديد!</p>
+                        <div class="stadium-shots-indicator" id="stadium-shots-indicator"></div>
+                    </div>
+                </div>`;
 
             const gameBoard = document.getElementById('stadium-game-board');
             const goal = document.getElementById('stadium-goal');
@@ -3327,79 +3326,75 @@
                 shotsIndicator.innerHTML += `<div class="shot-dot" id="shot-dot-${i}"></div>`;
             }
 
-           const handleShot = (e) => {
-    // --- الجزء المضاف ---
-    ball.textContent = '⚽'; // تغيير شكل اللاعب إلى كرة طائرة عند التسديد
-    ball.style.fontSize = '25px'; // يمكن تصغير حجم الكرة وهي تطير
-    // --- نهاية الجزء المضاف ---
+            const handleShot = (e) => {
+                ball.textContent = '⚽'; 
+                ball.style.fontSize = '25px'; 
 
-    if (shotsTaken >= totalShots) return;
-    goal.removeEventListener('click', handleShot);
-    instructions.textContent = '...';
+                if (shotsTaken >= totalShots) return;
+                goal.removeEventListener('click', handleShot);
+                instructions.textContent = '...';
 
-    const rect = goal.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+                const rect = goal.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
 
-    const keeperPositions = [-80, 0, 80];
-    const randomPos = keeperPositions[Math.floor(Math.random() * keeperPositions.length)];
-    keeper.style.left = `calc(50% + ${randomPos}px)`;
+                const keeperPositions = [-80, 0, 80];
+                const randomPos = keeperPositions[Math.floor(Math.random() * keeperPositions.length)];
+                keeper.style.left = `calc(50% + ${randomPos}px)`;
 
-    ball.style.bottom = `${(rect.height - y) + (gameBoard.clientHeight - rect.height)}px`;
-    ball.style.left = `${(x / rect.width) * 100}%`;
-    ball.style.transform = `translateX(-50%) scale(0.5)`;
+                ball.style.bottom = `${(rect.height - y) + (gameBoard.clientHeight - rect.height)}px`;
+                ball.style.left = `${(x / rect.width) * 100}%`;
+                ball.style.transform = `translateX(-50%) scale(0.5)`;
 
-    setTimeout(() => {
-        const goalThird = rect.width / 3;
-        const shotPosition = x < goalThird ? -80 : (x > goalThird * 2 ? 80 : 0);
+                setTimeout(() => {
+                    const goalThird = rect.width / 3;
+                    const shotPosition = x < goalThird ? -80 : (x > goalThird * 2 ? 80 : 0);
+                    
+                    const dot = document.getElementById(`shot-dot-${shotsTaken}`);
+                    if (shotPosition !== randomPos) {
+                        playSound(correctSound);
+                        playerScore++;
+                        instructions.textContent = '⚽ هــــدف!';
+                        dot.classList.add('goal');
+                    } else {
+                        playSound(incorrectSound);
+                        keeperScore++;
+                        instructions.textContent = '🧤 تصدى لها الحارس!';
+                        dot.classList.add('saved');
+                         keeper.textContent = '🧍‍♂️✋⚽';
+                    }
 
-        const dot = document.getElementById(`shot-dot-${shotsTaken}`);
-        if (shotPosition !== randomPos) {
-            playSound(correctSound);
-            playerScore++;
-            instructions.textContent = '⚽ هــــدف!';
-            dot.classList.add('goal');
-        } else {
-            playSound(incorrectSound);
-            keeperScore++;
-            instructions.textContent = '🧤 تصدى لها الحارس!';
-            dot.classList.add('saved');
-             keeper.textContent = '🧍‍♂️✋⚽';
-        }
+                    shotsTaken++;
+                    playerScoreDisplay.textContent = `أنت: ${playerScore}`;
+                    keeperScoreDisplay.textContent = `الحارس: ${keeperScore}`;
 
-        shotsTaken++;
-        playerScoreDisplay.textContent = `أنت: ${playerScore}`;
-        keeperScoreDisplay.textContent = `الحارس: ${keeperScore}`;
-
-        if (shotsTaken >= totalShots) {
-            endStadiumGame();
-        } else {
-            resetShot();
-        }
-    }, 600);
-};
-            const resetShot = () => {
-    setTimeout(() => {
-        // إعادة تعيين شكل الحارس واللاعب للحالة الابتدائية
-        keeper.textContent = '🧍‍♂️✋';
-        ball.textContent = '🏃‍♂️⚽';
-        ball.style.fontSize = '35px';
-
-        ball.style.transition = 'none';
-        ball.style.bottom = '15px'; // إعادة اللاعب لمكانه الأصلي
-        ball.style.left = '50%';
-        ball.style.transform = 'translateX(-50%) scale(1)';
-        keeper.style.left = '50%';
-
-        setTimeout(() => {
-            ball.style.transition = 'all 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
-            instructions.textContent = `التسديدة ${shotsTaken + 1}/${totalShots}. انقر على المرمى!`;
-            goal.addEventListener('click', handleShot);
-        }, 50);
-    }, 1000);
-};
+                    if (shotsTaken >= totalShots) {
+                        endStadiumGame();
+                    } else {
+                        resetShot();
+                    }
+                }, 600);
+            };
             
-           
+            const resetShot = () => {
+                setTimeout(() => {
+                    keeper.textContent = '🧍‍♂️✋';
+                    ball.textContent = '🏃‍♂️⚽';
+                    ball.style.fontSize = '35px';
+
+                    ball.style.transition = 'none';
+                    ball.style.bottom = '15px';
+                    ball.style.left = '50%';
+                    ball.style.transform = 'translateX(-50%) scale(1)';
+                    keeper.style.left = '50%';
+
+                    setTimeout(() => {
+                        ball.style.transition = 'all 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
+                        instructions.textContent = `التسديدة ${shotsTaken + 1}/${totalShots}. انقر على المرمى!`;
+                        goal.addEventListener('click', handleShot);
+                    }, 50);
+                }, 1000);
+            };
 
             const endStadiumGame = () => {
                 gameState.answeredQuestions.add('stadium-game-completed');
@@ -3416,7 +3411,6 @@
                 }
                 saveGameState();
                 setTimeout(() => {
-                    // *** تعديل: الانتقال إلى لعبة الذاكرة بدلاً من الخريطة ***
                     showModal(title, message + "<br><br>استعد الآن لتحدي الذاكرة!", () => renderMemoryGame());
                 }, 1500);
             };
@@ -3424,6 +3418,7 @@
             goal.addEventListener('click', handleShot);
         }
         // ========== نهاية كود لعبة الملعب ==========
+
 
         // ========== بداية كود لعبة الذاكرة ==========
         function renderMemoryGame() {

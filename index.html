@@ -446,7 +446,7 @@
             align-items: center;
             justify-content: space-between;
             gap: 15px;
-            width: 90%;
+            width: 95%;
             margin: 10px auto 20px;
         }
 
@@ -472,6 +472,37 @@
             font-weight: bold;
             color: var(--text-light);
             white-space: nowrap;
+        }
+
+        .timer-container {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary-dark);
+            background-color: var(--light-bg);
+            border: 2px solid var(--primary-color);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+
+        .timer-container.low-time {
+            background-color: #fffbe6;
+            border-color: var(--incorrect-color);
+            color: var(--incorrect-color);
+            transform: scale(1.1);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1.1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1.1); }
         }
 
 
@@ -1750,6 +1781,10 @@
 
             const gameState = { playerName: '', playerPhone: '', tawjihiYear: '', uniquePlayerId: null, score: 0, currentScene: null, currentSubQuestionIndex: 0, answeredQuestions: new Set(), selectedGuide: null };
             
+            // متغيرات المؤقت
+            let questionTimer = null;
+            const TIME_LIMIT = 25;
+
             const sceneParentMap = {
                 'tf_questions': 'faculties', 'mc_questions': 'faculties', 'exchange_tf_questions': 'exchange', 'exchange_mc_questions': 'exchange', 'admission_tf_questions': 'admission', 'admission_mc_questions': 'admission',
                 'studentaffairs_tf_questions': 'studentaffairs', 'studentaffairs_mc_questions': 'studentaffairs'
@@ -1976,7 +2011,95 @@
                 }
             }
 
+            // --- دالات المؤقت الجديدة ---
+            function clearTimer() {
+                if (questionTimer) {
+                    clearInterval(questionTimer);
+                    questionTimer = null;
+                }
+            }
+
+            function handleTimeUp() {
+                playSound(incorrectSound);
+
+                const sceneId = gameState.currentScene;
+                const sceneElement = document.getElementById(`${sceneId}-scene`);
+                if (!sceneElement) return;
+
+                const allOptionButtons = sceneElement.querySelectorAll('.option-btn');
+                allOptionButtons.forEach(btn => btn.disabled = true);
+                
+                const helpBtn = document.getElementById('guide-help-btn');
+                if (helpBtn) helpBtn.disabled = true;
+
+                let sceneData = gameData[sceneId];
+                if (Array.isArray(sceneData)) {
+                    sceneData = sceneData[gameState.currentSubQuestionIndex];
+                }
+                const correctAnswer = sceneData.correctAnswer;
+                const correctButton = sceneElement.querySelector(`.option-btn[data-answer="${correctAnswer}"]`);
+                if (correctButton) {
+                    correctButton.classList.add('correct'); // إظهار الإجابة الصحيحة
+                }
+
+                const modalCallback = () => {
+                    if (Array.isArray(gameData[sceneId])) {
+                        const nextQuestionIndex = gameState.currentSubQuestionIndex + 1;
+                        if (nextQuestionIndex < gameData[sceneId].length) {
+                            renderScene(sceneId, nextQuestionIndex);
+                        } else {
+                            const parentScene = sceneParentMap[sceneId];
+                            if (parentScene) {
+                                const siblingScenes = Object.values(gameData[parentScene].nextScene);
+                                const allSiblingsCompleted = siblingScenes.every(siblingId => isStageCompleted(siblingId));
+                                if (allSiblingsCompleted) {
+                                    showModal("إنجاز مذهل!", `لقد أكملت كل تحديات هذا القسم بنجاح. لنعد إلى الخريطة.`, () => renderScene('map'));
+                                } else {
+                                    showModal("انتهت الأسئلة", `لقد أتممت هذا التحدي. يمكنك الآن تجربة النوع الآخر من الأسئلة أو العودة للخريطة.`, () => renderScene(parentScene));
+                                }
+                            } else {
+                                showModal("إنجاز رائع!", `لقد أكملت جميع تحديات هذا القسم بنجاح. لنعد إلى الخريطة.`, () => renderScene('map'));
+                            }
+                        }
+                    } else {
+                        renderScene('map');
+                    }
+                };
+                
+                showModal("انتهى الوقت!", "للأسف، لقد نفد الوقت. الإجابة الصحيحة تم تحديدها. استعد للسؤال التالي.", modalCallback);
+            }
+
+            function startTimer() {
+                clearTimer(); 
+
+                const timerContainer = document.getElementById('timer-container');
+                const timerDisplay = document.getElementById('timer-display');
+                if (!timerDisplay || !timerContainer) return;
+
+                let timeLeft = TIME_LIMIT;
+                timerDisplay.textContent = timeLeft;
+                timerContainer.classList.remove('low-time');
+
+                questionTimer = setInterval(() => {
+                    timeLeft--;
+                    timerDisplay.textContent = timeLeft;
+
+                    if (timeLeft <= 5 && timeLeft > 0) {
+                        timerContainer.classList.add('low-time');
+                    }
+
+                    if (timeLeft < 0) {
+                        clearTimer();
+                        handleTimeUp();
+                    }
+                }, 1000);
+            }
+            // --- نهاية دالات المؤقت ---
+
+
             function renderScene(sceneId, questionIndex = 0, pushState = true) {
+                clearTimer(); // إيقاف أي مؤقت سابق فوراً
+
                 if (questionIndex === 0 && sceneId !== 'map' && guideMessages[sceneId]) {
                     const messageSceneId = sceneParentMap[sceneId] || sceneId;
                     if(guideMessages[messageSceneId] && guideMessages[messageSceneId][gameState.selectedGuide]) {
@@ -2040,8 +2163,9 @@
                     
                     const progressBarHTML = `<div class="progress-bar-container"><div class="progress-bar" style="width: ${currentProgress}%"></div></div>`;
                     const questionCounterHTML = `<div class="question-counter">السؤال ${currentQuestionNumber} من ${totalQuestions}</div>`;
-                    
-                    progressInfoHTML = `<div class="progress-info">${progressBarHTML}${questionCounterHTML}</div>`;
+                    const timerHTML = `<div id="timer-container" class="timer-container"><span id="timer-display">${TIME_LIMIT}</span></div>`;
+
+                    progressInfoHTML = `<div class="progress-info">${progressBarHTML}${timerHTML}${questionCounterHTML}</div>`;
                 }
                 
                 let optionsHTML = '';
@@ -2072,14 +2196,13 @@
                 if (sceneData.correctAnswer !== null) {
                     const helpBtn = document.getElementById('guide-help-btn');
                     if (helpBtn) {
-                        // --- التعديل النهائي: إضافة معالج حدث اللمس ---
-                        // هذا يضمن استجابة الزر على أجهزة الجوال بشكل موثوق
                         helpBtn.addEventListener('click', useGuideHelp);
                         helpBtn.addEventListener('touchstart', (event) => {
-                            event.preventDefault(); // لمنع السلوك الافتراضي للمتصفح وتكرار الحدث
+                            event.preventDefault(); 
                             useGuideHelp();
                         });
                     }
+                    startTimer(); // بدء المؤقت للمشهد الجديد
                 }
             }
 
@@ -2244,6 +2367,8 @@
             function handleAnswer(event) {
                 const targetButton = event.target.closest('.option-btn');
                 if (!targetButton || targetButton.disabled) return;
+                
+                clearTimer(); // إيقاف المؤقت فور الإجابة
 
                 const sceneId = gameState.currentScene;
                 let sceneData = gameData[sceneId];

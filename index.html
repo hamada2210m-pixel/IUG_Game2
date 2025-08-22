@@ -2278,22 +2278,32 @@
                 sceneElement.classList.remove('hidden');
                 sceneElement.querySelector('.options-container').addEventListener('click', handleAnswer);
                 
-                if (sceneData.correctAnswer !== null) {
-                    // --- ربط الأحداث بأزرار المساعدات ---
-                    const helpBtn = document.getElementById('guide-help-btn');
-                    if (helpBtn) helpBtn.addEventListener('click', useGuideHelp);
-                    
-                    const fiftyFiftyBtn = document.getElementById('fifty-fifty-btn');
-                    if (fiftyFiftyBtn) fiftyFiftyBtn.addEventListener('click', useFiftyFifty);
+             // --- بداية التعديل: استخدام طريقة تفويض الأحداث الأكثر موثوقية ---
+            const powerUpsContainer = sceneElement.querySelector('.power-ups-container');
+            if (powerUpsContainer) {
+                powerUpsContainer.addEventListener('click', (event) => {
+                    const button = event.target.closest('.power-up-btn, .guide-help-button');
+                    if (!button) return;
 
-                    const extraTimeBtn = document.getElementById('extra-time-btn');
-                    if (extraTimeBtn) extraTimeBtn.addEventListener('click', useExtraTime);
-
-                    const skipBtn = document.getElementById('skip-q-btn');
-                    if (skipBtn) skipBtn.addEventListener('click', useSkipQuestion);
-                    
-                    startTimer();
-                }
+                    switch (button.id) {
+                        case 'guide-help-btn':
+                            useGuideHelp();
+                            break;
+                        case 'fifty-fifty-btn':
+                            useFiftyFifty();
+                            break;
+                        case 'extra-time-btn':
+                            useExtraTime();
+                            break;
+                        case 'skip-q-btn':
+                            useSkipQuestion();
+                            break;
+                    }
+                });
+            }
+            // --- نهاية التعديل ---
+            
+            startTimer();
             }
 
             function renderStudentAffairsInfoScene() {

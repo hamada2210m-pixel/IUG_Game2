@@ -3035,15 +3035,10 @@
             
             const mainDestinationId = destination.replace('-info', '').replace('-list', '');
 
-            if (destination === 'stadium') {
-                if (isStageCompleted('stadium')) {
-                    showModal("لقد لعبت بالفعل!", "أكملت تحدي الملعب من قبل. استكشف مكاناً آخر!", null);
-                } else {
-                    renderStadiumGame();
-                }
-                return;
-            }
-
+          if (destination === 'stadium') {
+            renderStadiumGame();
+            return;
+        }
             if (isStageCompleted(mainDestinationId) && destination !== 'certificate') {
                 showModal("مكان مألوف!", "لقد أكملت جميع تحديات هذا المكان. اختر وجهة أخرى.", null);
                 return;
@@ -3280,9 +3275,15 @@
             gameState.currentScene = 'player-profile';
             saveGameState();
         }
-        // ========== بداية كود لعبة الملعب ==========
+    // ========== بداية كود لعبة الملعب ==========
         function renderStadiumGame() {
             const sceneElement = document.getElementById('stadium-scene');
+            if (!sceneElement) {
+                console.error("ERROR: Stadium scene element not found!");
+                showModal("خطأ فني", "لم يتم العثور على عنصر اللعبة. الرجاء التأكد من عدم وجود أخطاء في ملف HTML.", () => renderScene('map'));
+                return;
+            }
+            
             document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
             sceneElement.classList.remove('hidden');
             gameState.currentScene = 'stadium';
@@ -3293,7 +3294,6 @@
             let shotsTaken = 0;
             const totalShots = 5;
 
-            // -- الكود الصحيح والمُنقح هنا --
             sceneElement.innerHTML = `
                 <div class="scene-content">
                     <div class="stadium-score-board">
@@ -3304,7 +3304,6 @@
                         <div class="stadium-goal" id="stadium-goal">
                             <div class="stadium-keeper" id="stadium-keeper">🧍‍♂️✋</div>
                         </div>
-                        
                         <div class="stadium-ball" id="stadium-ball">🏃‍♂️⚽</div>
                     </div>
                     <div class="stadium-controls">
@@ -3327,6 +3326,8 @@
             }
 
             const handleShot = (e) => {
+                if (!ball || !keeper) return; // Safety check
+
                 ball.textContent = '⚽'; 
                 ball.style.fontSize = '25px'; 
 
@@ -3361,7 +3362,7 @@
                         keeperScore++;
                         instructions.textContent = '🧤 تصدى لها الحارس!';
                         dot.classList.add('saved');
-                         keeper.textContent = '🧍‍♂️✋⚽';
+                        keeper.textContent = '🧍‍♂️✋⚽';
                     }
 
                     shotsTaken++;
@@ -3378,10 +3379,10 @@
             
             const resetShot = () => {
                 setTimeout(() => {
+                    if (!ball || !keeper) return; // Safety check
                     keeper.textContent = '🧍‍♂️✋';
                     ball.textContent = '🏃‍♂️⚽';
                     ball.style.fontSize = '35px';
-
                     ball.style.transition = 'none';
                     ball.style.bottom = '15px';
                     ball.style.left = '50%';
@@ -3396,30 +3397,42 @@
                 }, 1000);
             };
 
-            const endStadiumGame = () => {
+           const endStadiumGame = () => {
+                const wasAlreadyCompleted = gameState.answeredQuestions.has('stadium-game-completed');
+                
+                // نسجل أن اللعبة اكتملت بغض النظر عن النتيجة
                 gameState.answeredQuestions.add('stadium-game-completed');
+
                 let title, message;
                 if (playerScore > keeperScore) {
                     title = '🏆 فوز رائع!';
-                    message = `لقد فزت بنتيجة ${playerScore} - ${keeperScore}. تم إضافة 5 نقاط إلى رصيدك!`;
-                    gameState.score += 5;
-                    updatePlayerStats();
-                    updatePlayerScore(gameState.uniquePlayerId, gameState.score);
+                    
+                    // نتحقق إذا كانت هذه هي المرة الأولى للفوز
+                    if (!wasAlreadyCompleted) {
+                        message = `لقد فزت بنتيجة ${playerScore} - ${keeperScore}. تم إضافة 5 نقاط إلى رصيدك!`;
+                        gameState.score += 5;
+                        updatePlayerStats();
+                        updatePlayerScore(gameState.uniquePlayerId, gameState.score);
+                    } else {
+                        message = `لقد فزت مجدداً بنتيجة ${playerScore} - ${keeperScore}. لعب رائع! (لا يتم إضافة نقاط جديدة للعب المتكرر).`;
+                    }
+
                 } else {
                     title = '🥅 محاولة جيدة!';
                     message = `انتهت المباراة بالتعادل أو الخسارة. حظاً أوفر في المرة القادمة!`;
                 }
+                
                 saveGameState();
+                
                 setTimeout(() => {
                     showModal(title, message + "<br><br>استعد الآن لتحدي الذاكرة!", () => renderMemoryGame());
                 }, 1500);
             };
-
             goal.addEventListener('click', handleShot);
         }
         // ========== نهاية كود لعبة الملعب ==========
 
-
+        // ========== بداية كود لعبة الذاكرة ==========
         // ========== بداية كود لعبة الذاكرة ==========
         function renderMemoryGame() {
             const sceneElement = document.getElementById('memory-game-scene');
@@ -3443,17 +3456,40 @@
             sceneElement.innerHTML = `
                 <div class="scene-content">
                     <h2 class="memory-game-title">تحدي الذاكرة!</h2>
-                    <p style="text-align:center; margin-bottom: 20px;">ابحث عن أزواج الرموز المتشابهة لكليات الجامعة.</p>
+                    <p style="text-align:center; margin-bottom: 20px;">استعد! سيتم عرض البطاقات لمدة 4 ثوانٍ...</p>
                     <div class="memory-grid">${gridHTML}</div>
                 </div>`;
                 
             const grid = sceneElement.querySelector('.memory-grid');
+            const allCards = sceneElement.querySelectorAll('.memory-card');
             let flippedCards = [];
             let matchedPairs = 0;
-            let lockBoard = false;
+            let lockBoard = true; // --- نبدأ واللوحة مقفلة
+
+            // --- الكود الجديد يبدأ هنا ---
+
+            // 1. عرض كل البطاقات فوراً عند بدء اللعبة
+            allCards.forEach(card => card.classList.add('flipped'));
+
+            // 2. بعد 4 ثوانٍ، يتم إخفاء جميع البطاقات
+            setTimeout(() => {
+                allCards.forEach(card => card.classList.remove('flipped'));
+                
+                // تحديث الرسالة
+                sceneElement.querySelector('p').textContent = 'ابحث عن أزواج الرموز المتشابهة لكليات الجامعة.';
+
+                // 3. ننتظر انتهاء حركة الإخفاء (600ms) ثم نسمح باللعب
+                setTimeout(() => {
+                    lockBoard = false;
+                }, 600); // هذه المدة يجب أن تطابق مدة الانتقال في CSS
+                
+            }, 4000); // 4 ثوانٍ
+
+            // --- الكود الجديد ينتهي هنا ---
 
             const handleCardClick = (e) => {
                 const clickedCard = e.target.closest('.memory-card');
+                // الآن هذا السطر سيمنع اللعب خلال فترة العرض الأولية
                 if (lockBoard || !clickedCard || clickedCard.classList.contains('flipped')) return;
 
                 clickedCard.classList.add('flipped');
@@ -3509,6 +3545,7 @@
             
             grid.addEventListener('click', handleCardClick);
         }
+        // ========== نهاية كود لعبة الذاكرة ==========
         // ========== نهاية كود لعبة الذاكرة ==========
 
         document.body.addEventListener('click', unlockAudio, { once: true });

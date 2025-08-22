@@ -1053,7 +1053,16 @@
             background-color: var(--info-color);
             border-color: var(--info-color);
         }
+        /* تعديل جديد: زر "الملف الشخصي" */
+        .status-bar-btn#profile-btn {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
 
+        .status-bar-btn#profile-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-color: var(--white-color);
+            transform: translateY(-2px);
+        }
         .status-section .icon {
             font-size: 22px;
         }
@@ -1240,6 +1249,94 @@
                 grid-template-columns: 1fr;
             }
         }
+        
+        /* CSS جديد لنظام الشارات */
+        .badge-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--primary-dark);
+            color: var(--white-color);
+            padding: 30px;
+            border-radius: var(--border-radius-main);
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            z-index: 5000;
+            animation: fadeInScale 0.5s ease-out;
+            width: 90%;
+            max-width: 400px;
+        }
+        
+        .badge-popup h3 {
+            font-size: 24px;
+            margin: 0 0 10px 0;
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+        
+        .badge-popup .badge-icon {
+            font-size: 80px;
+            margin-bottom: 15px;
+            animation: bounceIn 0.8s ease-out;
+            display: block;
+        }
+        
+        .badge-popup p {
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .badges-profile-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .badge-card {
+            background-color: var(--light-bg);
+            border-radius: var(--border-radius-main);
+            padding: 15px;
+            text-align: center;
+            width: 100px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .badge-card .badge-icon {
+            font-size: 40px;
+            margin-bottom: 5px;
+        }
+        .badge-card p {
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--primary-dark);
+            margin: 0;
+            line-height: 1.3;
+        }
+        
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        
+        @keyframes bounceIn {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-30px);
+            }
+            60% {
+                transform: translateY(-15px);
+            }
+        }
     </style>
 </head>
 <body>
@@ -1248,6 +1345,7 @@
     <audio id="incorrect-sound" src="funny.mp3" preload="auto"></audio>
     <audio id="transition-sound" src="turning.mp3" preload="auto"></audio>
     <audio id="guide-appears-sound" src="guide_appears.mp3" preload="auto"></audio>
+    <audio id="badge-sound" src="badge.mp3" preload="auto"></audio>
 
     <div id="status-bar" class="hidden">
         <div class="status-section">
@@ -1256,6 +1354,10 @@
             <span id="player-score-display"></span>
         </div>
         <div class="status-section">
+            <a href="#" id="profile-btn" class="status-bar-btn" aria-label="الملف الشخصي">
+                <span class="icon">⭐</span>
+                الملف الشخصي
+            </a>
             <a href="#" id="back-to-map-btn" class="status-bar-btn" aria-label="العودة إلى الخريطة">
                 <span class="icon">🗺️</span>
                 الخريطة
@@ -1322,9 +1424,42 @@
                 <h2 class="scene-title">اختر مرشدك في الرحلة</h2>
                 <p>كل مرشد سيقدم لك نصائح من منظور تخصصه الفريد!</p>
                 <div class="guides-container">
-                    </div>
+                </div>
                 <button id="confirm-guide-btn" class="action-button" disabled style="margin-top: 30px;">
                     تأكيد المرشد والبدء
+                </button>
+            </div>
+        </div>
+        
+        <div id="player-profile-scene" class="game-stage hidden">
+            <div class="scene-content" style="text-align: right;">
+                <h2 class="scene-title">الملف الشخصي</h2>
+                <div class="profile-info">
+                    <h3 style="display: flex; align-items: center; gap: 10px; color: var(--primary-dark);">
+                        <span id="profile-emoji" style="font-size: 30px;"></span>
+                        <span id="profile-name"></span>
+                    </h3>
+                    <p>
+                        <span style="font-weight: bold; color: var(--primary-color);">النقاط:</span>
+                        <span id="profile-score"></span>
+                    </p>
+                    <p>
+                        <span style="font-weight: bold; color: var(--primary-color);">سنة التوجيهي:</span>
+                        <span id="profile-tawjihi-year"></span>
+                    </p>
+                </div>
+                <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--primary-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 5px;">
+                    🏅 الشارات والإنجازات
+                </h3>
+                <div id="badges-container" class="badges-profile-container">
+                    <p id="no-badges-msg" style="color: var(--text-light);">
+                        لم تحصل على أي شارات بعد.
+                    </p>
+                </div>
+            </div>
+            <div class="info-footer">
+                <button id="profile-back-btn" class="action-button">
+                    <span class="btn-icon">⬅️</span> العودة
                 </button>
             </div>
         </div>
@@ -1548,7 +1683,7 @@
 
             <div id="studentaffairs-info-scene" class="game-stage hidden">
                 <div class="scene-content">
-                     <div class="info-header">
+                       <div class="info-header">
                         <img src="logo-1.png" alt="شعار عمادة شؤون الطلبة" style="max-width: 120px; margin: 0 auto 15px; border-radius: 50%;">
                         <h2 class="scene-title" style="margin-bottom: 10px;">🧑‍🎓 عمادة شؤون الطلبة</h2>
                         <p>رفيقك الدائم خلال رحلتك الجامعية نحو التميز والإبداع.</p>
@@ -1584,6 +1719,15 @@
             <h2 id="modal-title"></h2>
             <div id="modal-text"></div>
             <button id="modal-close-btn" class="action-button">متابعة</button>
+        </div>
+    </div>
+    
+    <div id="badge-modal" class="modal hidden">
+        <div class="modal-content badge-popup">
+            <span class="badge-icon"></span>
+            <h3>🎉 شارة جديدة! 🎉</h3>
+            <p id="badge-name"></p>
+            <button id="badge-close-btn" class="action-button" style="width: auto; margin-top: 20px;">حسناً</button>
         </div>
     </div>
 
@@ -1776,21 +1920,21 @@
                     incorrectFeedback: { default: 'إجابة غير صحيحة. العصر الرقمي في قلب مكتبتنا.' } 
                 } ],
                 'faculties-list': { isInfoScreen: true, nextScene: 'faculties' },
-                'faculties': { image: 'first_faculties_q.webp', question: 'اختر نوع التحدي الذي تود خوضه هنا:', options: { 'tf_questions': '<span class="icon">✔️❌</span> أسئلة صح وخطأ', 'mc_questions': '<span class="icon">❓</span> أسئلة اختيار من متعدد' }, correctAnswer: null, points: 0, nextScene: { 'tf_questions': 'tf_questions', 'mc_questions': 'mc_questions' } },
-                'tf_questions': [ { id: 'tf_q1', image: 'all_q.webp', question: 'تأسست الجامعة الإسلامية بغزة عام 1978.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint:{default: "هذا السؤال يشبه سؤال البوابة، هل تتذكره؟"} }, { id: 'tf_q2', image: 'all_q.webp', question: 'الجامعة لديها 11 كلية.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint:{default: "قمنا بعدّ الكليات في شاشة استكشاف الكليات، العدد فردي."} }, { id: 'tf_q3', image: 'all_q.webp', question: 'كلية الطب تأسست عام 2006.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint:{medicine: "تاريخ تأسيس كليتي حديث نسبياً."} }, { id: 'tf_q4', image: 'all_q.webp', question: 'كلية تكنولوجيا المعلومات أُسست قبل كلية التجارة.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'incorrect', points: 1, hint: {economics: "كلية التجارة (الاقتصاد) من الكليات القديمة في الجامعة."} }, { id: 'tf_q5', image: 'all_q.webp', question: 'الجامعة تقدم شهادات دكتوراة (PhD) في الإدارة، الاقتصاد، الهندسة، الفنون، وتكنولوجيا المعلومات.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint: {default: "الجامعة تقدم برامج دراسات عليا متقدمة في معظم كلياتها الرئيسية."} }, { id: 'tf_q6', image: 'all_q.webp', question: 'الجامعة الأولى على مستوى غزة من حيث الترتيب العالمي.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint: {default: "الجامعة تفتخر بتصنيفها المتقدم."} }, { id: 'tf_q7', image: 'all_q.webp', question: 'في كلية الطب، يجب على الطالب نشر بحث علمي في مجلة محكّمة كجزء من متطلبات التخرج.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint: {medicine: "البحث العلمي جزء أساسي من تكوين الطبيب الناجح."} }, { id: 'tf_q8', image: 'all_q.webp', question: 'كلية الطب هي المركز الوحيد المعتمد لإجراء امتحانات IFOM داخل غزة.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint: {medicine: "هذا الامتحان الدولي مهم لتقييم العلوم الطبية الأساسية والسريرية."} }, { id: 'tf_q9', image: 'all_q.webp', question: 'الجامعة مقرها فقط في مدينة غزة، ولا يوجد لها فروع أخرى.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'incorrect', points: 1, hint: {default: "هل تصل خدمات الجامعة التعليمية إلى مناطق أخرى في القطاع؟"} }, { id: 'tf_q10', image: 'all_q.webp', question: 'الجامعة عضو في الاتحاد الدولي للجامعات ومجموعة جامعات البحر الأبيض المتوسط.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint: {default: "الانتماء لهذه الاتحادات يعزز من مكانة الجامعة العالمية."} } ],
+                'faculties': { id: 'faculties_menu', image: 'first_faculties_q.webp', question: 'اختر نوع التحدي الذي تود خوضه هنا:', options: { 'tf_questions': '<span class="icon">✔️❌</span> أسئلة صح وخطأ', 'mc_questions': '<span class="icon">❓</span> أسئلة اختيار من متعدد' }, correctAnswer: null, points: 0, nextScene: { 'tf_questions': 'tf_questions', 'mc_questions': 'mc_questions' } },
+                'tf_questions': [ { id: 'tf_q1', image: 'all_q.webp', question: 'تأسست الجامعة الإسلامية بغزة عام 1978.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint:{default: "هذا السؤال يشبه سؤال البوابة، هل تتذكره?"} }, { id: 'tf_q2', image: 'all_q.webp', question: 'الجامعة لديها 11 كلية.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint:{default: "قمنا بعدّ الكليات في شاشة استكشاف الكليات، العدد فردي."} }, { id: 'tf_q3', image: 'all_q.webp', question: 'كلية الطب تأسست عام 2006.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint:{medicine: "تاريخ تأسيس كليتي حديث نسبياً."} }, { id: 'tf_q4', image: 'all_q.webp', question: 'كلية تكنولوجيا المعلومات أُسست قبل كلية التجارة.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'incorrect', points: 1, hint: {economics: "كلية التجارة (الاقتصاد) من الكليات القديمة في الجامعة."} }, { id: 'tf_q5', image: 'all_q.webp', question: 'الجامعة تقدم شهادات دكتوراة (PhD) في الإدارة، الاقتصاد، الهندسة، الفنون، وتكنولوجيا المعلومات.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint: {default: "الجامعة تقدم برامج دراسات عليا متقدمة في معظم كلياتها الرئيسية."} }, { id: 'tf_q6', image: 'all_q.webp', question: 'الجامعة الأولى على مستوى غزة من حيث الترتيب العالمي.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint: {default: "الجامعة تفتخر بتصنيفها المتقدم."} }, { id: 'tf_q7', image: 'all_q.webp', question: 'في كلية الطب، يجب على الطالب نشر بحث علمي في مجلة محكّمة كجزء من متطلبات التخرج.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint: {medicine: "البحث العلمي جزء أساسي من تكوين الطبيب الناجح."} }, { id: 'tf_q8', image: 'all_q.webp', question: 'كلية الطب هي المركز الوحيد المعتمد لإجراء امتحانات IFOM داخل غزة.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint: {medicine: "هذا الامتحان الدولي مهم لتقييم العلوم الطبية الأساسية والسريرية."} }, { id: 'tf_q9', image: 'all_q.webp', question: 'الجامعة مقرها فقط في مدينة غزة، ولا يوجد لها فروع أخرى.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'incorrect', points: 1, hint: {default: "هل تصل خدمات الجامعة التعليمية إلى مناطق أخرى في القطاع؟"} }, { id: 'tf_q10', image: 'all_q.webp', question: 'الجامعة عضو في الاتحاد الدولي للجامعات ومجموعة جامعات البحر الأبيض المتوسط.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint: {default: "الانتماء لهذه الاتحادات يعزز من مكانة الجامعة العالمية."} } ],
                 'mc_questions': [ { id: 'mc_q1', image: 'all_q.webp', question: 'كم عدد الكليات في الجامعة الإسلامية بغزة؟', options: { '11': '11', '9': '9', '10': '10', '12': '12' }, correctAnswer: '11', points: 1, hint:{default: "الرقم فردي وأكبر من 10."} }, { id: 'mc_q2', image: 'all_q.webp', question: 'أي من الكليات التالية ليست من كليات الجامعة؟', options: { 'it': 'تكنولوجيا المعلومات', 'الفنون': 'الفنون', 'الطب': 'الطب', 'الهندسة': 'الهندسة' }, correctAnswer: 'الفنون', points: 1, hint:{arts: "كليتي هي 'الآداب'، وهي تختلف عن الفنون الجميلة."} }, { id: 'mc_q3', image: 'all_q.webp', question: 'متى تأسست كلية الطب بالجامعة؟', options: { '2006': '2006', '1980': '1980', '1993': '1993', '2005': '2005' }, correctAnswer: '2006', points: 1, hint:{default: "كان ذلك في منتصف العقد الأول من الألفية الجديدة."} }, { id: 'mc_q4', image: 'all_q.webp', question: 'أي من التالي يصف مكانة الجامعة على مستوى غزة؟', options: { 'الأولى': 'الأولى', 'الثالثة': 'الثالثة', 'الرابعة': 'الرابعة', 'الثانية': 'الثانية' }, correctAnswer: 'الأولى', points: 1, hint: {default: "الجامعة رائدة في قطاع غزة."} }, { id: 'mc_q5', image: 'all_q.webp', question: 'في أي كلية يجب على الطالب اجتياز امتحاني IFOM-BSE وIFOM-CSE للتخرج؟', options: { 'الطب': 'الطب', 'الهندسة': 'الهندسة', 'it': 'تكنولوجيا المعلومات', 'التربية': 'التربية' }, correctAnswer: 'الطب', points: 1, hint: {medicine: "هذه امتحانات دولية لقياس الكفاءة الطبية، وهي ضرورية في كليتي."} }, { id: 'mc_q6', image: 'all_q.webp', question: 'من بين هذه الكليات، أيها تأسست أولاً؟', options: { 'التربية (1980)': 'التربية (1980)', 'تكنولوجيا المعلومات (2005)': 'تكنولوجيا المعلومات (2005)', 'التجارة (1981)': 'التجارة (1981)', 'الطب (2006)': 'الطب (2006)' }, correctAnswer: 'التربية (1980)', points: 1, hint: {education: "كليتنا من الكليات المؤسسة للجامعة."} }, { id: 'mc_q7', image: 'all_q.webp', question: 'أي من الاتحادات التالية الجامعة عضو فيها؟', options: { 'اتحاد البحر المتوسط لجامعات': 'اتحاد البحر المتوسط لجامعات', 'رابطة الجامعات الأمريكية': 'رابطة الجامعات الأمريكية', 'روسيا الجامعات الإسلامية': 'روسيا الجامعات الإسلامية', 'رابطة الجامعات الصينية': 'رابطة الجامعات الصينية' }, correctAnswer: 'اتحاد البحر المتوسط لجامعات', points: 1, hint: {default: "موقع فلسطين الجغرافي قد يساعدك في تحديد الإجابة."} }, { id: 'mc_q8', image: 'all_q.webp', question: 'كم عدد المراكز والمعاهد البحثية بالجامعة؟', options: { 'أكثر من 20': 'أكثر من 20', 'أقل من 10': 'أقل من 10', 'حوالي 15': 'حوالي 15', '30 فقط': '30 فقط' }, correctAnswer: 'أكثر من 20', points: 1, hint: {sciences: "البحث العلمي أولوية، لذا عدد المراكز كبير ويدعم تخصصات مختلفة."} } ],
                 'exchange-info': { isInfoScreen: true, nextScene: 'exchange' },
-                'exchange': { image: 'all_q.webp', question: 'اختر نوع التحدي الذي تود خوضه هنا:', options: { 'exchange_tf_questions': '<span class="icon">✔️❌</span> أسئلة صح وخطأ', 'exchange_mc_questions': '<span class="icon">❓</span> أسئلة اختيار من متعدد' }, correctAnswer: null, points: 0, nextScene: { 'exchange_tf_questions': 'exchange_tf_questions', 'exchange_mc_questions': 'exchange_mc_questions' } },
+                'exchange': { id: 'exchange_menu', image: 'all_q.webp', question: 'اختر نوع التحدي الذي تود خوضه هنا:', options: { 'exchange_tf_questions': '<span class="icon">✔️❌</span> أسئلة صح وخطأ', 'exchange_mc_questions': '<span class="icon">❓</span> أسئلة اختيار من متعدد' }, correctAnswer: null, points: 0, nextScene: { 'exchange_tf_questions': 'exchange_tf_questions', 'exchange_mc_questions': 'exchange_mc_questions' } },
                 'exchange_tf_questions': [ { id: 'ex_tf_q1', image: 'all_q.webp', question: 'تهتم العلاقات الخارجية في الجامعة بتوفير منح بكالوريوس، ماجستير، دكتوراه وما بعد الدكتوراه في جامعات عالمية.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint:{default:"هل تهدف الجامعة لربط طلابها بالعالم؟"} }, { id: 'ex_tf_q2', image: 'all_q.webp', question: 'الجامعة عضو في شبكة جامعات البحر الأسود وشرق البحر المتوسط (BSEMAN).', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint:{arts: "الانفتاح على ثقافات وحضارات مختلفة هو من أهدافنا."} }, { id: 'ex_tf_q3', image: 'all_q.webp', question: 'العلاقات الخارجية أبرمت مشاريع تبادل أكاديمي ضمن برنامج Erasmus+ مع جامعة جلاسكو وجامعة Algarve.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint:{default: "برنامج إيراسموس هو برنامج تبادل طلابي أوروبي شهير."} } ],
                 'exchange_mc_questions': [ { id: 'ex_mc_q1', image: 'all_q.webp', question: 'أياً من الخدمات التالية تتولّاها دائرة العلاقات الخارجية؟', options: { 'توفير منح دراسية دولية والتبادل الأكاديمي واستقطاب الباحثين': 'توفير منح دراسية دولية والتبادل الأكاديمي واستقطاب الباحثين', 'تأمين المنح الدراسية فقط': 'تأمين المنح الدراسية فقط', 'تنظيم الرحلات السياحية': 'تنظيم الرحلات السياحية', 'إصدار التراخيص الحكومية': 'إصدار التراخيص الحكومية' }, correctAnswer: 'توفير منح دراسية دولية والتبادل الأكاديمي واستقطاب الباحثين', points: 1, hint:{default: "ابحث عن الإجابة الأكثر شمولاً وتخصصاً."} }, { id: 'ex_mc_q2', image: 'all_q.webp', question: 'ما البرنامج الأوروبي الذي فتح المجال لتبادل أعضاء هيئة التدريس والطلبة؟', options: { 'Erasmus+ (Key Action 1)': 'Erasmus+ (Key Action 1)', 'Horizon 2020': 'Horizon 2020', 'Marie Skłodowska-Curie': 'Marie Skłodowska-Curie', 'Erasmus Mundus': 'Erasmus Mundus' }, correctAnswer: 'Erasmus+ (Key Action 1)', points: 1, hint:{default: "إيراسموس هو الاسم الأكثر شهرة في برامج التبادل الأوروبية."} }, { id: 'ex_mc_q3', image: 'all_q.webp', question: 'أيٌّ مما يلي ليس من اختصاص العلاقات الخارجية بحسب الموقع؟', options: { 'قبول طلبات القبول الجامعي المحلي': 'قبول طلبات القبول الجامعي المحلي', 'برامج التعاون الأكاديمي': 'برامج التعاون الأكاديمي', 'التبادل الأكاديمي': 'التبادل الأكاديمي', 'بوابة الباحثين عن منح': 'بوابة الباحثين عن منح' }, correctAnswer: 'قبول طلبات القبول الجامعي المحلي', points: 1, hint:{default: "هناك عمادة أخرى مختصة بالقبول المحلي."} } ],
                 'grants-info': { isInfoScreen: true, nextScene: 'grants' },
                 'grants': [ { id: 'grants_q1', image: 'all_q.webp', question: 'أنهت مريم فصلها الدراسي الأول في كلية الهندسة بتفوق، وحصلت على معدل فصلي 96% بعد أن درست 16 ساعة معتمدة. ما هي نسبة "منحة الامتياز" التي تستحقها تلقائياً في الفصل التالي؟', options: { '35': '35%', '50': '50%', '70': '70%', '100': '100%' }, correctAnswer: '70', points: 1, hint:{economics:"التميز العالي يكافأ بأعلى نسبة منحة تفوق متاحة (70% للمعدل فوق 95%)."} }, { id: 'grants_q2', image: 'all_q.webp', question: 'ما هي نسبة "منحة الأسرة" التي يحصل عليها كل فرد من أسرة لديها "شقيقان فقط" يدرسان في الجامعة؟', options: { '15': '15%', '25': '25%', '30': '30%', '50': '50%' }, correctAnswer: '15', points: 1, hint:{default:"هي النسبة الأقل في منحة الأسرة."} }, { id: 'grants_q3', image: 'all_q.webp', question: 'إذا كان معدل أحد الأشقاء في كلية الطب 72%، هل يستمر في الاستفادة منحة الأسرة؟', options: { 'yes_continue': 'نعم، ستستمر', 'no_stop': 'لا، ستتوقف' }, correctAnswer: 'no_stop', points: 1, hint:{medicine:"للاستمرارية في المنحة، يجب أن يكون معدل طالب الطب 75% فما فوق."} }, { id: 'grants_q4', image: 'all_q.webp', question: 'ما هي نسبة المنحة التي يحصل عليها الطالب الذي يحفظ القرآن الكريم كاملاً بعد اجتياز امتحان التسميع؟', options: { '35': '35%', '50': '50%', '70': '70%', '100': '100%' }, correctAnswer: '50', points: 1, hint:{religion:"الجامعة تقدر حفظة كتاب الله وتمنحهم نصف الرسوم."} } ],
                 'admission-info': { isInfoScreen: true, nextScene: 'admission' },
-                'admission': { image: 'all_q.webp', question: 'اختر نوع التحدي الذي تود خوضه هنا:', options: { 'admission_tf_questions': '<span class="icon">✔️❌</span> أسئلة صح وخطأ', 'admission_mc_questions': '<span class="icon">❓</span> أسئلة اختيار من متعدد' }, correctAnswer: null, points: 0, nextScene: { 'admission_tf_questions': 'admission_tf_questions', 'admission_mc_questions': 'admission_mc_questions' } },
+                'admission': { id: 'admission_menu', image: 'all_q.webp', question: 'اختر نوع التحدي الذي تود خوضه هنا:', options: { 'admission_tf_questions': '<span class="icon">✔️❌</span> أسئلة صح وخطأ', 'admission_mc_questions': '<span class="icon">❓</span> أسئلة اختيار من متعدد' }, correctAnswer: null, points: 0, nextScene: { 'admission_tf_questions': 'admission_tf_questions', 'admission_mc_questions': 'admission_mc_questions' } },
                 'admission_tf_questions': [ { id: 'ad_tf_q1', image: 'all_q.webp', question: 'معدل القبول في كلية الطب البشري هو 96%.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'incorrect', points: 1, hint:{medicine: "القبول في كليتي يتطلب أعلى معدل على الإطلاق، وهو أعلى من هذا الرقم بقليل."} }, { id: 'ad_tf_q2', image: 'all_q.webp', question: 'يمكن لطلبة الفرع الأدبي الالتحاق بكلية التمريض.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint:{nursing:"نعم، ولكن بمعدل قبول أعلى من الفرع العلمي."} }, { id: 'ad_tf_q3', image: 'all_q.webp', question: 'كلية العلوم الصحية لا تقبل طلبة من الفرع الأدبي.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint:{health_sciences:"تخصصاتنا تتطلب أساساً علمياً قوياً."} } ],
                 'admission_mc_questions': [ { id: 'ad_mc_q1', image: 'all_q.webp', question: 'ما هو معدل القبول المطلوب للالتحاق بتخصص "الذكاء الاصطناعي"؟', options: { '80': '80%', '65': '65%', '70': '70%', '75': '75%' }, correctAnswer: '80', points: 1, hint:{it:"الذكاء الاصطناعي هو تخصص هندسي، ومعدلات الهندسة تبدأ من هذا الرقم."} }, { id: 'ad_mc_q2', image: 'all_q.webp', question: 'أي كلية تتطلب أعلى معدل قبول للفرع العلمي؟', options: { 'الهندسة': 'الهندسة', 'الطب': 'الطب', 'تكنولوجيا المعلومات': 'تكنولوجيا المعلومات', 'العلوم': 'العلوم' }, correctAnswer: 'الطب', points: 1, hint:{medicine:"كليتي تتطلب أعلى معدل قبول في الجامعة."} }, { id: 'ad_mc_q3', image: 'all_q.webp', question: 'ما هو أدنى معدل قبول يمكن للطالب الحاصل على شهادة الثانوية العامة (الفرع العلمي) الالتحاق به في الجامعة؟', options: { '65': '65%', '70': '70%', '75': '75%', '60': '60%' }, correctAnswer: '65', points: 1, hint:{default:"هذا المعدل يفتح لك أبواب العديد من الكليات مثل العلوم وتكنولوجيا المعلومات."} } ],
                 'studentaffairs-info': { isInfoScreen: true, nextScene: 'studentaffairs' },
-                'studentaffairs': { image: 'all_q.webp', question: 'أنت الآن في محطة شؤون الطلبة، اختر نوع التحدي:', options: { 'studentaffairs_tf_questions': '<span class="icon">✔️❌</span> أسئلة صح وخطأ', 'studentaffairs_mc_questions': '<span class="icon">❓</span> أسئلة اختيار من متعدد' }, correctAnswer: null, points: 0, nextScene: { 'studentaffairs_tf_questions': 'studentaffairs_tf_questions', 'studentaffairs_mc_questions': 'studentaffairs_mc_questions' } },
+                'studentaffairs': { id: 'studentaffairs_menu', image: 'all_q.webp', question: 'أنت الآن في محطة شؤون الطلبة، اختر نوع التحدي:', options: { 'studentaffairs_tf_questions': '<span class="icon">✔️❌</span> أسئلة صح وخطأ', 'studentaffairs_mc_questions': '<span class="icon">❓</span> أسئلة اختيار من متعدد' }, correctAnswer: null, points: 0, nextScene: { 'studentaffairs_tf_questions': 'studentaffairs_tf_questions', 'studentaffairs_mc_questions': 'studentaffairs_mc_questions' } },
                 'studentaffairs_tf_questions': [
                     { id: 'sa_tf_q1', image: 'all_q.webp', question: 'تأسست عمادة شؤون الطلبة في نفس عام تأسيس الجامعة.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'incorrect', points: 1, hint: { default: 'الجامعة تأسست عام 1978، لكن العمادة تأسست بعد ذلك ببضع سنوات قليلة.' }, correctFeedback: { default: 'إجابة صحيحة! تأسست العمادة عام 1981م.' } },
                     { id: 'sa_tf_q2', image: 'all_q.webp', question: 'من مهام عمادة شؤون الطلبة الإشراف على النشاط الثقافي والرياضي.', options: { 'correct': 'صح', 'incorrect': 'خطأ' }, correctAnswer: 'correct', points: 1, hint: { default: 'الأنشطة اللامنهجية هي جزء أساسي من عمل العمادة.' } },
@@ -1808,6 +1952,19 @@
                 'conference': { isUnderConstruction: true },
                 'stadium': { isUnderConstruction: true }
             };
+
+            const badgesData = [
+                // الشارات القديمة
+                { id: 'library-expert', name: 'شارة المثقف', emoji: '🏅', stageId: 'library' },
+                { id: 'faculties-expert', name: 'شارة الخبير الهندسي', emoji: '🏅', stageId: 'faculties' },
+                { id: 'speed-runner', name: 'شارة البرق', emoji: '⚡', stageId: 'any-timed-stage' },
+                // الشارات الجديدة
+                { id: 'grants-master', name: 'شارة المنح', emoji: '✨', stageId: 'grants' },
+                { id: 'exchange-master', name: 'شارة الجسر', emoji: '🌉', stageId: 'exchange' },
+                { id: 'student-affairs-master', name: 'شارة القائد', emoji: '🎯', stageId: 'studentaffairs' },
+                { id: 'admission-master', name: 'شارة القبول', emoji: '📝', stageId: 'admission' },
+                { id: 'perfect-score', name: 'شارة العلامة الكاملة', emoji: '💯', stageId: 'any-stage-perfect' }
+            ];
 
             const admissionInfoData = [
                 { faculty: "الطب", specializations: [ { name: "الطب البشري", score: "97% علمي / 96% طلاب" } ] },
@@ -1827,22 +1984,25 @@
                 playerName: '', playerPhone: '', tawjihiYear: '', uniquePlayerId: null, 
                 score: 0, currentScene: null, currentSubQuestionIndex: 0, 
                 answeredQuestions: new Set(), selectedGuide: null,
-                powerUps: {} // إضافة كائن لتتبع المساعدات
+                powerUps: {}, 
+                badges: [] // إضافة مصفوفة لتخزين الشارات
             };
             
             // متغيرات المؤقت
             let questionTimer = null;
             const TIME_LIMIT = 25;
             let timeLeft = TIME_LIMIT;
+            let startTime = 0; // لزمن بدء المرحلة من أجل شارة البرق
+            let stagePoints = 0; // لعدّ النقاط في المرحلة الحالية من أجل شارة العلامة الكاملة
 
            const sceneParentMap = {
            'tf_questions': 'faculties', 'mc_questions': 'faculties', 
              'exchange_tf_questions': 'exchange', 'exchange_mc_questions': 'exchange', 
-            'admission_tf_questions': 'admission', 'admission_mc_questions': 'admission',
+           'admission_tf_questions': 'admission', 'admission_mc_questions': 'admission',
              'studentaffairs_tf_questions': 'studentaffairs', 'studentaffairs_mc_questions': 'studentaffairs'
-               
-            };
-            
+                
+           };
+           
             const landingScreen = document.getElementById('landing-screen');
             const startScreen = document.getElementById('start-screen');
             const gameSceneContainer = document.getElementById('game-scene');
@@ -1858,6 +2018,7 @@
             const incorrectSound = document.getElementById('incorrect-sound');
             const transitionSound = document.getElementById('transition-sound');
             const guideAppearsSound = document.getElementById('guide-appears-sound');
+            const badgeSound = document.getElementById('badge-sound');
             const videoOverlay = document.getElementById('video-overlay');
             const welcomeVideo = document.getElementById('welcome-video');
             const skipVideoBtn = document.getElementById('skip-video-btn');
@@ -1878,14 +2039,9 @@
                 console.log(`Preloading: ${url}`);
             }
             
-            function preloadNextImages(sceneId, questionIndex = 0) {
-                const urlsToLoad = getUrlsForNextScenes(sceneId, questionIndex);
-                urlsToLoad.forEach(preloadImage);
-            }
-
             async function unlockAudio() {
                 if (isAudioUnlocked) return;
-                const sounds = [correctSound, incorrectSound, transitionSound, guideAppearsSound];
+                const sounds = [correctSound, incorrectSound, transitionSound, guideAppearsSound, badgeSound];
                 for (const sound of sounds) {
                     try {
                         await sound.play();
@@ -1930,7 +2086,11 @@
             
             function saveGameState() {
                 try {
-                    const stateToSave = { ...gameState, answeredQuestions: Array.from(gameState.answeredQuestions) };
+                    const stateToSave = { 
+                        ...gameState, 
+                        answeredQuestions: Array.from(gameState.answeredQuestions),
+                        badges: gameState.badges
+                    };
                     localStorage.setItem('iugGameProgress', JSON.stringify(stateToSave));
                 } catch (e) {
                     console.error("Failed to save game state:", e);
@@ -1944,9 +2104,12 @@
                         const savedState = JSON.parse(savedStateJSON);
                         Object.assign(gameState, savedState);
                         gameState.answeredQuestions = new Set(savedState.answeredQuestions);
-                        // Ensure powerUps object exists
+                        // Ensure powerUps and badges objects exist
                         if (!gameState.powerUps) {
                             gameState.powerUps = {};
+                        }
+                        if (!gameState.badges) {
+                            gameState.badges = [];
                         }
                         return true;
                     }
@@ -1956,7 +2119,38 @@
                     return false;
                 }
             }
+            
+            // دالة جديدة لإضافة شارة
+            function addBadge(badgeId) {
+                if (!gameState.badges.includes(badgeId)) {
+                    gameState.badges.push(badgeId);
+                    saveGameState();
+                    const badge = badgesData.find(b => b.id === badgeId);
+                    if (badge) {
+                        showBadgePopup(badge.name, badge.emoji);
+                    }
+                }
+            }
 
+            // دالة جديدة لعرض نافذة الشارة المنبثقة
+            function showBadgePopup(name, emoji) {
+                const badgeModal = document.getElementById('badge-modal');
+                const badgeIcon = badgeModal.querySelector('.badge-icon');
+                const badgeName = document.getElementById('badge-name');
+                const badgeCloseBtn = document.getElementById('badge-close-btn');
+
+                badgeIcon.textContent = emoji;
+                badgeName.textContent = name;
+                
+                playSound(badgeSound);
+
+                badgeModal.classList.remove('hidden');
+
+                badgeCloseBtn.onclick = () => {
+                    badgeModal.classList.add('hidden');
+                };
+            }
+            
             function performLogout() {
                 localStorage.removeItem('iugGameProgress');
                 location.reload();
@@ -1985,7 +2179,8 @@
                             'exchange-info': renderExchangeInfoScene,
                             'grants-info': renderGrantsInfoScene,
                             'faculties-list': renderFacultiesListScene,
-                            'studentaffairs-info': renderStudentAffairsInfoScene
+                            'studentaffairs-info': renderStudentAffairsInfoScene,
+                            'player-profile': renderPlayerProfile
                         };
 
                         const parentScene = sceneParentMap[sceneToRender] || sceneToRender;
@@ -2142,27 +2337,32 @@
             if (!timerDisplay || !timerContainer) return;
 
             timeLeft = TIME_LIMIT;
-// ... باقي الكود
+            startTime = Date.now();
+            timerDisplay.textContent = timeLeft;
+            timerContainer.classList.remove('low-time');
+
+            questionTimer = setInterval(() => {
+                timeLeft--;
                 timerDisplay.textContent = timeLeft;
-                timerContainer.classList.remove('low-time');
 
-                questionTimer = setInterval(() => {
-                    timeLeft--;
-                    timerDisplay.textContent = timeLeft;
+                if (timeLeft <= 5 && timeLeft > 0) {
+                    timerContainer.classList.add('low-time');
+                }
 
-                    if (timeLeft <= 5 && timeLeft > 0) {
-                        timerContainer.classList.add('low-time');
-                    }
-
-                    if (timeLeft < 0) {
-                        clearTimer();
-                        handleTimeUp();
-                    }
-                }, 1000);
+                if (timeLeft < 0) {
+                    clearTimer();
+                    handleTimeUp();
+                }
+            }, 1000);
             }
 
             function renderScene(sceneId, questionIndex = 0, pushState = true) {
                 clearTimer();
+                
+                // تحديث متغير نقاط المرحلة
+                if (questionIndex === 0) {
+                    stagePoints = 0;
+                }
 
                 if (questionIndex === 0 && sceneId !== 'map' && guideMessages[sceneId]) {
                     const messageSceneId = sceneParentMap[sceneId] || sceneId;
@@ -2192,6 +2392,7 @@
                     'admission-info': renderAdmissionInfoScene,
                     'exchange-info': renderExchangeInfoScene,
                     'studentaffairs-info': renderStudentAffairsInfoScene,
+                    'player-profile': renderPlayerProfile
                 };
 
                 if (sceneMappings[sceneId]) {
@@ -2282,7 +2483,7 @@
                 sceneElement.classList.remove('hidden');
                 sceneElement.querySelector('.options-container').addEventListener('click', handleAnswer);
                 
-             // --- بداية التعديل: استخدام طريقة تفويض الأحداث الأكثر موثوقية ---
+            // --- بداية التعديل: استخدام طريقة تفويض الأحداث الأكثر موثوقية ---
             const powerUpsContainer = sceneElement.querySelector('.power-ups-container');
             if (powerUpsContainer) {
                 powerUpsContainer.addEventListener('click', (event) => {
@@ -2368,7 +2569,7 @@
                                         <p>لقد أولت عمادة شئون الطلبة الأنشطة الرياضية الفردية والجماعية اهتماما كبيرا لما لها من أثر في صقل وتهذيب شخصية الطالب. ومن أهدافه بث الروح الرياضية، تنمية مواهب الطلبة، غرس المفاهيم الصحيحة للتربية البدنية، نشر الوعي الرياضي، وإعداد المنتخبات لتمثيل الجامعة.</p>
                                     </div>
                                 </div>
-                                 <div class="accordion-item">
+                                   <div class="accordion-item">
                                     <div class="accordion-header">وحدة التوجيه والارشاد</div>
                                     <div class="accordion-content">
                                         <p>تقدم الوحدة الخدمات التالية للطلبة:</p>
@@ -2502,6 +2703,7 @@
 
                     if (!gameState.answeredQuestions.has(questionId)) {
                         gameState.score += sceneData.points;
+                        stagePoints += sceneData.points;
                         gameState.answeredQuestions.add(questionId);
                         saveGameState();
                         updatePlayerStats();
@@ -2530,6 +2732,12 @@
                             preloadNextImages('map');
                         } else if (Array.isArray(gameData[sceneId])) {
                             const nextQuestionIndex = gameState.currentSubQuestionIndex + 1;
+                            
+                            // تحقق من إنجازات المرحلة بعد الإجابة الأخيرة
+                            if (nextQuestionIndex >= gameData[sceneId].length) {
+                                giveBadgesForStage(sceneId);
+                            }
+                            
                             if (nextQuestionIndex < gameData[sceneId].length) {
                                 preloadNextImages(sceneId, nextQuestionIndex);
                                 renderScene(sceneId, nextQuestionIndex);
@@ -2567,6 +2775,46 @@
                     }
                 }
             }
+            
+            // دالة جديدة للتحقق من الشارات بعد انتهاء المرحلة
+            function giveBadgesForStage(stageId) {
+                const totalPoints = gameData[stageId].length;
+
+                // شارة العلامة الكاملة
+                if (stagePoints === totalPoints) {
+                    addBadge('perfect-score');
+                }
+                
+                // شارات المراحل الرئيسية
+                const mainStageId = sceneParentMap[stageId] || stageId;
+                switch (mainStageId) {
+                    case 'library':
+                        addBadge('library-expert');
+                        break;
+                    case 'faculties':
+                        addBadge('faculties-expert');
+                        break;
+                    case 'grants':
+                        addBadge('grants-master');
+                        break;
+                    case 'exchange':
+                        addBadge('exchange-master');
+                        break;
+                    case 'studentaffairs':
+                        addBadge('student-affairs-master');
+                        break;
+                    case 'admission':
+                        addBadge('admission-master');
+                        break;
+                }
+                
+                // شارة البرق (بناءً على زمن الإنجاز)
+                const completionTime = (Date.now() - startTime) / 1000;
+                if (completionTime < 120 && totalPoints > 3) {
+                     addBadge('speed-runner');
+                }
+            }
+
 
             function useGuideHelp() {
                 const helpBtn = document.getElementById('guide-help-btn');
@@ -2627,7 +2875,7 @@
 
             function useExtraTime() {
                 const currentSceneEl = document.getElementById(`${gameState.currentScene}-scene`);
-                const btn = currentSceneEl.querySelector('#extra-time-btn');   
+                const btn = currentSceneEl.querySelector('#extra-time-btn');    
                 if (!btn || btn.disabled) return;
 
                 const stageId = sceneParentMap[gameState.currentScene] || gameState.currentScene;
@@ -2673,7 +2921,6 @@
                     showModal("انتهت الأسئلة", "لقد أنهيت هذه المرحلة.", () => renderScene('map'));
                 }
             }
-
 
             function updatePlayerStats() {
                 playerNameDisplay.textContent = gameState.playerName;
@@ -2799,6 +3046,11 @@
                     event.preventDefault();
                     renderScene('map');
                 }
+                // حدث جديد لزر "الملف الشخصي"
+                if (event.target.closest('#profile-btn')) {
+                    event.preventDefault();
+                    renderPlayerProfile();
+                }
             });
 
             adModal.addEventListener('click', (event) => {
@@ -2815,6 +3067,12 @@
                 logoutModal.classList.add('hidden');
             });
             
+            // حدث جديد لزر "العودة" في الملف الشخصي
+            document.getElementById('profile-back-btn').addEventListener('click', () => {
+                document.getElementById('player-profile-scene').classList.add('hidden');
+                renderScene('map');
+            });
+            
             window.addEventListener('popstate', (event) => {
                 if (event.state && event.state.scene) {
                     const sceneMappings = {
@@ -2822,7 +3080,8 @@
                         'exchange-info': renderExchangeInfoScene,
                         'grants-info': renderGrantsInfoScene,
                         'faculties-list': renderFacultiesListScene,
-                        'studentaffairs-info': renderStudentAffairsInfoScene
+                        'studentaffairs-info': renderStudentAffairsInfoScene,
+                        'player-profile': renderPlayerProfile
                     };
                     if (sceneMappings[event.state.scene]) {
                         sceneMappings[event.state.scene]();
@@ -2925,6 +3184,53 @@
                 }
             });
             
+            // دالة جديدة لعرض ملف اللاعب
+            function renderPlayerProfile() {
+                // إخفاء كل المشاهد الأخرى
+                document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
+                const profileScene = document.getElementById('player-profile-scene');
+                profileScene.classList.remove('hidden');
+
+                // تحديث بيانات اللاعب
+                const profileName = document.getElementById('profile-name');
+                const profileEmoji = document.getElementById('profile-emoji');
+                const profileScore = document.getElementById('profile-score');
+                const profileTawjihiYear = document.getElementById('profile-tawjihi-year');
+
+                const selectedGuideInfo = allGuides.find(g => g.id === gameState.selectedGuide);
+                profileName.textContent = gameState.playerName;
+                profileEmoji.textContent = selectedGuideInfo ? selectedGuideInfo.emoji : '👤';
+                profileScore.textContent = `${gameState.score} نقطة`;
+                profileTawjihiYear.textContent = gameState.tawjihiYear;
+
+                // عرض الشارات المكتسبة
+                const badgesContainer = document.getElementById('badges-container');
+                const noBadgesMsg = document.getElementById('no-badges-msg');
+                badgesContainer.innerHTML = ''; // مسح المحتوى السابق
+                
+                if (gameState.badges.length > 0) {
+                    noBadgesMsg.classList.add('hidden');
+                    gameState.badges.forEach(badgeId => {
+                        const badgeInfo = badgesData.find(b => b.id === badgeId);
+                        if (badgeInfo) {
+                            const badgeCard = document.createElement('div');
+                            badgeCard.className = 'badge-card';
+                            badgeCard.innerHTML = `
+                                <span class="badge-icon">${badgeInfo.emoji}</span>
+                                <p>${badgeInfo.name}</p>
+                            `;
+                            badgesContainer.appendChild(badgeCard);
+                        }
+                    });
+                } else {
+                    noBadgesMsg.classList.remove('hidden');
+                }
+
+                // حفظ الحالة الحالية
+                gameState.currentScene = 'player-profile';
+                saveGameState();
+            }
+
             document.body.addEventListener('click', unlockAudio, { once: true });
             
             function getUrlsForNextScenes(sceneId, questionIndex = 0) {

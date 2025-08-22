@@ -1337,7 +1337,65 @@
                 transform: translateY(-15px);
             }
         }
-        /* ========== بداية تنسيقات لعبة الملعب ========== */
+   /* ========== بداية تنسيقات شاشة اختيار الألعاب ========== */
+        #stadium-selection-scene .scene-content {
+            background-color: var(--light-bg);
+            padding: 30px;
+        }
+
+        .game-choices-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        .game-choice-card {
+            background-color: var(--white-color);
+            border-radius: var(--border-radius-main);
+            padding: 25px;
+            text-align: center;
+            border-bottom: 5px solid var(--primary-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .game-choice-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+            border-bottom-color: var(--secondary-color);
+        }
+
+        .game-choice-card .icon {
+            font-size: 50px;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .game-choice-card h3 {
+            color: var(--primary-dark);
+            font-size: 20px;
+            margin: 0 0 10px 0;
+        }
+
+        .game-choice-card p {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.5;
+            margin: 0;
+            min-height: 40px;
+        }
+        
+        @media (max-width: 600px) {
+            .game-choices-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        /* ========== نهاية تنسيقات شاشة اختيار الألعاب ========== */
+
+        /* ========== بداية تنسيقات لعبة الملعب ========== */     /* ========== بداية تنسيقات لعبة الملعب ========== */
 #stadium-scene .scene-content {
     padding: 15px;
     background-color: #388E3C; /* لون عشبي */
@@ -1960,6 +2018,10 @@
         </video>
         <button id="skip-video-btn" class="action-button">تخطي الفيديو</button>
     </div>
+    <div id="studentaffairs_mc_questions-scene" class="game-stage hidden"></div>
+            <div id="stadium-selection-scene" class="game-stage hidden"></div> <div id="stadium-scene" class="game-stage hidden"></div>
+            <div id="memory-game-scene" class="game-stage hidden"></div>
+
  <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-lE41eY0lEWEOxZevGyTMxNbpY2zTmRzWa3DEAd5Dc6O72GgtMA/exec';
     
@@ -3036,7 +3098,7 @@
             const mainDestinationId = destination.replace('-info', '').replace('-list', '');
 
           if (destination === 'stadium') {
-            renderStadiumGame();
+             renderStadiumSelection();
             return;
         }
             if (isStageCompleted(mainDestinationId) && destination !== 'certificate') {
@@ -3276,6 +3338,51 @@
             saveGameState();
         }
     // ========== بداية كود لعبة الملعب ==========
+            // ========== بداية كود لعبة الملعب ==========
+
+        // --- الدالة الجديدة التي ستضيفها ---
+        function renderStadiumSelection() {
+            const sceneElement = document.getElementById('stadium-selection-scene');
+            document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
+            sceneElement.classList.remove('hidden');
+            gameState.currentScene = 'stadium-selection';
+            saveGameState();
+
+            sceneElement.innerHTML = `
+                <div class="scene-content">
+                    <h2 class="scene-title">🏟️ منطقة الألعاب</h2>
+                    <p>أهلاً بك في منطقة الألعاب الترفيهية بالجامعة. اختر التحدي الذي تود خوضه!</p>
+                    <div class="game-choices-container">
+                        <div class="game-choice-card" data-game="penalties">
+                            <span class="icon">⚽</span>
+                            <h3>تحدي ركلات الترجيح</h3>
+                            <p>اختبر دقتك في تسديد الكرات وحاول هزيمة الحارس.</p>
+                        </div>
+                        <div class="game-choice-card" data-game="memory">
+                            <span class="icon">🧠</span>
+                            <h3>تحدي الذاكرة</h3>
+                            <p>قوّي ذاكرتك وابحث عن أزواج رموز الكليات المتشابهة.</p>
+                        </div>
+                    </div>
+                    <button id="back-to-map-from-stadium" class="action-button secondary" style="max-width: 250px;">
+                        <span class="btn-icon">🗺️</span> العودة إلى الخريطة
+                    </button>
+                </div>`;
+
+            sceneElement.querySelector('.game-choices-container').addEventListener('click', (e) => {
+                const selectedCard = e.target.closest('.game-choice-card');
+                if (!selectedCard) return;
+
+                const game = selectedCard.dataset.game;
+                if (game === 'penalties') {
+                    renderStadiumGame();
+                } else if (game === 'memory') {
+                    renderMemoryGame();
+                }
+            });
+            
+            sceneElement.querySelector('#back-to-map-from-stadium').addEventListener('click', () => renderScene('map'));
+        }
         function renderStadiumGame() {
             const sceneElement = document.getElementById('stadium-scene');
             if (!sceneElement) {
@@ -3425,8 +3532,7 @@
                 saveGameState();
                 
                 setTimeout(() => {
-                    showModal(title, message + "<br><br>استعد الآن لتحدي الذاكرة!", () => renderMemoryGame());
-                }, 1500);
+showModal(title, message + "<br><br>يمكنك الآن تجربة لعبة أخرى أو العودة للخريطة.", () => renderStadiumSelection());                }, 1500);
             };
             goal.addEventListener('click', handleShot);
         }
@@ -3539,8 +3645,7 @@
 
             const endMemoryGame = () => {
                 setTimeout(() => {
-                    showModal('🧠 ذاكرة قوية!', 'لقد أتممت تحدي الذاكرة بنجاح. أنت الآن عائد إلى الخريطة.', () => renderScene('map'));
-                }, 500);
+showModal('🧠 ذاكرة قوية!', 'لقد أتممت تحدي الذاكرة بنجاح. أنت الآن عائد إلى منطقة الألعاب.', () => renderStadiumSelection());                }, 500);
             };
             
             grid.addEventListener('click', handleCardClick);

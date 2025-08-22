@@ -1338,10 +1338,31 @@
             }
         }
    /* ========== بداية تنسيقات شاشة اختيار الألعاب ========== */
-        #stadium-selection-scene .scene-content {
-            background-color: var(--light-bg);
-            padding: 30px;
-        }
+       /* ========== بداية تنسيقات شاشة اختيار الألعاب ========== */
+#stadium-selection-scene {
+    /* 1. نحول الحاوية الرئيسية للشاشة إلى flex لتوسيط المحتوى */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* للتوسيط العمودي */
+    align-items: center;     /* للتوسيط الأفقي */
+
+    /* 2. نعطيها ارتفاعًا بسيطًا لضمان عمل التوسيط العمودي */
+    min-height: 70vh;
+
+    /* 3. نزيل التنسيقات الافتراضية من الحاوية الخارجية */
+    background-color: transparent;
+    box-shadow: none;
+}
+
+#stadium-selection-scene .scene-content {
+    /* 4. نطبق التنسيق الجميل على الحاوية الداخلية للمحتوى */
+    width: 100%;
+    max-width: 700px; /* للتحكم في العرض على الشاشات الكبيرة */
+    background-color: var(--light-bg);
+    border-radius: var(--border-radius-main);
+    padding: 30px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1); /* ظل جميل لإبراز البطاقة */
+}
 
         .game-choices-container {
             display: grid;

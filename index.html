@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -2082,7 +2083,8 @@
                 const allOptionButtons = sceneElement.querySelectorAll('.option-btn');
                 allOptionButtons.forEach(btn => btn.disabled = true);
                 
-                const helpBtn = document.getElementById('guide-help-btn');
+                const currentSceneEl = document.getElementById(`${gameState.currentScene}-scene`);
+                const helpBtn = currentSceneEl.querySelector('#guide-help-btn');
                 if (helpBtn) helpBtn.disabled = true;
 
                 let sceneData = gameData[sceneId];
@@ -2590,7 +2592,8 @@
 
             // --- دالات المساعدات الجديدة ---
             function useFiftyFifty() {
-                const btn = document.getElementById('fifty-fifty-btn');
+                const currentSceneEl = document.getElementById(`${gameState.currentScene}-scene`);
+                const btn = currentSceneEl.querySelector('#fifty-fifty-btn');
                 if (!btn || btn.disabled) return;
 
                 const stageId = sceneParentMap[gameState.currentScene] || gameState.currentScene;
@@ -2621,7 +2624,8 @@
             }
 
             function useExtraTime() {
-                const btn = document.getElementById('extra-time-btn');
+                const currentSceneEl = document.getElementById(`${gameState.currentScene}-scene`);
+                const btn = currentSceneEl.querySelector('#extra-time-btn');   
                 if (!btn || btn.disabled) return;
 
                 const stageId = sceneParentMap[gameState.currentScene] || gameState.currentScene;
@@ -2638,7 +2642,8 @@
             }
 
             function useSkipQuestion() {
-                const btn = document.getElementById('skip-q-btn');
+                const currentSceneEl = document.getElementById(`${gameState.currentScene}-scene`);
+                const btn = currentSceneEl.querySelector('#skip-q-btn');
                 if (!btn || btn.disabled) return;
 
                 const stageId = sceneParentMap[gameState.currentScene] || gameState.currentScene;

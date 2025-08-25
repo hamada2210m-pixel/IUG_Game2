@@ -2264,15 +2264,15 @@
             { faculty: "التربية", specializations: [ { name: "تعليم اللغة العربية، تعليم اللغة الإنجليزية، تعليم العلوم، تعليم الرياضيات، تعليم اجتماعيات، تعليم التربية الإسلامية، المرحلة الأساسية، الإرشاد النفسي والتوجيه التربوي، الكيمياء وأساليب تدريسها، الفيزياء وأساليب تدريسها، الأحياء وأساليب تدريسها، الحاسوب وأساليب تدريسه، اللغة العربية وأساليب تدريسها، اللغة الإنجليزية وأساليب تدريسها، التاريخ وأساليب تدريسه، الجغرافيا وأساليب تدريسها، الرياضيات وأساليب تدريسها", score: "65% علمي وأدبي" } ] }
         ];
 
-        const gameState = { 
-            playerName: '', playerPhone: '', tawjihiYear: '', uniquePlayerId: null, 
-            score: 0, currentScene: null, currentSubQuestionIndex: 0, 
-            answeredQuestions: new Set(), selectedGuide: null,
-            powerUps: {}, 
-            badges: [],
-            currentQuestionAttempts: 0
-        };
-        
+       const gameState = { 
+            playerName: '', playerPhone: '', tawjihiYear: '', uniquePlayerId: null, 
+            score: 0, currentScene: null, currentSubQuestionIndex: 0, 
+            answeredQuestions: new Set(), selectedGuide: null,
+            powerUps: {}, 
+            badges: [],
+            stageScores: {}, // تمت الإضافة هنا
+            currentQuestionAttempts: 0
+        };
         let questionTimer = null;
         const TIME_LIMIT = 25;
         let timeLeft = TIME_LIMIT;
@@ -2382,10 +2382,11 @@
                 if (savedStateJSON) {
                     const savedState = JSON.parse(savedStateJSON);
                     Object.assign(gameState, savedState);
-                    gameState.answeredQuestions = new Set(savedState.answeredQuestions);
-                    if (!gameState.powerUps) gameState.powerUps = {};
-                    if (!gameState.badges) gameState.badges = [];
-                    return true;
+                    gameState.answeredQuestions = new Set(savedState.answeredQuestions);
+                    if (!gameState.powerUps) gameState.powerUps = {};
+                    if (!gameState.badges) gameState.badges = [];
+                    if (!gameState.stageScores) gameState.stageScores = {}; // تمت الإضافة هنا
+                    return true;
                 }
                 return false;
             } catch (e) {
@@ -2781,8 +2782,17 @@
                 });
             });
 
-            document.getElementById('start-studentaffairs-quiz-btn').onclick = () => renderScene('studentaffairs');
-        }
+document.getElementById('start-studentaffairs-quiz-btn').onclick = () => {
+    const stageId = 'studentaffairs';
+    const subScenes = Object.values(gameData[stageId].nextScene);
+    if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
+        const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
+        const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
+        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
+    } else {
+        renderScene(stageId);
+    }
+};        }
 
         function renderAdmissionInfoScene() {
             document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
@@ -2804,24 +2814,50 @@
                 card.innerHTML = `<h3>${facultyData.faculty}</h3>${specializationsHTML}`;
                 container.appendChild(card);
             });
-            document.getElementById('start-admission-quiz-btn').onclick = () => renderScene('admission');
-        }
+document.getElementById('start-admission-quiz-btn').onclick = () => {
+    const stageId = 'admission';
+    const subScenes = Object.values(gameData[stageId].nextScene);
+    if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
+        const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
+        const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
+        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
+    } else {
+        renderScene(stageId);
+    }
+};        }
 
         function renderGrantsInfoScene() {
             document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
             document.getElementById('grants-info-scene').classList.remove('hidden');
             gameState.currentScene = 'grants-info';
             saveGameState();
-            document.getElementById('start-grants-quiz-btn').onclick = () => renderScene('grants');
-        }
+document.getElementById('start-grants-quiz-btn').onclick = () => {
+    const stageId = 'grants';
+    if (gameState.stageScores[stageId] !== undefined) {
+        const score = gameState.stageScores[stageId];
+        const total = gameData[stageId].length;
+        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك في هذه المرحلة: ${score} / ${total}</strong>`, null);
+    } else {
+        renderScene(stageId);
+    }
+};        }
         
         function renderExchangeInfoScene() {
             document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
             document.getElementById('exchange-info-scene').classList.remove('hidden');
             gameState.currentScene = 'exchange-info';
             saveGameState();
-            document.getElementById('start-exchange-quiz-btn').onclick = () => renderScene('exchange');
-        }
+document.getElementById('start-exchange-quiz-btn').onclick = () => {
+    const stageId = 'exchange';
+    const subScenes = Object.values(gameData[stageId].nextScene);
+    if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
+        const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
+        const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
+        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
+    } else {
+        renderScene(stageId);
+    }
+};        }
         
         function handleAnswer(event) {
             const targetButton = event.target.closest('.option-btn');
@@ -2841,9 +2877,17 @@
             const selectedAnswer = targetButton.dataset.answer;
 
             if (sceneData.nextScene && sceneData.nextScene[selectedAnswer]) {
-                renderScene(sceneData.nextScene[selectedAnswer]);
-                return;
-            }
+                const nextSceneId = sceneData.nextScene[selectedAnswer];
+                // التحقق قبل الدخول للتحدي الفرعي
+                if (gameState.stageScores[nextSceneId] !== undefined) {
+                    const score = gameState.stageScores[nextSceneId];
+                    const total = gameData[nextSceneId].length;
+                    showModal("التحدي مكتمل", `لقد أكملت هذا التحدي مسبقاً. <br><strong>نتيجتك في هذه المرحلة: ${score} / ${total}</strong>`, null);
+                } else {
+                    renderScene(nextSceneId);
+                }
+                return;
+            }
 
             clearTimer();
             gameState.currentQuestionAttempts++;
@@ -2863,8 +2907,13 @@
                 } else if (Array.isArray(gameData[sceneId])) {
                     const nextQuestionIndex = gameState.currentSubQuestionIndex + 1;
                     if (nextQuestionIndex >= gameData[sceneId].length) {
-                        giveBadgesForStage(sceneId);
-                    }
+                        // حفظ النتيجة عند إكمال المرحلة للمرة الأولى
+                        if (gameState.stageScores[sceneId] === undefined) {
+                            gameState.stageScores[sceneId] = stagePoints;
+                            saveGameState();
+                        }
+                        giveBadgesForStage(sceneId);
+                    }
                     if (nextQuestionIndex < gameData[sceneId].length) {
                         renderScene(sceneId, nextQuestionIndex);
                     } else {
@@ -3109,22 +3158,39 @@
         }
         
         playerForm.addEventListener('submit', startGame);
+document.getElementById('map-scene').addEventListener('click', (e) => {
+            const button = e.target.closest('.option-btn');
+            if (!button) return;
+            const destination = button.dataset.destination;
+            
+            const mainDestinationId = destination.replace('-info', '').replace('-list', '');
 
-        document.getElementById('map-scene').addEventListener('click', (e) => {
-            const button = e.target.closest('.option-btn');
-            if (!button) return;
-            const destination = button.dataset.destination;
-            
-            const mainDestinationId = destination.replace('-info', '').replace('-list', '');
+            if (destination === 'stadium') {
+                renderStadiumSelection();
+                return;
+            }
 
-          if (destination === 'stadium') {
-             renderStadiumSelection();
-            return;
-        }
-            if (isStageCompleted(mainDestinationId) && destination !== 'certificate') {
-                showModal("مكان مألوف!", "لقد أكملت جميع تحديات هذا المكان. اختر وجهة أخرى.", null);
-                return;
-            }
+            // --- بداية الكود الجديد للتحقق ---
+            const stageData = gameData[mainDestinationId];
+            if (stageData) {
+                if (Array.isArray(stageData)) { // للأسئلة المباشرة مثل المكتبة
+                    if (gameState.stageScores[mainDestinationId] !== undefined) {
+                        const score = gameState.stageScores[mainDestinationId];
+                        const total = stageData.length;
+                        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك في هذه المرحلة: ${score} / ${total}</strong>`, null);
+                        return;
+                    }
+                } else if (stageData.nextScene) { // للمراحل التي تحتوي على قائمة تحديات
+                    const subScenes = Object.values(stageData.nextScene);
+                    if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
+                        const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
+                        const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
+                        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
+                        return;
+                    }
+                }
+            }
+            // --- نهاية الكود الجديد للتحقق ---
 
             const destinationData = gameData[destination];
 
@@ -3295,10 +3361,16 @@
         });
 
         document.getElementById('proceed-to-faculties-quiz-btn').addEventListener('click', () => {
-            document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
-            renderScene('faculties');
-        });
-
+    const stageId = 'faculties';
+    const subScenes = Object.values(gameData[stageId].nextScene);
+    if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
+        const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
+        const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
+        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
+    } else {
+        renderScene(stageId);
+    }
+});
         function populateGuideSelection() {
             const container = document.querySelector('#guide-selection-screen .guides-container');
             container.innerHTML = ''; 

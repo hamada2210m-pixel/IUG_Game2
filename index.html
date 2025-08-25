@@ -1072,7 +1072,7 @@
             background-color: transparent;
             padding: 0;
             width: 90%;
-            max-width: 600px;
+            max-width: 700px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.4);
             border-radius: var(--border-radius-main);
             animation: fadeInUp 0.5s;
@@ -1970,10 +1970,9 @@
             <div id="studentaffairs_tf_questions-scene" class="game-stage hidden"></div>
              <div id="stadium-scene" class="game-stage hidden">
                 </div>
+            <div id="studentaffairs_mc_questions-scene" class="game-stage hidden"></div>
             <div id="memory-game-scene" class="game-stage hidden">
                 </div>
-        
-
     </div>
 
 
@@ -2022,11 +2021,15 @@
     </div>
 
     <div id="ad-modal" class="modal hidden">
-        <div class="ad-modal-content">
-            <span class="close-ad-btn">&times;</span>
-            <img src="eng.webp" alt="إعلان كلية الهندسة" loading="lazy">
-        </div>
-    </div>
+        <div class="ad-modal-content">
+            <span class="close-ad-btn">&times;</span>
+            <img src="eng.webp" alt="إعلان كلية الهندسة" loading="lazy">
+                        <div class="ad-modal-actions">
+                <button id="ad-details-btn" class="action-button">التفاصيل  H</button>
+                <button id="ad-skip-btn" class="action-button secondary">تخطي الإعلان</button>
+            </div>
+        </div>
+    </div>
 
     <div id="video-overlay" class="modal hidden">
         <video id="welcome-video" width="90%" style="max-width: 800px; border-radius: 15px;" preload="auto">
@@ -2035,7 +2038,7 @@
         </video>
         <button id="skip-video-btn" class="action-button">تخطي الفيديو</button>
     </div>
-    <div id="studentaffairs_mc_questions-scene" class="game-stage hidden"></div>
+    
             <div id="stadium-selection-scene" class="game-stage hidden"></div> <div id="stadium-scene" class="game-stage hidden"></div>
             <div id="memory-game-scene" class="game-stage hidden"></div>
 
@@ -3189,11 +3192,19 @@
             }
         });
 
-        adModal.addEventListener('click', (event) => {
-            if (event.target.classList.contains('close-ad-btn') || event.target.id === 'ad-modal') {
-                adModal.classList.add('hidden');
-            }
-        });
+      adModal.addEventListener('click', (event) => {
+            // يغلق النافذة عند الضغط على زر الإغلاق، أو زر التخطي، أو الخلفية
+            if (event.target.closest('.close-ad-btn, #ad-skip-btn') || event.target.id === 'ad-modal') {
+                adModal.classList.add('hidden');
+            }
+        });
+
+        // إضافة وظيفة لزر "التفاصيل"
+        document.getElementById('ad-details-btn').addEventListener('click', () => {
+            adModal.classList.add('hidden'); // أولاً، أغلق نافذة الإعلان
+            // ثانياً، اعرض صفحة الويب باستخدام الدالة الجديدة
+            showWebsiteInIframe('https://www.iugaza.edu.ps/p29815/', 'إعلان كلية الهندسة');
+        });
         
         document.getElementById('new-player-btn').addEventListener('click', performLogout);
 
@@ -3244,32 +3255,44 @@
             gameState.currentScene = 'faculties-list';
             saveGameState();
         }
-        
-        document.getElementById('faculties-grid-container').addEventListener('click', (e) => {
-            const card = e.target.closest('.college-info-card');
-            if (!card) return;
-            const url = card.dataset.url;
-            const name = card.dataset.name;
-            const websiteScene = document.getElementById('college-website-scene');
-            websiteScene.innerHTML = `<div class="scene-content"><div class="website-view-header"><button id="back-to-list-btn" class="action-button" style="width: auto; padding: 10px 20px;"><span class="btn-icon">➡️</span> رجوع لقائمة الكليات</button></div><div class="loader-container" id="loader-container"><div class="loader"></div><p>جاري تحميل صفحة الكلية...</p></div></div>`;
-            document.getElementById('back-to-list-btn').addEventListener('click', () => {
-                websiteScene.classList.add('hidden');
-                websiteScene.innerHTML = ''; 
-                document.getElementById('faculties-list-scene').classList.remove('hidden');
-            });
-            document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
-            websiteScene.classList.remove('hidden');
-            const iframe = document.createElement('iframe');
-            iframe.id = 'college-website-iframe';
-            iframe.src = url;
-            iframe.title = name;
-            iframe.onload = () => {
-                const loaderContainer = document.getElementById('loader-container');
-                if (loaderContainer) loaderContainer.remove();
-                iframe.classList.add('loaded');
-            };
-            websiteScene.querySelector('.scene-content').appendChild(iframe);
-        });
+        function showWebsiteInIframe(url, title) {
+            const websiteScene = document.getElementById('college-website-scene');
+            websiteScene.innerHTML = `<div class="scene-content"><div class="website-view-header"><button id="back-to-last-scene-btn" class="action-button" style="width: auto; padding: 10px 20px;"><span class="btn-icon">➡️</span> رجوع</button></div><div class="loader-container" id="loader-container"><div class="loader"></div><p>جاري تحميل الصفحة...</p></div></div>`;
+            
+            document.getElementById('back-to-last-scene-btn').addEventListener('click', () => {
+                websiteScene.classList.add('hidden');
+                websiteScene.innerHTML = '';
+                // يعيد اللاعب إلى آخر مشهد كان فيه قبل فتح الموقع
+                const lastSceneId = gameState.currentScene;
+                const sceneElement = document.getElementById(`${lastSceneId}-scene`);
+                if(sceneElement) {
+                    sceneElement.classList.remove('hidden');
+                } else {
+                    renderScene('map'); // كخيار احتياطي
+                }
+            });
+
+            document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
+            websiteScene.classList.remove('hidden');
+
+            const iframe = document.createElement('iframe');
+            iframe.id = 'college-website-iframe';
+            iframe.src = url;
+            iframe.title = title;
+            iframe.onload = () => {
+                const loaderContainer = document.getElementById('loader-container');
+                if (loaderContainer) loaderContainer.remove();
+                iframe.classList.add('loaded');
+            };
+            websiteScene.querySelector('.scene-content').appendChild(iframe);
+        }
+     document.getElementById('faculties-grid-container').addEventListener('click', (e) => {
+            const card = e.target.closest('.college-info-card');
+            if (!card) return;
+            const url = card.dataset.url;
+            const name = card.dataset.name;
+            showWebsiteInIframe(url, name);
+        });
 
         document.getElementById('proceed-to-faculties-quiz-btn').addEventListener('click', () => {
             document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));

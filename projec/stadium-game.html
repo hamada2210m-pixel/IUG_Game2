@@ -3,289 +3,350 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لعبة ركلات الترجيح - الجامعة الإسلامية</title>
+    <title>تحدي الركلات الحرة - الجامعة الإسلامية</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #3a9d4a;
-            background-image: linear-gradient(180deg, #3a9d4a 0%, #2a7d3a 100%);
+            background-color: #5c93c7;
+            background-image: linear-gradient(to bottom, #5c93c7 0%, #a4c4e2 100%);
             display: flex;
             justify-content: center;
             align-items: center;
             font-family: 'Cairo', sans-serif;
             overflow: hidden;
-            padding: 20px;
+            padding: 10px;
+            margin: 0;
+            height: 100vh;
         }
-        .game-world {
+        #game-container {
             width: 100%;
-            max-width: 800px;
-            position: relative;
-        }
-        #game-area {
-            width: 100%;
-            aspect-ratio: 16/10;
-            background-color: #4CAF50;
-            border: 5px solid #fff;
-            position: relative;
+            max-width: 500px;
+            height: 95vh;
+            max-height: 900px;
+            background: #4caf50;
+            border-radius: 20px;
             overflow: hidden;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            background-image: 
-                linear-gradient(rgba(255,255,255,0.1) 2px, transparent 2px),
-                linear-gradient(90deg, rgba(255,255,255,0.1) 2px, transparent 2px);
-            background-size: 60px 60px;
+            position: relative;
+            border: 5px solid white;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            perspective: 800px;
+        }
+        #field {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            bottom: 0;
+            transform-style: preserve-3d;
+            transform: rotateX(60deg) translateY(150px);
+            background-image:
+                repeating-linear-gradient(rgba(255,255,255,0.1) 0 2px, transparent 2px 100%);
+            background-size: 100% 50px;
         }
         #goal {
             position: absolute;
-            bottom: 0;
+            top: 50px;
             left: 50%;
-            transform: translateX(-50%);
-            width: 60%;
-            height: 70%;
-            border: 5px solid #fff;
-            border-bottom: none;
-        }
-        #ball {
-            position: absolute;
-            bottom: 5%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40px;
-            height: 40px;
-            background-image: url('https://upload.wikimedia.org/wikipedia/commons/d/d3/Soccerball.svg');
-            background-size: cover;
-            border-radius: 50%;
-            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-            z-index: 10;
+            transform: translateX(-50%) translateZ(-300px);
+            width: 350px; /* --- تم التكبير --- */
+            height: 180px; /* --- تم التكبير --- */
+            font-size: 150px; /* --- تم التكبير --- */
+            line-height: 180px;
+            text-align: center;
+            color: #eee;
+            z-index: 5;
+            pointer-events: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
         #keeper {
             position: absolute;
-            bottom: 10px;
+            top: 90px; /* تعديل الموضع */
             left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 80px;
-            background-color: #ffeb3b;
-            border: 2px solid #333;
-            border-radius: 5px;
-            transition: left 0.4s ease-in-out;
-            z-index: 5;
-            font-size: 40px;
+            transform: translateX(-50%) translateZ(-250px);
+            width: 90px; /* --- تم التكبير --- */
+            height: 90px; /* --- تم التكبير --- */
+            font-size: 90px; /* --- تم التكبير --- */
+            line-height: 90px;
             text-align: center;
-            line-height: 80px;
+            z-index: 10;
+            transition: transform 0.4s ease-out;
+            pointer-events: none;
         }
-        #aim-container {
-            width: 60%;
-            margin: 20px auto 0;
-            background-color: rgba(0,0,0,0.3);
-            border-radius: 10px;
-            padding: 5px;
+        #ball {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            width: 50px; /* --- تم التصغير --- */
+            height: 50px; /* --- تم التصغير --- */
+            font-size: 50px; /* --- تم التصغير --- */
+            line-height: 50px;
+            text-align: center;
+            border-radius: 50%;
+            transform: translateX(-50%) translateZ(0);
+            cursor: grab;
+            z-index: 20;
+            transition: transform 0.05s linear;
+            user-select: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: transparent;
         }
-        #aim-indicator {
-            height: 20px;
-            background-color: #fff;
-            border-radius: 5px;
-            width: 10px;
-            position: relative;
+        #ball.shooting {
+            cursor: grabbing;
         }
-        .aim-animate {
-            animation: moveAim 2s linear infinite alternate;
-        }
-        #shoot-button {
-            display: block;
-            width: 200px;
-            margin: 20px auto;
-            padding: 15px;
-            font-size: 24px;
-            font-weight: 700;
-            border-radius: 15px;
-            border: none;
-            background-color: #f44336;
+        #ui-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 30;
             color: white;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 5px 0 #c3352b;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            pointer-events: none;
         }
-        #shoot-button:hover {
-            background-color: #e53935;
-        }
-        #shoot-button:active {
-            transform: translateY(3px);
-            box-shadow: 0 2px 0 #c3352b;
-        }
-        #shoot-button:disabled {
-            background-color: #9e9e9e;
-            cursor: not-allowed;
-            box-shadow: 0 5px 0 #757575;
+        .ui-element {
+            pointer-events: auto;
         }
         #scoreboard {
             position: absolute;
-            top: -70px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(0,0,0,0.5);
-            color: white;
-            padding: 10px 30px;
-            border-radius: 10px;
-            font-size: 28px;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
             font-weight: 700;
-            display: flex;
-            gap: 30px;
-            border: 2px solid #fff;
         }
         #game-message {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 100px;
+            font-size: 70px;
             font-weight: 900;
-            color: white;
-            text-shadow: 0 0 20px black;
-            z-index: 20;
             opacity: 0;
-            transition: opacity 0.5s;
-            pointer-events: none;
+            transition: all 0.5s;
         }
-        .back-to-map-btn {
+        #start-overlay {
             position: absolute;
-            top: 20px;
-            left: 20px;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             z-index: 100;
+            text-align: center;
+            padding: 20px;
         }
-        @keyframes moveAim {
-            from { left: 0%; }
-            to { left: calc(100% - 10px); }
+        #start-overlay h2 {
+            font-size: 48px;
+            color: white;
+            margin-bottom: 10px;
+        }
+        #start-overlay p {
+            font-size: 20px;
+            color: #ddd;
+            margin-bottom: 30px;
+        }
+        #aim-indicator {
+            position: absolute;
+            width: 4px;
+            height: 0;
+            background-color: rgba(255,255,255,0.7);
+            transform-origin: bottom center;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) rotateX(0deg);
+            z-index: 15;
+            transition: height 0.05s linear;
+            display: none;
         }
     </style>
 </head>
 <body>
-    <a class="action-button back-to-map-btn" href="index.html">⬅️ الخريطة</a>
 
-    <div class="game-world">
-        <div id="scoreboard">
-            <div id="score">الأهداف: 0</div>
-            <div id="shots-left">المحاولات: 5</div>
-        </div>
-        <div id="game-area">
-            <div id="game-message"></div>
-            <div id="goal">
-                <div id="keeper">🧤</div>
+    <div id="game-container">
+        <div id="field"></div>
+        <div id="goal">🥅</div>
+        <div id="keeper">🧍‍♂️</div>
+        <div id="ball">⚽</div>
+        <div id="aim-indicator"></div>
+
+        <div id="ui-layer">
+            <a class="action-button ui-element" href="index.html" style="position: absolute; top: 20px; left: 20px;">⬅ الخريطة</a>
+            <div id="scoreboard" class="ui-element">
+                <div id="score">الأهداف: 0</div>
+                <div id="shots-left">المحاولات: 5</div>
             </div>
-            <div id="ball"></div>
+            <div id="game-message"></div>
+            <div id="start-overlay" class="ui-element">
+                <h2>تحدي الركلات الحرة</h2>
+                <p>اسحب ⚽ للخلف لتحديد القوة والاتجاه، ثم حرر للتسديد!</p>
+                <button class="action-button" id="start-button" style="margin-top: 20px;">ابدأ اللعب</button>
+            </div>
         </div>
-        <div id="aim-container">
-            <div id="aim-indicator"></div>
-        </div>
-        <button id="shoot-button">سدد!</button>
     </div>
 
     <audio id="goalSound" src="assets/sounds/goal.mp3" preload="auto"></audio>
     <audio id="saveSound" src="assets/sounds/save.mp3" preload="auto"></audio>
+    <audio id="kickSound" src="assets/sounds/kick.mp3" preload="auto"></audio>
 
     <script>
         const ball = document.getElementById('ball');
         const keeper = document.getElementById('keeper');
-        const aimIndicator = document.getElementById('aim-indicator');
-        const shootButton = document.getElementById('shoot-button');
         const scoreDisplay = document.getElementById('score');
         const shotsLeftDisplay = document.getElementById('shots-left');
         const gameMessage = document.getElementById('game-message');
+        const startOverlay = document.getElementById('start-overlay');
+        const startButton = document.getElementById('start-button');
+        const aimIndicator = document.getElementById('aim-indicator');
+        
         const goalSound = document.getElementById('goalSound');
         const saveSound = document.getElementById('saveSound');
+        const kickSound = document.getElementById('kickSound');
 
         let score = 0;
         let shotsLeft = 5;
         let isShooting = false;
+        let isDragging = false;
+        let startPos = { x: 0, y: 0 };
 
-        function updateScoreboard() {
+        const KEEPER_MAX_MOVE = 140; /* --- تم التعديل --- */
+        const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+
+        function updateUI() {
             scoreDisplay.textContent = `الأهداف: ${score}`;
             shotsLeftDisplay.textContent = `المحاولات: ${shotsLeft}`;
         }
 
-        function showMessage(text, color) {
+        function showMessage(text, isGoal) {
             gameMessage.textContent = text;
-            gameMessage.style.color = color;
+            gameMessage.style.color = isGoal ? '#8bc34a' : '#ffeb3b';
             gameMessage.style.opacity = 1;
-            setTimeout(() => {
-                gameMessage.style.opacity = 0;
-            }, 1500);
+            setTimeout(() => { gameMessage.style.opacity = 0; }, 1500);
         }
 
         function resetShot() {
             isShooting = false;
-            shootButton.disabled = false;
-            aimIndicator.classList.add('aim-animate');
+            ball.style.transition = 'transform 0.3s ease-out';
+            ball.style.transform = 'translateX(-50%) translateZ(0) scale(1)';
+            keeper.style.transition = 'transform 0.4s ease-out';
+            keeper.style.transform = `translateX(-50%) translateZ(-250px)`;
             
-            ball.style.transition = 'none';
-            ball.style.left = '50%';
-            ball.style.bottom = '5%';
-            ball.style.transform = 'translateX(-50%) scale(1)';
-            
-            keeper.style.left = '50%';
+            if (shotsLeft === 0) {
+                startOverlay.style.display = 'flex';
+                startButton.textContent = 'العب مجدداً';
+                startOverlay.querySelector('h2').textContent = `النتيجة النهائية: ${score} / 5`;
+            }
         }
 
-        function shoot() {
+        function shoot(dragX, dragY) {
             if (isShooting || shotsLeft === 0) return;
-
             isShooting = true;
             shotsLeft--;
-            updateScoreboard();
-            shootButton.disabled = true;
-            aimIndicator.classList.remove('aim-animate');
+            updateUI();
+            kickSound.play().catch(e => {});
+            aimIndicator.style.display = 'none';
 
-            const aimPosition = aimIndicator.offsetLeft / aimIndicator.parentElement.clientWidth;
-            let targetLeft, targetBottom;
-
-            if (aimPosition < 0.33) {
-                targetLeft = '25%';
-            } else if (aimPosition > 0.66) {
-                targetLeft = '75%';
-            } else {
-                targetLeft = '50%';
-            }
-            targetBottom = '80%';
-
-            const keeperPositions = ['25%', '50%', '75%'];
-            const keeperJump = keeperPositions[Math.floor(Math.random() * 3)];
+            let power = Math.min(Math.abs(dragY) / 150, 1);
+            let horizontalAngle = clamp(dragX / 200, -1, 1);
             
+            let targetXOffset = horizontalAngle * 130; /* --- تم التعديل --- */
+            let targetYOffset = -150;
+            let targetZDistance = 500;
+
+            ball.style.transition = 'transform 0.6s cubic-bezier(0.1, 0.7, 0.3, 1)';
+            ball.style.transform = `translateX(-50%) translate3d(${targetXOffset}px, ${targetYOffset * power}px, ${-targetZDistance * power}px) scale(${1 - 0.5 * power})`;
+            
+            const diveOptions = [-1, 0, 1]; // -1 for left, 0 for center, 1 for right
+            const keeperChoice = diveOptions[Math.floor(Math.random() * 3)];
+            const keeperMoveAmount = keeperChoice * KEEPER_MAX_MOVE;
+            
+            keeper.style.transition = 'transform 0.3s ease-out';
             setTimeout(() => {
-                keeper.style.left = keeperJump;
-                
-                ball.style.transition = 'all 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
-                ball.style.left = targetLeft;
-                ball.style.bottom = targetBottom;
-                ball.style.transform = 'translateX(-50%) scale(0.6)';
-            }, 100);
+                keeper.style.transform = `translateX(-50%) translateZ(-250px) translateX(${keeperMoveAmount}px)`;
+            }, 50);
 
             setTimeout(() => {
-                if (targetLeft === keeperJump) {
-                    showMessage('تصدي!', '#ffeb3b');
-                    saveSound.play().catch(e => {});
-                } else {
-                    showMessage('هدف!', '#8bc34a');
-                    score++;
-                    goalSound.play().catch(e => {});
-                }
-                updateScoreboard();
+                const ballHitX = targetXOffset;
+                const isGoalAreaHorizontal = Math.abs(ballHitX) < 130; /* --- تم التعديل --- */
+                const isGoalAreaVertical = (targetYOffset * power) < -50;
+                const keeperCollisionThreshold = 70; /* --- تم التعديل --- */
 
-                if (shotsLeft > 0) {
-                    setTimeout(resetShot, 1500);
-                } else {
-                    shootButton.textContent = 'انتهت اللعبة';
-                    if (score >= 3) {
-                         showMessage('فوز رائع!', '#8bc34a');
-                    } else {
-                         showMessage('حظاً أوفر!', '#ffeb3b');
+                let isGoal = false;
+                if (isGoalAreaHorizontal && isGoalAreaVertical && power > 0.5) {
+                    if (Math.abs(ballHitX - keeperMoveAmount) > keeperCollisionThreshold) {
+                        isGoal = true;
                     }
                 }
+                
+                if (isGoal) {
+                    showMessage('هدف!', true);
+                    goalSound.play().catch(e => {});
+                    score++;
+                } else {
+                    showMessage(isGoalAreaHorizontal && power > 0.5 ? 'تصدي!' : 'خارج المرمى!', false);
+                    saveSound.play().catch(e => {});
+                }
+                updateUI();
+                setTimeout(resetShot, 1500);
             }, 600);
         }
 
-        shootButton.addEventListener('click', shoot);
-        updateScoreboard();
-        aimIndicator.classList.add('aim-animate');
+        function startGame() {
+            startOverlay.style.display = 'none';
+            score = 0;
+            shotsLeft = 5;
+            updateUI();
+            resetShot();
+        }
+
+        function handleDragStart(e) {
+            if (isShooting || shotsLeft === 0) return;
+            isDragging = true;
+            aimIndicator.style.display = 'block';
+            startPos = { x: (e.touches ? e.touches[0].clientX : e.clientX), y: (e.touches ? e.touches[0].clientY : e.clientY) };
+        }
+
+        function handleDragMove(e) {
+            if (!isDragging) return;
+            const currentX = (e.touches ? e.touches[0].clientX : e.clientX);
+            const currentY = (e.touches ? e.touches[0].clientY : e.clientY);
+            const dragY = currentY - startPos.y;
+            const dragX = currentX - startPos.x;
+            const power = clamp(Math.abs(dragY) / 150, 0, 1);
+            const angle = Math.atan2(dragX, -dragY) * (180 / Math.PI);
+            
+            aimIndicator.style.height = `${power * 100}px`;
+            aimIndicator.style.transform = `translateX(-50%) rotateZ(${angle}deg)`;
+        }
+
+        function handleDragEnd(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            aimIndicator.style.display = 'none';
+            const endX = (e.changedTouches ? e.changedTouches[0].clientX : e.clientX);
+            const endY = (e.changedTouches ? e.changedTouches[0].clientY : e.clientY);
+            const dragX = endX - startPos.x;
+            const dragY = endY - startPos.y;
+            if (Math.abs(dragY) > 20) {
+                shoot(dragX, dragY);
+            }
+        }
+
+        ball.addEventListener('mousedown', handleDragStart);
+        window.addEventListener('mousemove', handleDragMove);
+        window.addEventListener('mouseup', handleDragEnd);
+        ball.addEventListener('touchstart', (e) => { e.preventDefault(); handleDragStart(e); }, { passive: false });
+        window.addEventListener('touchmove', (e) => { e.preventDefault(); handleDragMove(e); }, { passive: false });
+        window.addEventListener('touchend', handleDragEnd);
+        startButton.addEventListener('click', startGame);
+        updateUI();
+        resetShot();
     </script>
 </body>
 </html>

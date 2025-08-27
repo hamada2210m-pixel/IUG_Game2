@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كلية الاقتصاد والعلوم الإدارية - الجامعة الإسلامية</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles */
+        body {
+            background-color: #eef2f5;
+            background-image: url('assets/images/Ferst.webp');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            align-items: flex-start;
+            padding: 50px 20px;
+            font-family: 'Cairo', sans-serif;
+        }
+        .economics-container {
+            background: rgba(255, 255, 255, 0.6); /* Glassmorphism effect */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 15px 50px rgba(0, 30, 15, 0.1);
+            width: 100%;
+            max-width: 1000px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Header */
+        .faculty-header {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            padding-bottom: 25px;
+            margin-bottom: 40px;
+        }
+        .faculty-header img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: contain;
+            border: 3px solid #fff;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .faculty-header h1 {
+            color: var(--primary-dark);
+            font-size: 38px;
+            font-weight: 700;
+        }
+
+        /* Navigation Menu */
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+        }
+        .nav-item {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 30px 20px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            animation: fadeIn-up 0.6s ease-out forwards;
+            opacity: 0;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+        .nav-item .icon-wrapper {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, var(--primary-color), #004d28);
+            font-size: 36px;
+            color: #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 102, 51, 0.3);
+        }
+        .nav-item .nav-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        .nav-item:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.2);
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+        .nav-item:hover .icon-wrapper {
+            transform: scale(1.15) rotate(10deg);
+            box-shadow: 0 8px 25px rgba(0, 102, 51, 0.4);
+        }
+        .nav-item:nth-child(1) { animation-delay: 0.1s; }
+        .nav-item:nth-child(2) { animation-delay: 0.2s; }
+        .nav-item:nth-child(3) { animation-delay: 0.3s; }
+        .nav-item:nth-child(4) { animation-delay: 0.4s; }
+        .nav-item:nth-child(5) { animation-delay: 0.5s; }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.7s ease-out;
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 15px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            border: 1px solid #fff;
+        }
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .back-btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0, 102, 51, 0.2);
+        }
+        .back-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 102, 51, 0.3);
+        }
+        .content-section h2 {
+            font-size: 32px;
+            color: var(--primary-dark);
+            margin: 0;
+        }
+        .content-section h3 {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-top: 30px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .content-section p, .content-section li {
+            font-size: 18px;
+            line-height: 1.9;
+            color: #374151;
+        }
+        .content-section ul {
+            list-style: none;
+            padding-right: 0;
+        }
+        .content-section ul li {
+            position: relative;
+            padding-right: 35px;
+            margin-bottom: 15px;
+        }
+        .content-section ul li::before {
+            content: '✔';
+            color: var(--primary-color);
+            background: var(--light-bg);
+            border: 1px solid var(--primary-color);
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            text-align: center;
+            font-size: 14px;
+            line-height: 24px;
+            position: absolute;
+            right: 0;
+            top: 8px;
+        }
+
+        .job-cards-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        .job-card {
+            background-color: #f8fcf9;
+            border: 1px solid #e0f2e0;
+            border-radius: 12px;
+            padding: 25px;
+        }
+        .job-card ol {
+            padding-right: 20px;
+            margin: 0;
+            list-style-type: decimal;
+        }
+        .job-card li {
+            font-size: 17px;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+        
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 16px;
+        }
+        .info-table th, .info-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: right;
+        }
+        .info-table th {
+            background-color: var(--light-bg);
+            color: var(--primary-dark);
+        }
+
+        @media (max-width: 768px) {
+            .job-cards-container {
+                grid-template-columns: 1fr;
+            }
+            .faculty-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .faculty-header h1 {
+                font-size: 30px;
+            }
+        }
+
+        @keyframes fadeIn-up {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="economics-container">
+            <header class="faculty-header">
+                <img src="assets/images/economics-logo.webp" alt="شعار كلية الاقتصاد والعلوم الإدارية">
+                <h1>كلية الاقتصاد والعلوم الإدارية</h1>
+            </header>
+
+            <main>
+                <div class="nav-grid">
+                    <div class="nav-item" data-target="about-section">
+                        <div class="icon-wrapper">🏢</div>
+                        <span class="nav-text">نبذة عن الكلية</span>
+                    </div>
+                    <div class="nav-item" data-target="vision-section">
+                        <div class="icon-wrapper">🎯</div>
+                        <span class="nav-text">الرؤية والرسالة</span>
+                    </div>
+                    <div class="nav-item" data-target="programs-section">
+                        <div class="icon-wrapper">📚</div>
+                        <span class="nav-text">البرامج والتخصصات</span>
+                    </div>
+                    <div class="nav-item" data-target="conditions-section">
+                        <div class="icon-wrapper">📋</div>
+                        <span class="nav-text">شروط التخصص</span>
+                    </div>
+                    <div class="nav-item" data-target="jobs-section">
+                        <div class="icon-wrapper">💼</div>
+                        <span class="nav-text">مجالات العمل</span>
+                    </div>
+                </div>
+
+                <section id="about-section" class="content-section">
+                    <div class="content-header">
+                        <h2>نبذة عن الكلية</h2>
+                        <button class="back-btn">⬅ العودة</button>
+                    </div>
+                    <p>تعتبر كلية الاقتصاد والعلوم الإدارية منذ تأسيسها عام 1980م رائدة الكليات على مستوى فلسطين. فهي تزود المجتمع منذ نشأتها باحتياجاته من الكوادر المؤهلة في مجالات الإدارة، والمحاسبة، والاقتصاد، والعلوم السياسية، والمالية والمصرفية.</p>
+                </section>
+
+                <section id="vision-section" class="content-section">
+                    <div class="content-header">
+                        <h2>الرؤية والرسالة والأهداف</h2>
+                        <button class="back-btn">⬅ العودة</button>
+                    </div>
+                    <h3>رؤية الكلية</h3>
+                    <p>الريادة في تقديم خدمات أكاديمية في مجال تكنولوجيا المال والأعمال لتساهم في التنمية المستدامة للمجتمع الفلسطيني.</p>
+                    <h3>رسالة الكلية</h3>
+                    <p>تسعى كلية الاقتصاد والعلوم الادارية لتوفير بيئة داعمة للتعليم والبحث العلمي، والاهتمام بقضايا المجتمع ومشكلاته، بما يؤهلها للريادة في الجامعات الفلسطينية والعربية.</p>
+                    <h3>أهداف الكلية</h3>
+                    <ul>
+                        <li>تعزيز جودة خدمة التعليم للطلبة.</li>
+                        <li>توفير الإمكانات لخدمة الطلبة بما يتناسب مع معايير الجودة.</li>
+                        <li>تطوير البحث العلمي لخدمة قضايا المجتمع ومشكلاته.</li>
+                    </ul>
+                </section>
+                
+                <section id="programs-section" class="content-section">
+                     <div class="content-header">
+                         <h2>البرامج والتخصصات</h2>
+                         <button class="back-btn">⬅ العودة</button>
+                    </div>
+                    <h3>برامج درجة البكالوريوس</h3>
+                    <ul>
+                        <li>إدارة الأعمال (باللغتين العربية والإنجليزية)</li>
+                        <li>العلوم المالية والمصرفية</li>
+                        <li>التسويق والتجارة الإلكترونية</li>
+                        <li>المحاسبة (باللغتين العربية والإنجليزية)</li>
+                        <li>الاقتصاد الرقمي وتكنولوجيا المال</li>
+                    </ul>
+                    <h3>برامج درجة الماجستير</h3>
+                    <ul>
+                        <li>ماجستير إدارة الأعمال</li>
+                        <li>ماجستير الإدارة الصحية</li>
+                        <li>ماجستير المحاسبة والتمويل</li>
+                    </ul>
+                    <h3>برامج درجة الدكتوراه</h3>
+                    <ul>
+                        <li>مسار إدارة الأعمال</li>
+                        <li>مسار المحاسبة</li>
+                        <li>مسار الاقتصاد</li>
+                    </ul>
+                </section>
+
+                <section id="conditions-section" class="content-section">
+                    <div class="content-header">
+                         <h2>شروط التخصص</h2>
+                         <button class="back-btn">⬅ العودة</button>
+                    </div>
+                    <ul>
+                        <li>إنهاء 35 ساعة معتمدة بنجاح كحد أدنى.</li>
+                        <li>الحصول على معدل تراكمي 65% فما فوق.</li>
+                        <li>الحصول على مجموع 140 درجة في مساقي متطلبات التخصص.</li>
+                    </ul>
+                     <table class="info-table">
+                        <thead>
+                            <tr>
+                                <th>التخصص</th>
+                                <th>المساقات المطلوبة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>إدارة الأعمال (عربي / انجليزي)</td>
+                                <td>إدارة الأعمال (1) + إدارة الأعمال (2)</td>
+                            </tr>
+                             <tr>
+                                <td>اقتصاد و علوم سياسية</td>
+                                <td>مبادئ الاقتصاد الجزئي + مبادئ العلوم السياسية</td>
+                            </tr>
+                            <tr>
+                                <td>علوم مالية ومصرفية</td>
+                                <td>إدارة الأعمال (1) + إدارة الأعمال (2)</td>
+                            </tr>
+                            <tr>
+                                <td>المحاسبة (عربي / انجليزي)</td>
+                                <td>مبادئ محاسبة (1) + مبادئ محاسبة (2)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section id="jobs-section" class="content-section">
+                    <div class="content-header">
+                         <h2>مجالات العمل للخريجين</h2>
+                         <button class="back-btn">⬅ العودة</button>
+                    </div>
+                    <div class="job-cards-container">
+                        <div class="job-card">
+                            <h3>خريجي ادارة الاعمال</h3>
+                            <ol>
+                                <li>إنشاء المشاريع الريادية الخاصة.</li>
+                                <li>تخطيط مشاريع الأعمال الإلكترونية.</li>
+                                <li>تصميم وتشغيل مواقع الأعمال.</li>
+                                <li>تسويق المنتجات عبر الإنترنت.</li>
+                            </ol>
+                        </div>
+                        <div class="job-card">
+                            <h3>خريجي العلوم المالية والمصرفية</h3>
+                            <ol>
+                                <li>مستشار أو مدير مالي.</li>
+                                <li>وسيط مالي في البورصة.</li>
+                                <li>موظف مالي في البنوك.</li>
+                                <li>مختص في شركات التأمين.</li>
+                                <li>محلل مالي واقتصادي.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <div style="text-align:center; margin-top:30px;">
+            <a class="action-button" href="index.html" style="max-width: 350px;">
+                ⬅ العودة إلى الخريطة الرئيسية
+            </a>
+        </div>
+    </div>
+
+    <audio id="transitionSound" src="assets/sounds/turning.mp3" preload="auto"></audio>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navItems = document.querySelectorAll('.nav-item');
+            const contentSections = document.querySelectorAll('.content-section');
+            const backButtons = document.querySelectorAll('.back-btn');
+            const navGrid = document.querySelector('.nav-grid');
+            const mainContent = document.querySelector('main');
+            const transitionSound = document.getElementById('transitionSound');
+
+            function playSound(audioElement) {
+                if (audioElement) {
+                    audioElement.currentTime = 0;
+                    audioElement.play().catch(e => console.log("Sound play error:", e));
+                }
+            }
+
+            function showSection(targetId) {
+                playSound(transitionSound);
+                navGrid.style.display = 'none';
+                contentSections.forEach(sec => sec.style.display = 'none');
+                
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) {
+                    targetSection.style.display = 'block';
+                }
+            }
+
+            function showNav() {
+                playSound(transitionSound);
+                contentSections.forEach(sec => sec.style.display = 'none');
+                navGrid.style.display = 'grid';
+                navItems.forEach(item => {
+                    item.style.animation = 'none';
+                    item.offsetHeight;
+                    item.style.animation = null; 
+                });
+            }
+
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    showSection(item.getAttribute('data-target'));
+                });
+            });
+
+            backButtons.forEach(button => {
+                button.addEventListener('click', showNav);
+            });
+        });
+    </script>
+</body>
+</html>

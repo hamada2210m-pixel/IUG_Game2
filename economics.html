@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كلية الاقتصاد والعلوم الإدارية</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        /* Base Styles */
+        body {
+            background-image: url('assets/images/Ferst.webp');
+            align-items: flex-start;
+            padding-top: 40px;
+            padding-bottom: 40px;
+        }
+        .economics-container {
+            background-color: #ffffff;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+            width: 100%;
+            max-width: 850px;
+            border-top: 5px solid var(--primary-color);
+        }
+
+        /* Header */
+        .faculty-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .faculty-header img {
+            max-width: 100px;
+            border-radius: 50%;
+        }
+        .faculty-header h1 {
+            color: var(--primary-dark);
+            margin: 0;
+            font-size: 32px;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        /* Navigation Menu */
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            text-align: center;
+        }
+        .nav-item {
+            background-color: #f9fafb;
+            padding: 25px 20px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            animation: fadeIn-up 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        .nav-item .icon {
+            font-size: 40px;
+            line-height: 1;
+        }
+        .nav-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0, 70, 35, 0.1);
+            border-color: var(--primary-color);
+        }
+        /* Staggered animation for nav items */
+        .nav-item:nth-child(1) { animation-delay: 0.1s; }
+        .nav-item:nth-child(2) { animation-delay: 0.2s; }
+        .nav-item:nth-child(3) { animation-delay: 0.3s; }
+        .nav-item:nth-child(4) { animation-delay: 0.4s; }
+        .nav-item:nth-child(5) { animation-delay: 0.5s; }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            text-align: right;
+            animation: fadeIn 0.6s ease;
+        }
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .back-btn {
+            background: var(--light-bg);
+            color: var(--primary-dark);
+            padding: 10px 20px;
+            border: 1px solid #d1e7dd;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .back-btn:hover {
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+        .content-section h2 {
+            font-size: 28px;
+            color: var(--primary-dark);
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+        .content-section h3 {
+            font-size: 22px;
+            color: var(--primary-color);
+            margin-top: 30px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .content-section p, .content-section li {
+            font-size: 17px;
+            line-height: 1.9;
+            color: #4b5563;
+        }
+        .content-section ul, .content-section ol {
+            padding-right: 25px;
+        }
+        .two-column-layout {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .two-column-layout > div {
+            flex: 1;
+            min-width: 280px;
+        }
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        .info-table th, .info-table td {
+            border: 1px solid #e5e7eb;
+            padding: 14px;
+            text-align: right;
+        }
+        .info-table th {
+            background-color: #f9fafb;
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        /* Keyframe Animations */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="economics-container">
+            <header class="faculty-header">
+                <h1>كلية الاقتصاد والعلوم الإدارية</h1>
+             <img src="assets/images/economics-logo.png" alt="شعار كلية الاقتصاد والعلوم الإدارية">
+
+            <main>
+                <div class="nav-grid">
+                    <div class="nav-item" data-target="about-section">
+                        <span class="icon">🏢</span>
+                        <span>نبذة عن الكلية</span>
+                    </div>
+                    <div class="nav-item" data-target="vision-section">
+                        <span class="icon">🎯</span>
+                        <span>الرؤية والرسالة والأهداف</span>
+                    </div>
+                    <div class="nav-item" data-target="programs-section">
+                        <span class="icon">📚</span>
+                        <span>برامج وتخصصات الكلية</span>
+                    </div>
+                    <div class="nav-item" data-target="conditions-section">
+                        <span class="icon">📋</span>
+                        <span>شروط التخصص</span>
+                    </div>
+                    <div class="nav-item" data-target="jobs-section">
+                        <span class="icon">💼</span>
+                        <span>مجالات العمل للخريجين</span>
+                    </div>
+                </div>
+
+                <section id="about-section" class="content-section">
+                    <div class="content-header">
+                         <h2>نبذة عن الكلية</h2>
+                         <button class="back-btn">⬅ العودة للقائمة</button>
+                    </div>
+                    <p>تعتبر كلية الاقتصاد والعلوم الإدارية منذ تأسيسها عام 1980م رائدة الكليات على مستوى فلسطين فهي تزود المجتمع منذ نشأتها باحتياجاته من الكوادر المؤهلة في مجالات الإدارة والمحاسبة والاقتصاد والعلوم السياسية، والعلوم المالية والمصرفية والإحصاء التطبيقي والسياسة والإعلام.</p>
+                    <p>تهدف الكلية إلى تطوير الكفاءات العاملة بما يتوافق مع الاحتياجات الأكاديمية، وتسعى لافتتاح برامج أكاديمية معاصرة تلبي الاحتياجات التنموية للمجتمع الفلسطيني وتعمل على الارتقاء بمستوى أداء البرامج الحالية وتطوير مصادر المعرفة المتاحة.</p>
+                </section>
+
+                <section id="vision-section" class="content-section">
+                    <div class="content-header">
+                         <h2>الرؤية والرسالة والأهداف</h2>
+                         <button class="back-btn">⬅ العودة للقائمة</button>
+                    </div>
+                    <div class="two-column-layout">
+                        <div>
+                            <h3>رؤية الكلية</h3>
+                            <p>الريادة في تقديم خدمات أكاديمية في مجال تكنولوجيا المال والأعمال لتساهم في التنمية المستدامة للمجتمع الفلسطيني.</p>
+                        </div>
+                        <div>
+                            <h3>رسالة الكلية</h3>
+                            <p>تسعى كلية الاقتصاد والعلوم الادارية لتوفير بيئة داعمة للتعليم والبحث العلمي، والاهتمام بقضايا المجتمع ومشكلاته، بما يؤهلها للريادة في الجامعات الفلسطينية والعربية.</p>
+                        </div>
+                    </div>
+                    <h3>أهداف الكلية</h3>
+                    <ul>
+                        <li>تعزيز جودة خدمة التعليم للطلبة.</li>
+                        <li>توفير الإمكانات لخدمة الطلبة بما يتناسب مع معايير الجودة.</li>
+                        <li>تطوير البحث العلمي لخدمة قضايا المجتمع ومشكلاته.</li>
+                        <li>التشبيك مع المؤسسات العاملة على الصعيد المحلي والدولي.</li>
+                        <li>تعزيز البيئة التعليمية التي تتبنى التميز والإبداع والاهتمام بالخريجين.</li>
+                    </ul>
+                </section>
+                
+                <section id="programs-section" class="content-section">
+                     <div class="content-header">
+                         <h2>برامج وتخصصات الكلية</h2>
+                         <button class="back-btn">⬅ العودة للقائمة</button>
+                    </div>
+                    <h3>برامج درجة البكالوريوس</h3>
+                    <ul>
+                        <li>إدارة الأعمال (باللغة العربية / الانجليزية)</li>
+                        <li>العلوم المالية والمصرفية</li>
+                        <li>التسويق والتجارة الإلكترونية</li>
+                        <li>المحاسبة (باللغة العربية / الانجليزية)</li>
+                        <li>الاقتصاد الرقمي وتكنولوجيا المال</li>
+                        <li>السياسة والاعلام</li>
+                        <li>الاقتصاد والعلوم السياسية</li>
+                        <li>المحاسبة وتكنولوجيا المعلومات</li>
+                    </ul>
+                    <h3>برامج درجة الماجستير</h3>
+                    <ul>
+                        <li>ماجستير إدارة الأعمال</li>
+                        <li>ماجستير الإدارة الصحية</li>
+                        <li>ماجستير المحاسبة والتمويل</li>
+                    </ul>
+                    <h3>برامج درجة الدكتوراه</h3>
+                    <p>برنامج الدكتوراه المشترك في العلوم المالية والإدارية بالمسارات التالية:</p>
+                    <ul>
+                        <li>مسار إدارة الأعمال</li>
+                        <li>مسار المحاسبة</li>
+                        <li>مسار الاقتصاد</li>
+                    </ul>
+                </section>
+
+                <section id="conditions-section" class="content-section">
+                    <div class="content-header">
+                         <h2>شروط التخصص</h2>
+                         <button class="back-btn">⬅ العودة للقائمة</button>
+                    </div>
+                    <ul>
+                        <li>إنهاء 35 ساعة معتمدة بنجاح كحد أدنى.</li>
+                        <li>الحصول على معدل تراكمي 65% فما فوق.</li>
+                        <li>الحصول على مجموع (140) درجة في مساقي كل تخصص.</li>
+                    </ul>
+                    <table class="info-table">
+                        <thead>
+                            <tr>
+                                <th>التخصص</th>
+                                <th>المساقات المطلوبة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>إدارة الأعمال (عربي / انجليزي)</td>
+                                <td>إدارة الأعمال (1) + إدارة الأعمال (2)</td>
+                            </tr>
+                             <tr>
+                                <td>اقتصاد وعلوم سياسية</td>
+                                <td>مبادئ الاقتصاد الجزئي + مبادئ العلوم السياسية</td>
+                            </tr>
+                            <tr>
+                                <td>علوم مالية ومصرفية</td>
+                                <td>إدارة الأعمال (1) + إدارة الأعمال (2)</td>
+                            </tr>
+                            <tr>
+                                <td>المحاسبة (عربي / انجليزي)</td>
+                                <td>مبادئ محاسبة (1) + مبادئ محاسبة (2)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section id="jobs-section" class="content-section">
+                    <div class="content-header">
+                         <h2>مجالات العمل للخريجين</h2>
+                         <button class="back-btn">⬅ العودة للقائمة</button>
+                    </div>
+                    <h3>مجالات العمل لخريجي ادارة الاعمال</h3>
+                    <ol>
+                        <li>العمل الحر وإنشاء المشاريع الريادية الخاصة.</li>
+                        <li>تخطيط مشاريع الأعمال التقليدية والإلكترونية.</li>
+                        <li>تصميم وتشغيل مواقع الأعمال الإلكترونية.</li>
+                        <li>تسويق المنتجات والخدمات عبر الإنترنت.</li>
+                    </ol>
+                    <h3>مجالات العمل لخريجي العلوم المالية والمصرفية</h3>
+                    <ol>
+                        <li>مستشار مالي أو مدير مالي</li>
+                        <li>وسيط مالي في البورصة</li>
+                        <li>موظف مالي في البنوك</li>
+                        <li>مختص في شركات التأمين</li>
+                        <li>محلل مالي واقتصادي</li>
+                    </ol>
+                </section>
+            </main>
+        </div>
+
+        <div style="text-align:center; margin-top:25px; margin-bottom: 25px;">
+            <a class="action-button" href="index.html" style="max-width: 300px;">⬅ العودة إلى الخريطة</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainContent = document.querySelector('main');
+            const navGrid = document.querySelector('.nav-grid');
+            const navItems = document.querySelectorAll('.nav-item');
+            const contentSections = document.querySelectorAll('.content-section');
+            const backButtons = document.querySelectorAll('.back-btn');
+            const container = document.querySelector('.economics-container');
+
+            function showSection(targetId) {
+                navGrid.style.display = 'none';
+                contentSections.forEach(sec => sec.style.display = 'none');
+                
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) {
+                    targetSection.style.display = 'block';
+                    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+
+            function showNav() {
+                contentSections.forEach(sec => sec.style.display = 'none');
+                navGrid.style.display = 'grid';
+                 // Re-trigger animation
+                navItems.forEach(item => {
+                    item.style.animation = 'none';
+                    item.offsetHeight; /* trigger reflow */
+                    item.style.animation = null; 
+                });
+            }
+
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    showSection(item.getAttribute('data-target'));
+                });
+            });
+
+            backButtons.forEach(button => {
+                button.addEventListener('click', showNav);
+            });
+        });
+    </script>
+</body>
+</html>

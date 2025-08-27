@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كلية الطب - الجامعة الإسلامية</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles - Identical to the professional economics.html template */
+        body {
+            background-color: #eef2f5;
+            background-image: url('assets/images/Ferst.webp');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            align-items: flex-start;
+            padding: 50px 20px;
+            font-family: 'Cairo', sans-serif;
+        }
+        .faculty-container {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 15px 50px rgba(0, 30, 15, 0.1);
+            width: 100%;
+            max-width: 1000px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .faculty-header {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            padding-bottom: 25px;
+            margin-bottom: 40px;
+        }
+        .faculty-header img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: contain;
+            border: 3px solid #fff;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .faculty-header h1 {
+            color: var(--primary-dark);
+            font-size: 38px;
+            font-weight: 700;
+        }
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+        }
+        .nav-item {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 30px 20px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            animation: fadeIn-up 0.6s ease-out forwards;
+            opacity: 0;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+        .nav-item .icon-wrapper {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, var(--primary-color), #004d28);
+            font-size: 36px;
+            color: #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 102, 51, 0.3);
+        }
+        .nav-item .nav-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        .nav-item:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.2);
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+        .nav-item:hover .icon-wrapper {
+            transform: scale(1.15) rotate(10deg);
+            box-shadow: 0 8px 25px rgba(0, 102, 51, 0.4);
+        }
+        .nav-item:nth-child(1) { animation-delay: 0.1s; }
+        .nav-item:nth-child(2) { animation-delay: 0.2s; }
+        .nav-item:nth-child(3) { animation-delay: 0.3s; }
+        .nav-item:nth-child(4) { animation-delay: 0.4s; }
+        .content-section {
+            display: none;
+            animation: fadeIn 0.7s ease-out;
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 16px;
+            margin-top: 15px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            border: 1px solid #fff;
+        }
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .back-btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0, 102, 51, 0.2);
+        }
+        .back-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 102, 51, 0.3);
+        }
+        .content-section h2 {
+            font-size: 32px;
+            color: var(--primary-dark);
+            margin: 0;
+        }
+        .content-section h3 {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+        .content-section ul {
+            list-style: none;
+            padding-right: 0;
+        }
+        .content-section ul li {
+            position: relative;
+            padding-right: 35px;
+            margin-bottom: 15px;
+            font-size: 18px;
+            line-height: 1.9;
+            color: #374151;
+        }
+        .content-section ul li::before {
+            content: '✔';
+            color: var(--primary-color);
+            background: var(--light-bg);
+            border: 1px solid var(--primary-color);
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            text-align: center;
+            font-size: 14px;
+            line-height: 24px;
+            position: absolute;
+            right: 0;
+            top: 8px;
+        }
+        @keyframes fadeIn-up {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="faculty-container">
+            <header class="faculty-header">
+                <img src="assets/images/medicine-logo.webp" alt="شعار كلية الطب">
+                <h1>كلية الطب</h1>
+            </header>
+
+            <main>
+                <div class="nav-grid">
+                    <div class="nav-item" data-target="about-section">
+                        <div class="icon-wrapper">🗣️</div>
+                        <span class="nav-text">كلمة العميد</span>
+                    </div>
+                    <div class="nav-item" data-target="vision-section">
+                        <div class="icon-wrapper">🎯</div>
+                        <span class="nav-text">الرؤية والرسالة</span>
+                    </div>
+                    <div class="nav-item" data-target="programs-section">
+                        <div class="icon-wrapper">🎓</div>
+                        <span class="nav-text">البرنامج الأكاديمي</span>
+                    </div>
+                    <div class="nav-item" data-target="labs-section">
+                        <div class="icon-wrapper">🔬</div>
+                        <span class="nav-text">المختبرات والمرافق</span>
+                    </div>
+                </div>
+
+                <section id="about-section" class="content-section">
+                    <div class="content-header">
+                         <h2>كلمة عميد الكلية</h2>
+                         <button class="back-btn">⬅ العودة</button>
+                    </div>
+                    <p>تأسست كلية الطب في الجامعة الإسلامية بغزة عام 2006، استجابة للحاجة الماسة في المجتمع الفلسطيني لتخريج أطباء ذوي كفاءة عالية. تسعى الكلية إلى تحقيق الريادة والتميز في التعليم الطبي والبحث العلمي، لخدمة المجتمع المحلي والإقليمي من خلال إعداد أطباء قادرين على المنافسة عالمياً وملتزمين بأخلاقيات المهنة.</p>
+                </section>
+
+                <section id="vision-section" class="content-section">
+                    <div class="content-header">
+                         <h2>الرؤية والرسالة</h2>
+                         <button class="back-btn">⬅ العودة</button>
+                    </div>
+                    <h3>رؤية الكلية</h3>
+                    <p>الريادة والتميز في التعليم الطبي والبحث العلمي وخدمة المجتمع على المستوى المحلي والإقليمي.</p>
+                    <h3>رسالة الكلية</h3>
+                    <p>إعداد أطباء أكفاء ومنافسين عالمياً، مزودين بالمعارف والمهارات والسلوكيات المهنية، وملتزمين بأخلاقيات مهنة الطب، وقادرين على تلبية احتياجات المجتمع الصحية المتغيرة من خلال التميز في التعليم والبحث العلمي والخدمات المجتمعية.</p>
+                </section>
+                
+                <section id="programs-section" class="content-section">
+                     <div class="content-header">
+                         <h2>البرنامج الأكاديمي</h2>
+                         <button class="back-btn">⬅ العودة</button>
+                    </div>
+                    <h3>بكالوريوس الطب والجراحة (M.B.B.S)</h3>
+                    <p>تمنح الكلية درجة البكالوريوس في الطب والجراحة بعد إتمام الطالب بنجاح متطلبات التخرج بواقع 260 ساعة معتمدة. تتميز الخطة الدراسية بكونها حديثة ومتكاملة، حيث تدمج بين العلوم الطبية الأساسية والسريرية منذ السنوات الأولى، مع التركيز على التعلم الذاتي وحل المشكلات.</p>
+                    <ul>
+                        <li>**مدة الدراسة:** ست سنوات دراسية، تليها سنة تدريبية (الامتياز).</li>
+                        <li>**لغة التدريس:** اللغة الإنجليزية.</li>
+                        <li>**الاعتماد:** الكلية حاصلة على الاعتماد ومدرجة في دليل كليات الطب العالمية (WDOMS).</li>
+                    </ul>
+                </section>
+
+                <section id="labs-section" class="content-section">
+                    <div class="content-header">
+                         <h2>المختبرات والمرافق</h2>
+                         <button class="back-btn">⬅ العودة</button>
+                    </div>
+                    <p>تولي الكلية اهتماماً كبيراً بالجانب العملي والبحثي، وتوفر لطلبتها مجموعة متكاملة من المختبرات الحديثة والمجهزة بأفضل التقنيات لدعم العملية التعليمية والبحثية، ومن أهمها:</p>
+                    <ul>
+                        <li>مختبر المهارات السريرية والمحاكاة.</li>
+                        <li>مختبر التشريح وغرفة حفظ الجثث.</li>
+                        <li>مختبر الأنسجة والأمراض.</li>
+                        <li>مختبر الكيمياء الحيوية والفسيولوجيا.</li>
+                        <li>مختبر الأحياء الدقيقة والطفيليات.</li>
+                        <li>مختبر الأبحاث المركزي.</li>
+                    </ul>
+                </section>
+            </main>
+        </div>
+
+        <div style="text-align:center; margin-top:30px;">
+            <a class="action-button" href="index.html" style="max-width: 350px;">
+                ⬅ العودة إلى الخريطة الرئيسية
+            </a>
+        </div>
+    </div>
+
+    <audio id="transitionSound" src="assets/sounds/turning.mp3" preload="auto"></audio>
+    <script>
+        // JavaScript for interactivity remains the same
+        document.addEventListener('DOMContentLoaded', function() {
+            const navItems = document.querySelectorAll('.nav-item');
+            const contentSections = document.querySelectorAll('.content-section');
+            const backButtons = document.querySelectorAll('.back-btn');
+            const navGrid = document.querySelector('.nav-grid');
+            const transitionSound = document.getElementById('transitionSound');
+
+            function playSound(audioElement) {
+                if (audioElement) {
+                    audioElement.currentTime = 0;
+                    audioElement.play().catch(e => console.log("Sound play error:", e));
+                }
+            }
+
+            function showSection(targetId) {
+                playSound(transitionSound);
+                navGrid.style.display = 'none';
+                contentSections.forEach(sec => sec.style.display = 'none');
+                
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) {
+                    targetSection.style.display = 'block';
+                }
+            }
+
+            function showNav() {
+                playSound(transitionSound);
+                contentSections.forEach(sec => sec.style.display = 'none');
+                navGrid.style.display = 'grid';
+            }
+
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    showSection(item.getAttribute('data-target'));
+                });
+            });
+
+            backButtons.forEach(button => {
+                button.addEventListener('click', showNav);
+            });
+        });
+    </script>
+</body>
+</html>

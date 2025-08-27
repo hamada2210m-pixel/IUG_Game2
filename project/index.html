@@ -1,445 +1,0 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رحلتي في الإسلامية</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
-</head>
-<body>
-
-    <audio id="correct-sound" src="assets/sounds/correct.mp3" preload="auto"></audio>
-    <audio id="incorrect-sound" src="assets/sounds/funny.mp3" preload="auto"></audio>
-    <audio id="transition-sound" src="assets/sounds/turning.mp3" preload="auto"></audio>
-    <audio id="guide-appears-sound" src="assets/sounds/guide_appears.mp3" preload="auto"></audio>
-    <audio id="badge-sound" src="assets/sounds/badge.mp3" preload="auto"></audio>
-
-    <div id="status-bar" class="hidden">
-        <div class="status-section">
-            <span class="icon">👤</span>
-            <span id="player-name-display"></span>
-            <span id="player-score-display"></span>
-        </div>
-        <div class="status-section">
-            <a href="#" id="profile-btn" class="status-bar-btn" aria-label="الملف الشخصي">
-                <span class="icon">⭐</span>
-                الملف الشخصي
-            </a>
-            <a href="#" id="back-to-map-btn" class="status-bar-btn" aria-label="العودة إلى الخريطة">
-                <span class="icon">🗺️</span>
-                الخريطة
-            </a>
-            <a href="#" id="logout-btn" class="status-bar-btn" aria-label="الخروج وبدء رحلة جديدة">
-                <span class="icon">🚪</span>
-                خروج
-            </a>
-        </div>
-    </div>
-    <div class="game-container">
-        <div id="landing-screen">
-            <img src="assets/images/logo.webp" alt="شعار الجامعة الإسلامية" class="logo" loading="lazy">
-            <h1>رحلتك نحو المعرفة والتميز تبدأ الآن</h1>
-            <p class="subtitle">تطلق الجامعة الإسلامية بغزة مسابقة تفاعلية فريدة لطلبة الثانوية العامة، استعد لتحدي معلوماتك والفوز بجوائز قيمة.</p>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <span class="icon">🎓</span>
-                    <h3>حوّلها إلى منحة</h3>
-                    <p>حوّل أرباحك لمنحة دراسية حقيقية عند التحاقك بالجامعة.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="icon">💰</span>
-                    <h3>اربح جوائز فورية</h3>
-                    <p>اجمع "نقاط" إلكترونية مع كل إجابة صحيحة تضاف إلى رصيدك.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="icon">🏆</span>
-                    <h3>تحديات ممتعة</h3>
-                    <p>أجب عن أسئلة شيقة في مجالات متنوعة واختر تخصصك.</p>
-                </div>
-            </div>
-            <button id="show-register-btn" class="action-button">
-                <span class="btn-icon">📅</span> لا تفوّت الفرصة - سجّل الآن!
-            </button>
-            <p class="reset-link-container">
-                <a href="#" id="reset-progress-btn">هل تريد بدء رحلة جديدة؟ (سيتم حذف التقدم الحالي)</a>
-            </p>
-        </div>
-
-        <div id="start-screen" class="hidden">
-            <img src="assets/images/logo.webp" alt="شعار الجامعة الإسلامية" class="logo" loading="lazy">
-            <h1>أهلاً بك في رحلتك الافتراضية</h1>
-            <p>استكشف الجامعة الإسلامية، أجب عن التحديات، واربح منحة دراسية حقيقية!</p>
-            <form id="player-form">
-                <div class="form-group">
-                    <label for="name">الاسم الكامل:</label>
-                    <input type="text" id="name" placeholder="مثال: أحمد علي" required minlength="5">
-                </div>
-                <div class="form-group">
-                    <label for="phone">رقم الجوال:</label>
-                    <input type="tel" id="phone" pattern="^05[9|6|4][0-9]{7}$" placeholder="مثال: 059xxxxxxx" required>
-                </div>
-                <div class="form-group">
-                    <label for="tawjihi-year">سنة التوجيهي:</label>
-                    <input type="number" id="tawjihi-year" placeholder="مثال: 2024" required min="2000">
-                </div>
-                <button type="submit" class="action-button" disabled>ابدأ الرحلة!</button>
-            </form>
-        </div>
-
-        <div id="guide-selection-screen" class="game-stage hidden">
-            <div class="scene-content">
-                <h2 class="scene-title">اختر مرشدك في الرحلة</h2>
-                <p>كل مرشد سيقدم لك نصائح من منظور تخصصه الفريد!</p>
-                <div class="guides-container">
-                </div>
-                <button id="confirm-guide-btn" class="action-button" disabled style="margin-top: 30px;">
-                    تأكيد المرشد والبدء
-                </button>
-            </div>
-        </div>
-        
-        <div id="player-profile-scene" class="game-stage hidden">
-            <div class="scene-content" style="text-align: right;">
-                <h2 class="scene-title">الملف الشخصي</h2>
-                <div class="profile-info">
-                    <h3 style="display: flex; align-items: center; gap: 10px; color: var(--primary-dark);">
-                        <span id="profile-emoji" style="font-size: 30px;"></span>
-                        <span id="profile-name"></span>
-                    </h3>
-                    <p>
-                        <span style="font-weight: bold; color: var(--primary-color);">النقاط:</span>
-                        <span id="profile-score"></span>
-                    </p>
-                    <p>
-                        <span style="font-weight: bold; color: var(--primary-color);">سنة التوجيهي:</span>
-                        <span id="profile-tawjihi-year"></span>
-                    </p>
-                </div>
-                <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--primary-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 5px;">
-                    🏅 الشارات والإنجازات
-                </h3>
-                <div id="badges-container" class="badges-profile-container">
-                    <p id="no-badges-msg" style="color: var(--text-light);">
-                        لم تحصل على أي شارات بعد.
-                    </p>
-                </div>
-            </div>
-            <div class="info-footer">
-                <button id="profile-back-btn" class="action-button">
-                    <span class="btn-icon">⬅️</span> العودة
-                </button>
-            </div>
-        </div>
-
-        <div id="game-scene" class="hidden">
-            <div id="stadium-selection-scene" class="game-stage hidden"></div>
-            <div id="stadium-scene" class="game-stage hidden"></div>
-            <div id="memory-game-scene" class="game-stage hidden"></div>
-            <div id="gate-scene" class="game-stage hidden"></div>
-            <div id="map-scene" class="game-stage hidden">
-                <div class="scene-content">
-                    <h2 class="scene-title">خريطة الجامعة</h2>
-                    <p>لقد دخلت الحرم الجامعي! اختر وجهتك التالية لاستكمال رحلتك.</p>
-                    <div class="options-container">
-                        <button class="option-btn" data-destination="library"><span class="map-icon">📚</span> المكتبة المركزية</button>
-                        <button class="option-btn" data-destination="cafeteria"><span class="map-icon">☕</span> الكافتيريا</button>
-                        <button class="option-btn" data-destination="faculties-list"><span class="map-icon">🏢</span> الكليات</button>
-                        <button class="option-btn" data-destination="grants-info"><span class="map-icon">💰</span> المنح والمساعدات</button>
-                        <button class="option-btn" data-destination="hospital"><span class="map-icon">🏥</span> المستشفى الجامعي</button>
-                        <button class="option-btn" data-destination="admission-info"><span class="map-icon">📝</span> القبول والتسجيل</button>
-                        <button class="option-btn" data-destination="studentaffairs-info"><span class="map-icon">🧑‍🎓</span> شؤون الطلبة</button>
-                        <button class="option-btn" data-destination="conference"><span class="map-icon">🏛️</span> قاعة المؤتمرات</button>
-                        <button class="option-btn" data-destination="stadium"><span class="map-icon">🏟️</span> ملعب الجامعة</button>
-                        <button class="option-btn" data-destination="exchange-info"><span class="map-icon">🌍</span> التبادل الأكاديمي</button>
-                        <button class="option-btn" data-destination="certificate" style="grid-column: 1 / -1;"><span class="map-icon">📜</span> الحصول على الشهادة</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div id="faculties-list-scene" class="game-stage hidden">
-                <div class="scene-content">
-                    <div class="info-header">
-                        <h2 class="scene-title">🏢 استكشف كليات الجامعة</h2>
-                        <p>تعرّف على عالم كل كلية! اضغط على أي بطاقة لتصفح موقعها الرسمي، أو ابدأ تحدي المعلومات مباشرة.</p>
-                    </div>
-                    
-                    <div class="info-scene-container" id="faculties-grid-container">
-                    </div>
-
-                    <div class="info-footer">
-                        <button id="proceed-to-faculties-quiz-btn" class="action-button">
-                            أنا جاهز... ابدأ تحدي الكليات!
-                            <span class="btn-icon">🧠</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="college-website-scene" class="game-stage hidden">
-            </div>
-
-            <div id="faculties-scene" class="game-stage hidden"></div>
-            <div id="tf_questions-scene" class="game-stage hidden"></div>
-            <div id="mc_questions-scene" class="game-stage hidden"></div>
-            <div id="exchange-scene" class="game-stage hidden"></div>
-            <div id="exchange_tf_questions-scene" class="game-stage hidden"></div>
-            <div id="exchange_mc_questions-scene" class="game-stage hidden"></div>
-            <div id="library-scene" class="game-stage hidden"></div>
-            
-            <div id="admission-info-scene" class="game-stage hidden">
-                <div class="scene-content">
-                    <div class="info-header">
-                        <h2 class="scene-title">📝 مفتاح التنسيق 2024-2025</h2>
-                        <p>اطلع على معدلات القبول المطلوبة لكليات الجامعة المختلفة قبل بدء التحدي.</p>
-                    </div>
-                    
-                    <div class="info-scene-container" id="admission-info-container">
-                    </div>
-                    
-                    <div class="info-footer">
-                        <button id="start-admission-quiz-btn" class="action-button">
-                            فهمت... ابدأ التحدي الآن!
-                            <span class="btn-icon">💡</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="admission-scene" class="game-stage hidden"></div>
-            <div id="admission_tf_questions-scene" class="game-stage hidden"></div>
-            <div id="admission_mc_questions-scene" class="game-stage hidden"></div>
-            
-            <div id="grants-info-scene" class="game-stage hidden">
-                <div class="scene-content">
-                    <div class="info-header">
-                        <h2 class="scene-title">💰 دليل المنح والمساعدات الطلابية</h2>
-                        <p>المعرفة قوة! قبل أن تبدأ التحدي، اطلع على دليل المنح الشامل الذي تقدمه الجامعة. كل معلومة هنا قد تكون مفتاحك للحصول على دعم كبير.</p>
-                    </div>
-                    
-                    <div class="info-scene-container">
-                        <h3 class="grant-category">🏆 منح التفوق الأكاديمي</h3>
-                        <div class="grant-card">
-                            <h3>🥇 منحة الامتياز (حسب المعدل الفصلي) <span class="grant-percentage">70%</span></h3>
-                            <div class="grant-details"><ul><li>المعدل المطلوب: 95% - 100% فصلياً</li><li>يجب اجتياز 15 ساعة معتمدة على الأقل.</li></ul></div>
-                        </div>
-                        <div class="grant-card">
-                            <h3>🥈 منحة الامتياز (حسب المعدل الفصلي) <span class="grant-percentage">35%</span></h3>
-                            <div class="grant-details"><ul><li>المعدل المطلوب: 90% - 94.9% فصلياً</li><li>يجب اجتياز 15 ساعة معتمدة على الأقل.</li></ul></div>
-                        </div>
-                        <div class="grant-card">
-                            <h3>🎖️ منحة وزارة التربية والتعليم <span class="grant-percentage">70%+</span></h3>
-                            <div class="grant-details"><ul><li>المعدل المطلوب: أعلى معدلين في كل كلية</li><li>للاستمرارية: معدل فصلي 80%</li><li>يتم اختيارهم عبر الوزارة.</li></ul></div>
-                        </div>
-
-                        <h3 class="grant-category">🎓 منح التخصصات الأكاديمية</h3>
-                        <div class="grant-card">
-                            <h3>🕌 المنحة الشرعية <span class="grant-percentage">70%</span></h3>
-                            <div class="grant-details"><ul><li>للتخصصات: الشريعة الإسلامية، أصول الدين (عام)</li><li>معدل الثانوية: 80% فأكثر</li><li>للاستمرارية: معدل فصلي 80%</li></ul></div>
-                        </div>
-                            <div class="grant-card">
-                            <h3>📚 المنحة الشرعية <span class="grant-percentage">35%</span></h3>
-                            <div class="grant-details"><ul><li>للتخصصات: الشريعة الإسلامية، أصول الدين (عام)</li><li>معدل الثانوية: 70% - 79.9%</li><li>للاستمرارية: معدل فصلي 80%</li></ul></div>
-                        </div>
-                        <div class="grant-card">
-                            <h3>🧪 منح كلية العلوم (فيزياء وكيمياء) <span class="grant-percentage">70%</span></h3>
-                            <div class="grant-details"><ul><li>منحتان كاملتان سنوياً لكل تخصص (فيزياء/كيمياء)</li><li>للمتفوقين في الثانوية العامة والمادة العلمية.</li></ul></div>
-                        </div>
-
-                        <h3 class="grant-category">✨ منح المواهب والفئات الخاصة</h3>
-                        <div class="grant-card">
-                            <h3>📖 منحة حفظة القرآن الكريم <span class="grant-percentage">50%</span></h3>
-                            <div class="grant-details"><ul><li>للاستمرارية: معدل فصلي 80%</li><li>يجب النجاح في امتحان التسميع لكامل القرآن.</li></ul></div>
-                        </div>
-                        <div class="grant-card">
-                            <h3>🏃 المنحة الرياضية <span class="grant-percentage">25-35%</span></h3>
-                            <div class="grant-details"><ul><li>للاستمرارية: معدل فصلي 65%</li><li>للطلبة الملتحقين بفرق الجامعة الرياضية.</li></ul></div>
-                        </div>
-                        <div class="grant-card">
-                            <h3>♿ منحة ذوي الاحتياجات الخاصة <span class="grant-percentage">35-70%</span></h3>
-                            <div class="grant-details"><ul><li>للاستمرارية: معدل فصلي 65%</li><li>35% للإعاقة (50-69%)، و 70% للإعاقة (70% فأكثر).</li></ul></div>
-                        </div>
-
-                        <h3 class="grant-category">👨‍👩‍👧‍👦 منح الدعم الأسري والمجتمعي</h3>
-                        <div class="grant-card">
-                            <h3>🧑‍🤝‍🧑 منحة الأسرة (شقيقان) <span class="grant-percentage">15%</span></h3>
-                            <div class="grant-details"><ul><li>للاستمرارية: معدل 70% (75% للطب)</li><li>لكل طالب على حدة.</li></ul></div>
-                        </div>
-                            <div class="grant-card">
-                            <h3>👪 منحة الأسرة (3 أشقاء) <span class="grant-percentage">25%</span></h3>
-                            <div class="grant-details"><ul><li>للاستمرارية: معدل 70% (75% للطب)</li><li>لكل طالب على حدة.</li></ul></div>
-                        </div>
-                            <div class="grant-card">
-                            <h3>👨‍👧‍👦 منحة الأسرة (4 أشقاء فأكثر) <span class="grant-percentage">30%</span></h3>
-                            <div class="grant-details"><ul><li>للاستمرارية: معدل 70% (75% للطب)</li><li>لكل طالب على حدة.</li></ul></div>
-                        </div>
-                            <div class="grant-card">
-                            <h3>❤️ منح الأسرى والشهداء والأيتام <span class="grant-percentage">70%+</span></h3>
-                            <div class="grant-details"><ul><li>للاستمرارية: معدل فصلي 80%</li><li>تتوفر منح مختلفة لهذه الفئات وتتطلب إثباتات رسمية.</li></ul></div>
-                        </div>
-                    </div>
-
-                    <div class="info-footer">
-                        <button id="start-grants-quiz-btn" class="action-button">
-                            فهمت... ابدأ التحدي الآن!
-                            <span class="btn-icon">💡</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <div id="grants-scene" class="game-stage hidden"></div>
-            
-            <div id="exchange-info-scene" class="game-stage hidden">
-                <div class="scene-content">
-                    <div class="info-header">
-                        <h2 class="scene-title">🌍 دليل التبادل الأكاديمي</h2>
-                        <p>تهتم العلاقات الخارجية بتوفير فرص تبادل أكاديمي مميزة. تعرّف على هذه الفرص قبل أن تبدأ التحدي.</p>
-                    </div>
-                    <div class="info-scene-container">
-                        <div class="exchange-card">
-                            <h3>برامج التبادل الرئيسية</h3>
-                            <div class="exchange-details">
-                                <ul>
-                                    <li>تهدف إلى التبادل الثقافي ونقل الخبرات لتحسين القدرات المؤسسية.</li>
-                                    <li>تشمل برامج البكالوريوس، الماجستير، الدكتوراه، وما بعد الدكتوراه.</li>
-                                    <li>تُنفذ بالشراكة مع جامعات في أوروبا، تركيا، وماليزيا.</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <h3 class="exchange-category">أشهر برامج التبادل</h3>
-                        <div class="exchange-card">
-                            <h3>Erasmus Mundus <span class="exchange-project">مشاريع تبادل</span></h3>
-                            <div class="exchange-details">
-                                <ul>
-                                    <li>حصلت الجامعة على تمويل لـ 6 مشاريع.</li>
-                                    <li>بالشراكة مع 70 جامعة محلية وإقليمية ودولية.</li>
-                                    <li>تم تنفيذها خلال الفترة من 2012 وحتى 2017.</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="exchange-card">
-                            <h3>Erasmus+ <span class="exchange-project">حراك علمي</span></h3>
-                            <div class="exchange-details">
-                                <ul>
-                                    <li>شاركت الجامعة بأكثر من 12 مشروعاً.</li>
-                                    <li>مشاريع التبادل الأكاديمي خلال الفترة من 2016-2019.</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="exchange-card">
-                            <h3>Mevlana <span class="exchange-project">برنامج تركي</span></h3>
-                            <div class="exchange-details">
-                                <ul>
-                                    <li>برنامج التبادل الثقافي التركي.</li>
-                                    <li>تمت المشاركة مع 6 جامعات تركية.</li>
-                                    <li>تم تنفيذه خلال الفترة من 2013-2021.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="info-footer">
-                        <button id="start-exchange-quiz-btn" class="action-button">
-                            فهمت... ابدأ التحدي الآن!
-                            <span class="btn-icon">💡</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="studentaffairs-info-scene" class="game-stage hidden">
-                <div class="scene-content">
-                       <div class="info-header">
-                        <img src="assets/images/logo-1.png" alt="شعار عمادة شؤون الطلبة" style="max-width: 120px; margin: 0 auto 15px; border-radius: 50%;">
-                        <h2 class="scene-title" style="margin-bottom: 10px;">🧑‍🎓 عمادة شؤون الطلبة</h2>
-                        <p>رفيقك الدائم خلال رحلتك الجامعية نحو التميز والإبداع.</p>
-                    </div>
-                    <div id="studentaffairs-info-container">
-                        </div>
-                    <div class="info-footer">
-                        <button id="start-studentaffairs-quiz-btn" class="action-button">
-                            فهمت... ابدأ تحدي شؤون الطلبة!
-                            <span class="btn-icon">✅</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="studentaffairs-scene" class="game-stage hidden"></div>
-            <div id="studentaffairs_tf_questions-scene" class="game-stage hidden"></div>
-             <div id="stadium-scene" class="game-stage hidden">
-                </div>
-            <div id="studentaffairs_mc_questions-scene" class="game-stage hidden"></div>
-            <div id="memory-game-scene" class="game-stage hidden">
-                </div>
-    </div>
-
-
-    <div id="stadium-scene" class="game-stage hidden">
-        </div>
-   
-        </div>    
-            <div id="end-scene" class="game-stage hidden">
-                <div class="scene-content">
-                    <h2 class="scene-title">🎉 تهانينا! 🎉</h2>
-                    <img src="https://placehold.co/400x250/28a745/FFFFFF?text=شهادة+شكر" alt="شهادة مشاركة" class="scene-image" style="max-width: 100%; border-radius: 10px; margin-bottom: 20px;" loading="lazy">
-                    <p id="final-message" style="font-size: 18px; line-height: 1.6;"></p>
-                    <button id="share-btn" class="action-button">مشاركة على وسائل التواصل</button>
-                    <button id="new-player-btn" class="action-button" style="margin-top: 10px; background-color: var(--text-light);">بدء رحلة جديدة (لاعب جديد)</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="feedback-modal" class="modal hidden">
-        <div class="modal-content">
-            <h2 id="modal-title"></h2>
-            <div id="modal-text"></div>
-            <button id="modal-close-btn" class="action-button">متابعة</button>
-        </div>
-    </div>
-    
-    <div id="badge-modal" class="modal hidden">
-        <div class="modal-content badge-popup">
-            <span class="badge-icon"></span>
-            <h3>🎉 شارة جديدة! 🎉</h3>
-            <p id="badge-name"></p>
-            <button id="badge-close-btn" class="action-button" style="width: auto; margin-top: 20px;">حسناً</button>
-        </div>
-    </div>
-
-    <div id="logout-confirm-modal" class="modal hidden">
-        <div class="modal-content">
-            <h2>تأكيد الخروج</h2>
-            <p>هل أنت متأكد أنك تريد بدء رحلة جديدة؟ سيتم حذف كل تقدمك الحالي.</p>
-            <div class="modal-actions">
-                <button id="confirm-logout-btn" class="action-button danger">نعم، اخرج</button>
-                <button id="cancel-logout-btn" class="action-button secondary">لا، ابقَ هنا</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="ad-modal" class="modal hidden">
-        <div class="ad-modal-content">
-            <span class="close-ad-btn">&times;</span>
-            <img src="assets/images/eng.webp" alt="إعلان كلية الهندسة" loading="lazy">
-                        <div class="ad-modal-actions">
-                <button id="ad-details-btn" class="action-button">التفاصيل  H</button>
-                <button id="ad-skip-btn" class="action-button secondary">تخطي الإعلان</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="video-overlay" class="modal hidden">
-        <video id="welcome-video" width="90%" style="max-width: 800px; border-radius: 15px;" preload="auto">
-            <source src="assets/videos/hares 1.mp4" type="video/mp4">
-            متصفحك لا يدعم عرض الفيديو.
-        </video>
-        <button id="skip-video-btn" class="action-button">تخطي الفيديو</button>
-    </div>
-    
-  <script src="assets/js/script.js"></script>
-</body>
-</html>

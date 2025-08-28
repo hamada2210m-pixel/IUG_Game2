@@ -50,22 +50,87 @@
             font-size: 32px;
             font-weight: 700;
         }
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            animation: fadeIn-up 0.6s ease-out forwards;
+        }
+        .nav-item {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 30px 20px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+        .nav-item .icon-wrapper {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, var(--primary-color), #004d28);
+            font-size: 36px;
+            color: #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 102, 51, 0.3);
+        }
+        .nav-item .nav-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        .nav-item:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.2);
+        }
+        .nav-item:hover .icon-wrapper {
+            transform: scale(1.15) rotate(10deg);
+        }
+        
+        /* Content Sections */
         .content-section {
-            display: block; /* Show all sections by default in this layout */
+            display: none;
             animation: fadeIn 0.7s ease-out;
             background: #ffffff;
             padding: 35px;
             border-radius: 16px;
-            margin-top: 25px;
+            margin-top: 15px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .back-btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+        .back-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
         }
         .content-section h2 {
             font-size: 32px;
             color: var(--primary-dark);
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid var(--primary-color);
-            display: inline-block;
         }
         .content-section h3 {
             font-size: 24px;
@@ -73,71 +138,33 @@
             margin-top: 30px;
             margin-bottom: 20px;
         }
-        p, li {
+        .content-section ul {
+            list-style: none;
+            padding-right: 0;
+        }
+        .content-section ul li {
+            position: relative;
+            padding-right: 35px;
+            margin-bottom: 15px;
             font-size: 18px;
             line-height: 1.9;
-            color: #374151;
+        }
+        .content-section ul li::before {
+            content: '✔';
+            color: var(--primary-color);
+            background: var(--light-bg);
+            border: 1px solid var(--primary-color);
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            text-align: center;
+            font-size: 14px;
+            line-height: 24px;
+            position: absolute;
+            right: 0;
+            top: 8px;
         }
         
-        /* NEW: Stats Counter Section */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 25px;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .stat-card {
-            background: var(--light-bg);
-            padding: 25px;
-            border-radius: 15px;
-            border-bottom: 4px solid var(--primary-color);
-        }
-        .stat-card .icon {
-            font-size: 48px;
-            color: var(--primary-dark);
-        }
-        .stat-card .stat-number {
-            font-size: 42px;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin: 10px 0;
-        }
-        .stat-card .stat-label {
-            font-size: 16px;
-            color: var(--text-light);
-        }
-
-        /* NEW: Services Section */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-        .service-card {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: #f9fafb;
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid #eef2f6;
-            transition: all 0.3s ease;
-        }
-        .service-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-            border-color: var(--primary-color);
-        }
-        .service-card .icon {
-            font-size: 36px;
-            color: var(--primary-color);
-        }
-        .service-card span {
-            font-weight: 600;
-        }
-
-        /* NEW: Photo Gallery & Lightbox */
         .photo-gallery {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -150,12 +177,12 @@
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease;
         }
         .photo-gallery img:hover {
             transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
+
         #lightbox {
             position: fixed;
             z-index: 10000;
@@ -184,6 +211,15 @@
             color: white;
             cursor: pointer;
         }
+
+        @keyframes fadeIn-up {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -195,61 +231,74 @@
             </header>
 
             <main>
-                <section id="stats-section" class="content-section" style="background: transparent; box-shadow: none; padding: 0;">
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <span class="icon">🛏️</span>
-                            <div class="stat-number" data-goal="180">0</div>
-                            <div class="stat-label">سريراً مجهزاً</div>
-                        </div>
-                        <div class="stat-card">
-                            <span class="icon">📐</span>
-                            <div class="stat-number" data-goal="34800">0</div>
-                            <div class="stat-label">متر مربع</div>
-                        </div>
-                        <div class="stat-card">
-                            <span class="icon">💰</span>
-                            <div class="stat-number" data-goal="50">0</div>
-                            <div class="stat-label">مليون دولار تكلفة التجهيز</div>
-                        </div>
+                <div class="nav-grid">
+                    <div class="nav-item" data-target="about-section">
+                        <div class="icon-wrapper">🏥</div>
+                        <span class="nav-text">عن المستشفى</span>
                     </div>
-                </section>
+                    <div class="nav-item" data-target="roles-section">
+                        <div class="icon-wrapper">🎗️</div>
+                        <span class="nav-text">دور المستشفى</span>
+                    </div>
+                    <div class="nav-item" data-target="services-section">
+                        <div class="icon-wrapper">⚕️</div>
+                        <span class="nav-text">الأقسام والخدمات</span>
+                    </div>
+                    <div class="nav-item" data-target="gallery-section">
+                        <div class="icon-wrapper">🖼️</div>
+                        <span class="nav-text">ألبوم الصور</span>
+                    </div>
+                </div>
 
                 <section id="about-section" class="content-section">
-                     <h2>عن المستشفى</h2>
+                    <div class="content-header">
+                         <h2>عن المستشفى</h2>
+                         <button class="back-btn">⬅ العودة</button>
+                    </div>
                     <p>مستشفى الصداقة التركي الفلسطيني هو مستشفى جامعي تعليمي يتبع لكلية الطب في الجامعة الإسلامية بغزة. تم إنشاؤه ليكون صرحاً طبياً وتعليمياً رائداً في فلسطين، حيث يقدم خدمات صحية عالية الجودة للمجتمع ويوفر بيئة تدريبية متميزة لطلبة الكليات الصحية.</p>
-                    <h3>الرؤية والرسالة</h3>
-                    <p>الريادة في تقديم الخدمات الصحية والتعليم الطبي والبحث العلمي على المستوى الوطني والإقليمي، وتوفير بيئة تعليمية وتدريبية مبتكرة للكوادر الصحية لخدمة المجتمع الفلسطيني.</p>
+                    <h3>الرؤية</h3>
+                    <p>الريادة في تقديم الخدمات الصحية والتعليم الطبي والبحث العلمي على المستوى الوطني والإقليمي.</p>
+                    <h3>الرسالة</h3>
+                    <p>تقديم رعاية صحية آمنة ومتميزة، وتوفير بيئة تعليمية وتدريبية مبتكرة للكوادر الصحية، وتشجيع البحث العلمي التطبيقي لخدمة المجتمع الفلسطيني.</p>
                 </section>
 
                 <section id="roles-section" class="content-section">
-                    <h2>دور المستشفى</h2>
-                    <p>لعب المستشفى أدواراً حيوية منذ استلام الجامعة لإدارته رسمياً في مارس 2020، ومن أبرزها:</p>
-                    <div class="services-grid">
-                        <div class="service-card"><span class="icon">🦠</span><span>مركز للعزل خلال جائحة كورونا.</span></div>
-                        <div class="service-card"><span class="icon">🎗️</span><span>مستشفى تخصصي لمرضى السرطان والأورام.</span></div>
-                        <div class="service-card"><span class="icon">🎓</span><span>مستشفى تعليمي لتدريب طلبة كلية الطب.</span></div>
-                        <div class="service-card"><span class="icon">🏛️</span><span>يحتوي قاعة لعقد المؤتمرات العلمية.</span></div>
+                    <div class="content-header">
+                         <h2>دور المستشفى</h2>
+                         <button class="back-btn">⬅ العودة</button>
                     </div>
+                    <p>لعب المستشفى أدواراً حيوية منذ استلام الجامعة لإدارته رسمياً في مارس 2020، ومن أبرزها:</p>
+                    <ul>
+                        <li>مركز للعزل خلال جائحة كورونا.</li>
+                        <li>مستشفى تخصصي لمرضى السرطان والأورام.</li>
+                        <li>مستشفى تعليمي لتدريب طلبة كلية الطب.</li>
+                        <li>يحتوي قاعة لعقد المؤتمرات العلمية.</li>
+                    </ul>
                 </section>
                 
                 <section id="services-section" class="content-section">
-                     <h2>الأقسام والخدمات الرئيسية</h2>
-                    <div class="services-grid">
-                        <div class="service-card"><span class="icon">🔪</span><span>قسم الجراحة العامة</span></div>
-                        <div class="service-card"><span class="icon">🩺</span><span>قسم الباطنة</span></div>
-                        <div class="service-card"><span class="icon">👶</span><span>قسم الأطفال</span></div>
-                        <div class="service-card"><span class="icon">🤰</span><span>قسم النساء والتوليد</span></div>
-                        <div class="service-card"><span class="icon">🚑</span><span>قسم الطوارئ</span></div>
-                        <div class="service-card"><span class="icon">❤️</span><span>قسم العناية المركزة</span></div>
-                        <div class="service-card"><span class="icon">🦴</span><span>قسم الأشعة التشخيصية</span></div>
-                        <div class="service-card"><span class="icon">🩸</span><span>المختبرات وبنك الدم</span></div>
-                        <div class="service-card"><span class="icon">💊</span><span>قسم الصيدلة</span></div>
+                     <div class="content-header">
+                         <h2>الأقسام والخدمات الرئيسية</h2>
+                         <button class="back-btn">⬅ العودة</button>
                     </div>
+                    <ul>
+                        <li>قسم الجراحة العامة</li>
+                        <li>قسم الباطنة</li>
+                        <li>قسم الأطفال</li>
+                        <li>قسم النساء والتوليد</li>
+                        <li>قسم الطوارئ</li>
+                        <li>قسم العناية المركزة</li>
+                        <li>قسم الأشعة التشخيصية</li>
+                        <li>المختبرات وبنك الدم</li>
+                        <li>قسم الصيدلة</li>
+                    </ul>
                 </section>
 
                 <section id="gallery-section" class="content-section">
-                     <h2>ألبوم الصور</h2>
+                    <div class="content-header">
+                         <h2>ألبوم الصور</h2>
+                         <button class="back-btn">⬅ العودة</button>
+                    </div>
                     <div class="photo-gallery">
                         <img src="https://iugaza.edu.ps/wp-content/uploads/2021/03/Turkish-Hospital-1.jpg" alt="صورة للمستشفى من الخارج">
                         <img src="https://iugaza.edu.ps/wp-content/uploads/2021/03/Turkish-Hospital-5.jpg" alt="أحد ممرات المستشفى">
@@ -274,38 +323,48 @@
         <img id="lightbox-image" src="">
     </div>
 
+    <audio id="transitionSound" src="assets/sounds/turning.mp3" preload="auto"></audio>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Animated Counters Logic
-            const counters = document.querySelectorAll('.stat-number');
-            const speed = 200; 
+            const navGrid = document.querySelector('.nav-grid');
+            const navItems = document.querySelectorAll('.nav-item');
+            const contentSections = document.querySelectorAll('.content-section');
+            const backButtons = document.querySelectorAll('.back-btn');
+            const transitionSound = document.getElementById('transitionSound');
 
-            const observer = new IntersectionObserver(entries => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const counter = entry.target;
-                        const updateCount = () => {
-                            const target = +counter.getAttribute('data-goal');
-                            const count = +counter.innerText;
-                            const inc = target / speed;
+            function playSound(audioElement) {
+                if (audioElement) {
+                    audioElement.currentTime = 0;
+                    audioElement.play().catch(e => console.log("Sound play error:", e));
+                }
+            }
 
-                            if (count < target) {
-                                counter.innerText = Math.ceil(count + inc);
-                                setTimeout(updateCount, 15);
-                            } else {
-                                counter.innerText = target;
-                            }
-                        };
-                        updateCount();
-                        observer.unobserve(counter); // Animate only once
-                    }
+            function showSection(targetId) {
+                playSound(transitionSound);
+                navGrid.style.display = 'none';
+                contentSections.forEach(sec => sec.style.display = 'none');
+                
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) {
+                    targetSection.style.display = 'block';
+                }
+            }
+
+            function showNav() {
+                playSound(transitionSound);
+                contentSections.forEach(sec => sec.style.display = 'none');
+                navGrid.style.display = 'grid';
+            }
+
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    showSection(item.getAttribute('data-target'));
                 });
-            }, {
-                threshold: 0.5
             });
 
-            counters.forEach(counter => {
-                observer.observe(counter);
+            backButtons.forEach(button => {
+                button.addEventListener('click', showNav);
             });
 
             // Lightbox Gallery Logic

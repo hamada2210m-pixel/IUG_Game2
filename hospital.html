@@ -35,7 +35,7 @@
             gap: 25px;
             border-bottom: 1px solid rgba(0, 0, 0, 0.08);
             padding-bottom: 25px;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
         }
         .faculty-header img {
             width: 100px;
@@ -50,11 +50,41 @@
             font-size: 32px;
             font-weight: 700;
         }
+
+        /* Stats Counter Section */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        .stat-card {
+            background: transparent;
+            padding: 15px;
+        }
+        .stat-card .icon {
+            font-size: 42px;
+            color: var(--primary-dark);
+        }
+        .stat-card .stat-number {
+            font-size: 40px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 5px 0;
+        }
+        .stat-card .stat-label {
+            font-size: 16px;
+            color: var(--text-light);
+        }
+
+        /* Navigation Menu */
         .nav-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 25px;
-            animation: fadeIn-up 0.6s ease-out forwards;
         }
         .nav-item {
             background: rgba(255, 255, 255, 0.7);
@@ -94,7 +124,7 @@
         .nav-item:hover .icon-wrapper {
             transform: scale(1.15) rotate(10deg);
         }
-        
+
         /* Content Sections */
         .content-section {
             display: none;
@@ -141,30 +171,22 @@
         .content-section ul {
             list-style: none;
             padding-right: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
         }
-        .content-section ul li {
+        .content-section li {
             position: relative;
-            padding-right: 35px;
-            margin-bottom: 15px;
+            padding: 10px 35px 10px 10px;
+            margin-bottom: 10px;
             font-size: 18px;
-            line-height: 1.9;
-        }
-        .content-section ul li::before {
-            content: '✔';
-            color: var(--primary-color);
-            background: var(--light-bg);
-            border: 1px solid var(--primary-color);
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            text-align: center;
-            font-size: 14px;
-            line-height: 24px;
-            position: absolute;
-            right: 0;
-            top: 8px;
+            line-height: 1.8;
+            background: #f8fcf9;
+            border-radius: 8px;
+            border-right: 3px solid var(--primary-color);
         }
         
+        /* Photo Gallery & Lightbox */
         .photo-gallery {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -182,7 +204,6 @@
         .photo-gallery img:hover {
             transform: scale(1.05);
         }
-
         #lightbox {
             position: fixed;
             z-index: 10000;
@@ -211,11 +232,6 @@
             color: white;
             cursor: pointer;
         }
-
-        @keyframes fadeIn-up {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -231,22 +247,44 @@
             </header>
 
             <main>
-                <div class="nav-grid">
-                    <div class="nav-item" data-target="about-section">
-                        <div class="icon-wrapper">🏥</div>
-                        <span class="nav-text">عن المستشفى</span>
-                    </div>
-                    <div class="nav-item" data-target="roles-section">
-                        <div class="icon-wrapper">🎗️</div>
-                        <span class="nav-text">دور المستشفى</span>
-                    </div>
-                    <div class="nav-item" data-target="services-section">
-                        <div class="icon-wrapper">⚕️</div>
-                        <span class="nav-text">الأقسام والخدمات</span>
-                    </div>
-                    <div class="nav-item" data-target="gallery-section">
-                        <div class="icon-wrapper">🖼️</div>
-                        <span class="nav-text">ألبوم الصور</span>
+                <div id="main-menu">
+                    <section id="stats-section">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <span class="icon">🛏️</span>
+                                <div class="stat-number" data-goal="180">0</div>
+                                <div class="stat-label">سريراً مجهزاً</div>
+                            </div>
+                            <div class="stat-card">
+                                <span class="icon">📐</span>
+                                <div class="stat-number" data-goal="34800">0</div>
+                                <div class="stat-label">متر مربع</div>
+                            </div>
+                            <div class="stat-card">
+                                <span class="icon">💰</span>
+                                <div class="stat-number" data-goal="50">0</div>
+                                <div class="stat-label">مليون دولار تكلفة التجهيز</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="nav-grid">
+                        <div class="nav-item" data-target="about-section">
+                            <div class="icon-wrapper">🏥</div>
+                            <span class="nav-text">عن المستشفى</span>
+                        </div>
+                        <div class="nav-item" data-target="roles-section">
+                            <div class="icon-wrapper">🎗️</div>
+                            <span class="nav-text">دور المستشفى</span>
+                        </div>
+                        <div class="nav-item" data-target="services-section">
+                            <div class="icon-wrapper">⚕️</div>
+                            <span class="nav-text">الأقسام والخدمات</span>
+                        </div>
+                        <div class="nav-item" data-target="gallery-section">
+                            <div class="icon-wrapper">🖼️</div>
+                            <span class="nav-text">ألبوم الصور</span>
+                        </div>
                     </div>
                 </div>
 
@@ -263,7 +301,7 @@
                 </section>
 
                 <section id="roles-section" class="content-section">
-                    <div class="content-header">
+                     <div class="content-header">
                          <h2>دور المستشفى</h2>
                          <button class="back-btn">⬅ العودة</button>
                     </div>
@@ -327,7 +365,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const navGrid = document.querySelector('.nav-grid');
+            const mainMenu = document.getElementById('main-menu');
             const navItems = document.querySelectorAll('.nav-item');
             const contentSections = document.querySelectorAll('.content-section');
             const backButtons = document.querySelectorAll('.back-btn');
@@ -342,8 +380,7 @@
 
             function showSection(targetId) {
                 playSound(transitionSound);
-                navGrid.style.display = 'none';
-                contentSections.forEach(sec => sec.style.display = 'none');
+                mainMenu.style.display = 'none';
                 
                 const targetSection = document.getElementById(targetId);
                 if (targetSection) {
@@ -351,23 +388,47 @@
                 }
             }
 
-            function showNav() {
+            function showMainMenu() {
                 playSound(transitionSound);
                 contentSections.forEach(sec => sec.style.display = 'none');
-                navGrid.style.display = 'grid';
+                mainMenu.style.display = 'block';
             }
 
             navItems.forEach(item => {
                 item.addEventListener('click', () => {
-                    showSection(item.getAttribute('data-target'));
+                    const targetId = item.getAttribute('data-target');
+                    showSection(targetId);
                 });
             });
 
             backButtons.forEach(button => {
-                button.addEventListener('click', showNav);
+                button.addEventListener('click', showMainMenu);
             });
 
-            // Lightbox Gallery Logic
+            const counters = document.querySelectorAll('.stat-number');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counter = entry.target;
+                        const updateCount = () => {
+                            const target = +counter.getAttribute('data-goal');
+                            const count = +counter.innerText;
+                            const inc = Math.ceil(target / 100);
+
+                            if (count < target) {
+                                counter.innerText = Math.min(count + inc, target);
+                                setTimeout(updateCount, 15);
+                            } else {
+                                counter.innerText = target;
+                            }
+                        };
+                        updateCount();
+                        observer.unobserve(counter);
+                    }
+                });
+            }, { threshold: 0.5 });
+            counters.forEach(counter => observer.observe(counter));
+
             const lightbox = document.getElementById('lightbox');
             const lightboxImage = document.getElementById('lightbox-image');
             const galleryImages = document.querySelectorAll('.photo-gallery img');

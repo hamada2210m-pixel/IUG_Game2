@@ -158,35 +158,64 @@
             background-color: var(--primary-dark);
             transform: translateY(-3px);
         }
+
+        /* --- NEW: Special Heading Styles --- */
+        .content-section h2, .content-section h3 {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
         .content-section h2 {
             font-size: 32px;
             color: var(--primary-dark);
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--primary-color);
+            display: inline-flex;
         }
         .content-section h3 {
             font-size: 24px;
             color: var(--primary-color);
-            margin-top: 30px;
+            margin-top: 40px;
             margin-bottom: 20px;
         }
-        .content-section ul {
-            list-style: none;
-            padding-right: 0;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
+        .heading-icon {
+            font-size: 1em; /* Make icon size relative to heading size */
         }
-        .content-section li {
-            position: relative;
-            padding: 10px 35px 10px 10px;
-            margin-bottom: 10px;
-            font-size: 18px;
-            line-height: 1.8;
-            background: #f8fcf9;
-            border-radius: 8px;
-            border-right: 3px solid var(--primary-color);
-        }
+        /* --- End of Special Heading Styles --- */
         
-        /* Photo Gallery & Lightbox */
+        .item-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .item-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #f9fafb;
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid #eef2f6;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            border-color: var(--primary-color);
+        }
+        .item-card .icon {
+            font-size: 36px;
+            color: var(--primary-color);
+            flex-shrink: 0;
+        }
+        .item-card span {
+            font-weight: 600;
+            font-size: 18px;
+            color: #374151;
+        }
+
         .photo-gallery {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -290,58 +319,58 @@
 
                 <section id="about-section" class="content-section">
                     <div class="content-header">
-                         <h2>عن المستشفى</h2>
+                         <h2><span class="heading-icon">🏥</span> عن المستشفى</h2>
                          <button class="back-btn">⬅ العودة</button>
                     </div>
                     <p>مستشفى الصداقة التركي الفلسطيني هو مستشفى جامعي تعليمي يتبع لكلية الطب في الجامعة الإسلامية بغزة. تم إنشاؤه ليكون صرحاً طبياً وتعليمياً رائداً في فلسطين، حيث يقدم خدمات صحية عالية الجودة للمجتمع ويوفر بيئة تدريبية متميزة لطلبة الكليات الصحية.</p>
-                    <h3>الرؤية</h3>
+                    <h3><span class="heading-icon">🎯</span> الرؤية</h3>
                     <p>الريادة في تقديم الخدمات الصحية والتعليم الطبي والبحث العلمي على المستوى الوطني والإقليمي.</p>
-                    <h3>الرسالة</h3>
+                    <h3><span class="heading-icon">📜</span> الرسالة</h3>
                     <p>تقديم رعاية صحية آمنة ومتميزة، وتوفير بيئة تعليمية وتدريبية مبتكرة للكوادر الصحية، وتشجيع البحث العلمي التطبيقي لخدمة المجتمع الفلسطيني.</p>
                 </section>
 
                 <section id="roles-section" class="content-section">
                      <div class="content-header">
-                         <h2>دور المستشفى</h2>
+                         <h2><span class="heading-icon">🎗️</span> دور المستشفى</h2>
                          <button class="back-btn">⬅ العودة</button>
                     </div>
                     <p>لعب المستشفى أدواراً حيوية منذ استلام الجامعة لإدارته رسمياً في مارس 2020، ومن أبرزها:</p>
-                    <ul>
-                        <li>مركز للعزل خلال جائحة كورونا.</li>
-                        <li>مستشفى تخصصي لمرضى السرطان والأورام.</li>
-                        <li>مستشفى تعليمي لتدريب طلبة كلية الطب.</li>
-                        <li>يحتوي قاعة لعقد المؤتمرات العلمية.</li>
-                    </ul>
+                    <div class="item-card-grid">
+                        <div class="item-card"><span class="icon">🦠</span><span>مركز للعزل خلال جائحة كورونا.</span></div>
+                        <div class="item-card"><span class="icon">🎗️</span><span>مستشفى تخصصي لمرضى السرطان والأورام.</span></div>
+                        <div class="item-card"><span class="icon">🎓</span><span>مستشفى تعليمي لتدريب طلبة كلية الطب.</span></div>
+                        <div class="item-card"><span class="icon">🏛️</span><span>يحتوي قاعة لعقد المؤتمرات العلمية.</span></div>
+                    </div>
                 </section>
                 
                 <section id="services-section" class="content-section">
                      <div class="content-header">
-                         <h2>الأقسام والخدمات الرئيسية</h2>
+                         <h2><span class="heading-icon">⚕️</span> الأقسام والخدمات الرئيسية</h2>
                          <button class="back-btn">⬅ العودة</button>
                     </div>
-                    <ul>
-                        <li>قسم الجراحة العامة</li>
-                        <li>قسم الباطنة</li>
-                        <li>قسم الأطفال</li>
-                        <li>قسم النساء والتوليد</li>
-                        <li>قسم الطوارئ</li>
-                        <li>قسم العناية المركزة</li>
-                        <li>قسم الأشعة التشخيصية</li>
-                        <li>المختبرات وبنك الدم</li>
-                        <li>قسم الصيدلة</li>
-                    </ul>
+                     <div class="item-card-grid">
+                        <div class="item-card"><span class="icon">🔪</span><span>قسم الجراحة العامة</span></div>
+                        <div class="item-card"><span class="icon">🩺</span><span>قسم الباطنة</span></div>
+                        <div class="item-card"><span class="icon">👶</span><span>قسم الأطفال</span></div>
+                        <div class="item-card"><span class="icon">🤰</span><span>قسم النساء والتوليد</span></div>
+                        <div class="item-card"><span class="icon">🚑</span><span>قسم الطوارئ</span></div>
+                        <div class="item-card"><span class="icon">❤️</span><span>قسم العناية المركزة</span></div>
+                        <div class="item-card"><span class="icon">🦴</span><span>قسم الأشعة التشخيصية</span></div>
+                        <div class="item-card"><span class="icon">🩸</span><span>المختبرات وبنك الدم</span></div>
+                        <div class="item-card"><span class="icon">💊</span><span>قسم الصيدلة</span></div>
+                    </div>
                 </section>
 
                 <section id="gallery-section" class="content-section">
                     <div class="content-header">
-                         <h2>ألبوم الصور</h2>
+                         <h2><span class="heading-icon">🖼️</span> ألبوم الصور</h2>
                          <button class="back-btn">⬅ العودة</button>
                     </div>
                     <div class="photo-gallery">
                         <img src="assets/images/ho1.webp" alt="صورة للمستشفى من الخارج">
-                        <img src="assets/images/Ferst.webp" alt="أحد ممرات المستشفى">
-                        <img src="assets/images/Ferst.webp" alt="غرفة عمليات مجهزة">
-                        <img src="assets/images/Ferst.webp" alt="أجهزة طبية حديثة">
+                        <img src="assets/images/ho2.webp" alt="أحد ممرات المستشفى">
+                        <img src="assets/images/ho3.webp" alt="صورة للمستشفى من الخارج">
+                        <img src="assets/images/ho4.webp" alt="أجهزة طبية حديثة">
                         <img src="assets/images/Ferst.webp" alt="قاعة انتظار في المستشفى">
                         <img src="assets/images/Ferst.webp" alt="مكتب استقبال">
                     </div>
@@ -364,6 +393,7 @@
     <audio id="transitionSound" src="assets/sounds/turning.mp3" preload="auto"></audio>
 
     <script>
+        // JavaScript remains the same as the last working version
         document.addEventListener('DOMContentLoaded', function() {
             const mainMenu = document.getElementById('main-menu');
             const navItems = document.querySelectorAll('.nav-item');
@@ -380,7 +410,8 @@
 
             function showSection(targetId) {
                 playSound(transitionSound);
-                mainMenu.style.display = 'none';
+                if (mainMenu) mainMenu.style.display = 'none';
+                contentSections.forEach(sec => sec.style.display = 'none');
                 
                 const targetSection = document.getElementById(targetId);
                 if (targetSection) {
@@ -391,7 +422,7 @@
             function showMainMenu() {
                 playSound(transitionSound);
                 contentSections.forEach(sec => sec.style.display = 'none');
-                mainMenu.style.display = 'block';
+                if (mainMenu) mainMenu.style.display = 'block';
             }
 
             navItems.forEach(item => {

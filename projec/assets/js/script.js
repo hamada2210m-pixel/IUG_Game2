@@ -227,7 +227,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
             answeredQuestions: new Set(), selectedGuide: null,
             powerUps: {},
             badges: [],
-            stageScores: {}, // تمت الإضافة هنا
+            stageScores: {},
             currentQuestionAttempts: 0
        };
         let questionTimer = null;
@@ -342,7 +342,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
                     gameState.answeredQuestions = new Set(savedState.answeredQuestions);
                     if (!gameState.powerUps) gameState.powerUps = {};
                     if (!gameState.badges) gameState.badges = [];
-                    if (!gameState.stageScores) gameState.stageScores = {}; // تمت الإضافة هنا
+                    if (!gameState.stageScores) gameState.stageScores = {};
                     return true;
                 }
                 return false;
@@ -610,7 +610,6 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
                 'exchange-info': renderExchangeInfoScene,
                 'studentaffairs-info': renderStudentAffairsInfoScene,
                 'player-profile': renderPlayerProfile,
-                'stadium': renderStadiumGame,
             };
 
             if (sceneMappings[sceneId]) {
@@ -739,17 +738,18 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
                 });
             });
 
-document.getElementById('start-studentaffairs-quiz-btn').onclick = () => {
-    const stageId = 'studentaffairs';
-    const subScenes = Object.values(gameData[stageId].nextScene);
-    if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
-        const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
-        const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
-        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
-    } else {
-        renderScene(stageId);
-    }
-};        }
+            document.getElementById('start-studentaffairs-quiz-btn').onclick = () => {
+                const stageId = 'studentaffairs';
+                const subScenes = Object.values(gameData[stageId].nextScene);
+                if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
+                    const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
+                    const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
+                    showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
+                } else {
+                    renderScene(stageId);
+                }
+            };        
+        }
 
         function renderAdmissionInfoScene() {
             document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
@@ -771,50 +771,53 @@ document.getElementById('start-studentaffairs-quiz-btn').onclick = () => {
                 card.innerHTML = `<h3>${facultyData.faculty}</h3>${specializationsHTML}`;
                 container.appendChild(card);
             });
-document.getElementById('start-admission-quiz-btn').onclick = () => {
-    const stageId = 'admission';
-    const subScenes = Object.values(gameData[stageId].nextScene);
-    if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
-        const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
-        const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
-        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
-    } else {
-        renderScene(stageId);
-    }
-};        }
+            document.getElementById('start-admission-quiz-btn').onclick = () => {
+                const stageId = 'admission';
+                const subScenes = Object.values(gameData[stageId].nextScene);
+                if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
+                    const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
+                    const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
+                    showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
+                } else {
+                    renderScene(stageId);
+                }
+            };        
+        }
 
         function renderGrantsInfoScene() {
             document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
             document.getElementById('grants-info-scene').classList.remove('hidden');
             gameState.currentScene = 'grants-info';
             saveGameState();
-document.getElementById('start-grants-quiz-btn').onclick = () => {
-    const stageId = 'grants';
-    if (gameState.stageScores[stageId] !== undefined) {
-        const score = gameState.stageScores[stageId];
-        const total = gameData[stageId].length;
-        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك في هذه المرحلة: ${score} / ${total}</strong>`, null);
-    } else {
-        renderScene(stageId);
-    }
-};        }
+            document.getElementById('start-grants-quiz-btn').onclick = () => {
+                const stageId = 'grants';
+                if (gameState.stageScores[stageId] !== undefined) {
+                    const score = gameState.stageScores[stageId];
+                    const total = gameData[stageId].length;
+                    showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك في هذه المرحلة: ${score} / ${total}</strong>`, null);
+                } else {
+                    renderScene(stageId);
+                }
+            };        
+        }
         
         function renderExchangeInfoScene() {
             document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
             document.getElementById('exchange-info-scene').classList.remove('hidden');
             gameState.currentScene = 'exchange-info';
             saveGameState();
-document.getElementById('start-exchange-quiz-btn').onclick = () => {
-    const stageId = 'exchange';
-    const subScenes = Object.values(gameData[stageId].nextScene);
-    if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
-        const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
-        const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
-        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
-    } else {
-        renderScene(stageId);
-    }
-};        }
+            document.getElementById('start-exchange-quiz-btn').onclick = () => {
+                const stageId = 'exchange';
+                const subScenes = Object.values(gameData[stageId].nextScene);
+                if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
+                    const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
+                    const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
+                    showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
+                } else {
+                    renderScene(stageId);
+                }
+            };        
+        }
         
         function handleAnswer(event) {
             const targetButton = event.target.closest('.option-btn');
@@ -835,7 +838,6 @@ document.getElementById('start-exchange-quiz-btn').onclick = () => {
 
             if (sceneData.nextScene && sceneData.nextScene[selectedAnswer]) {
                 const nextSceneId = sceneData.nextScene[selectedAnswer];
-                // التحقق قبل الدخول للتحدي الفرعي
                 if (gameState.stageScores[nextSceneId] !== undefined) {
                     const score = gameState.stageScores[nextSceneId];
                     const total = gameData[nextSceneId].length;
@@ -864,7 +866,6 @@ document.getElementById('start-exchange-quiz-btn').onclick = () => {
                 } else if (Array.isArray(gameData[sceneId])) {
                     const nextQuestionIndex = gameState.currentSubQuestionIndex + 1;
                     if (nextQuestionIndex >= gameData[sceneId].length) {
-                        // حفظ النتيجة عند إكمال المرحلة للمرة الأولى
                         if (gameState.stageScores[sceneId] === undefined) {
                             gameState.stageScores[sceneId] = stagePoints;
                             saveGameState();
@@ -1115,29 +1116,28 @@ document.getElementById('start-exchange-quiz-btn').onclick = () => {
         }
         
         playerForm.addEventListener('submit', startGame);
-document.getElementById('map-scene').addEventListener('click', (e) => {
+
+        document.getElementById('map-scene').addEventListener('click', (e) => {
             const button = e.target.closest('.option-btn');
             if (!button) return;
             const destination = button.dataset.destination;
             
-            const mainDestinationId = destination.replace('-info', '').replace('-list', '');
-
             if (destination === 'stadium') {
                 renderStadiumSelection();
                 return;
             }
 
-            // --- بداية الكود الجديد للتحقق ---
+            const mainDestinationId = destination.replace('-info', '').replace('-list', '');
             const stageData = gameData[mainDestinationId];
             if (stageData) {
-                if (Array.isArray(stageData)) { // للأسئلة المباشرة مثل المكتبة
+                if (Array.isArray(stageData)) {
                     if (gameState.stageScores[mainDestinationId] !== undefined) {
                         const score = gameState.stageScores[mainDestinationId];
                         const total = stageData.length;
                         showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك في هذه المرحلة: ${score} / ${total}</strong>`, null);
                         return;
                     }
-                } else if (stageData.nextScene) { // للمراحل التي تحتوي على قائمة تحديات
+                } else if (stageData.nextScene) {
                     const subScenes = Object.values(stageData.nextScene);
                     if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
                         const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
@@ -1147,7 +1147,6 @@ document.getElementById('map-scene').addEventListener('click', (e) => {
                     }
                 }
             }
-            // --- نهاية الكود الجديد للتحقق ---
 
             const destinationData = gameData[destination];
 
@@ -1216,16 +1215,13 @@ document.getElementById('map-scene').addEventListener('click', (e) => {
         });
 
       adModal.addEventListener('click', (event) => {
-            // يغلق النافذة عند الضغط على زر الإغلاق، أو زر التخطي، أو الخلفية
             if (event.target.closest('.close-ad-btn, #ad-skip-btn') || event.target.id === 'ad-modal') {
                 adModal.classList.add('hidden');
             }
         });
 
-        // إضافة وظيفة لزر "التفاصيل"
         document.getElementById('ad-details-btn').addEventListener('click', () => {
-            adModal.classList.add('hidden'); // أولاً، أغلق نافذة الإعلان
-            // ثانياً، اعرض صفحة الويب باستخدام الدالة الجديدة
+            adModal.classList.add('hidden');
             showWebsiteInIframe('https://www.iugaza.edu.ps/p29815/', 'إعلان كلية الهندسة');
         });
         
@@ -1274,10 +1270,71 @@ document.getElementById('map-scene').addEventListener('click', (e) => {
 
         function renderFacultiesListScene() {
             document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
-            document.getElementById('faculties-list-scene').classList.remove('hidden');
-            gameState.currentScene = 'faculties-list';
-            saveGameState();
+            const sceneElement = document.getElementById('faculties-list-scene');
+            sceneElement.innerHTML = `
+                <div class="scene-content">
+                    <div class="info-header">
+                        <h2 class="scene-title">🏢 استكشف كليات الجامعة</h2>
+                        <p>تعرّف على عالم كل كلية! اضغط على أي بطاقة لتصفح صفحتها التعريفية أو موقعها الرسمي.</p>
+                    </div>
+                    <div class="info-scene-container" id="faculties-grid-container"></div>
+                    <div class="info-footer">
+                        <button id="proceed-to-faculties-quiz-btn" class="action-button">
+                            أنا جاهز... ابدأ تحدي الكليات!
+                            <span class="btn-icon">🧠</span>
+                        </button>
+                    </div>
+                </div>`;
+            populateFacultiesList();
+            
+            document.getElementById('faculties-grid-container').addEventListener('click', (e) => {
+                const card = e.target.closest('.college-info-card');
+                if (!card) return;
+                
+                const url = card.dataset.url;
+                const name = card.dataset.name;
+
+                if (name === 'كلية الاقتصاد والعلوم الإدارية') {
+                    window.location.href = 'economics.html';
+                } else if (name === 'كلية الطب') { 
+                    window.location.href = 'medicine.html'; 
+                } else if (name === 'كلية الهندسة') {
+                    window.location.href = 'engineering.html';
+                } else if (name === 'كلية تكنولوجيا المعلومات') {
+                    window.location.href = 'it.html';
+                } else if (name === 'كلية التمريض') {
+                    window.location.href = 'nursing.html';
+                } else if (name === 'كلية العلوم الصحية') {
+                    window.location.href = 'health-sciences.html';
+                } else if (name === 'كلية العلوم') {
+                    window.location.href = 'science.html';
+                } else if (name === 'كلية الآداب') {
+                    window.location.href = 'arts.html';
+                } else if (name === 'كلية الشريعة والقانون') {
+                    window.location.href = 'sharia.html';
+                } else if (name === 'كلية أصول الدين') {
+                    window.location.href = 'osool.html';
+                } else if (name === 'كلية التربية') {
+                    window.location.href = 'education.html';
+                } else {
+                    showWebsiteInIframe(url, name);
+                }
+            });
+
+            document.getElementById('proceed-to-faculties-quiz-btn').addEventListener('click', () => {
+                const stageId = 'faculties';
+                const subScenes = Object.values(gameData[stageId].nextScene);
+                if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
+                    const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
+                    const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
+                    showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
+                } else {
+                    renderScene(stageId);
+                }
+            });
+            sceneElement.classList.remove('hidden');
         }
+        
         function showWebsiteInIframe(url, title) {
             const websiteScene = document.getElementById('college-website-scene');
             websiteScene.innerHTML = `<div class="scene-content"><div class="website-view-header"><button id="back-to-last-scene-btn" class="action-button" style="width: auto; padding: 10px 20px;"><span class="btn-icon">➡️</span> رجوع</button></div><div class="loader-container" id="loader-container"><div class="loader"></div><p>جاري تحميل الصفحة...</p></div></div>`;
@@ -1285,13 +1342,12 @@ document.getElementById('map-scene').addEventListener('click', (e) => {
             document.getElementById('back-to-last-scene-btn').addEventListener('click', () => {
                 websiteScene.classList.add('hidden');
                 websiteScene.innerHTML = '';
-                // يعيد اللاعب إلى آخر مشهد كان فيه قبل فتح الموقع
                 const lastSceneId = gameState.currentScene;
                 const sceneElement = document.getElementById(`${lastSceneId}-scene`);
                 if(sceneElement) {
                     sceneElement.classList.remove('hidden');
                 } else {
-                    renderScene('map'); // كخيار احتياطي
+                    renderScene('map');
                 }
             });
 
@@ -1309,51 +1365,7 @@ document.getElementById('map-scene').addEventListener('click', (e) => {
             };
             websiteScene.querySelector('.scene-content').appendChild(iframe);
         }
-document.getElementById('faculties-grid-container').addEventListener('click', (e) => {
-    const card = e.target.closest('.college-info-card');
-    if (!card) return;
-    
-    const url = card.dataset.url;
-    const name = card.dataset.name;
-
-    if (name === 'كلية الاقتصاد والعلوم الإدارية') {
-        window.location.href = 'economics.html';
-    } else if (name === 'كلية الطب') { 
-        window.location.href = 'medicine.html'; 
-    } else if (name === 'كلية الهندسة') {
-        window.location.href = 'engineering.html';
-    } else if (name === 'كلية تكنولوجيا المعلومات') {
-        window.location.href = 'it.html';
-    } else if (name === 'كلية التمريض') {
-        window.location.href = 'nursing.html';
-    } else if (name === 'كلية العلوم الصحية') {
-        window.location.href = 'health-sciences.html';
-    } else if (name === 'كلية العلوم') {
-        window.location.href = 'science.html';
-    } else if (name === 'كلية الآداب') {
-        window.location.href = 'arts.html';
-    } else if (name === 'كلية الشريعة والقانون') {
-        window.location.href = 'sharia.html';
-    } else if (name === 'كلية أصول الدين') {
-        window.location.href = 'osool.html';
-    } else if (name === 'كلية التربية') { // <<<--- السطر الجديد
-        window.location.href = 'education.html'; // <<<--- السطر الجديد
-    } else {
-        showWebsiteInIframe(url, name);
-    }
-});
-
-        document.getElementById('proceed-to-faculties-quiz-btn').addEventListener('click', () => {
-    const stageId = 'faculties';
-    const subScenes = Object.values(gameData[stageId].nextScene);
-    if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
-        const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
-        const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
-        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
-    } else {
-        renderScene(stageId);
-    }
-});
+        
         function populateGuideSelection() {
             const container = document.querySelector('#guide-selection-screen .guides-container');
             container.innerHTML = ''; 
@@ -1432,10 +1444,8 @@ document.getElementById('faculties-grid-container').addEventListener('click', (e
             gameState.currentScene = 'player-profile';
             saveGameState();
         }
-    // ========== بداية كود لعبة الملعب ==========
-            // ========== بداية كود لعبة الملعب ==========
 
-    function renderStadiumSelection() {
+        function renderStadiumSelection() {
             const sceneElement = document.getElementById('stadium-selection-scene');
             document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
             sceneElement.classList.remove('hidden');
@@ -1469,19 +1479,15 @@ document.getElementById('faculties-grid-container').addEventListener('click', (e
 
                 const game = selectedCard.dataset.game;
                 if (game === 'penalties') {
-                    // --- هذا هو التعديل المطلوب ---
-                    window.location.href = 'stadium-game.html'; // الانتقال لصفحة اللعبة الجديدة
+                    window.location.href = 'stadium-game.html';
                 } else if (game === 'memory') {
-                    renderMemoryGame(); // لعبة الذاكرة تبقى كما هي
+                    renderMemoryGame();
                 }
             });
             
             sceneElement.querySelector('#back-to-map-from-stadium').addEventListener('click', () => renderScene('map'));
         }
-        
 
-        // ========== بداية كود لعبة الذاكرة ==========
-        // ========== بداية كود لعبة الذاكرة ==========
         function renderMemoryGame() {
             const sceneElement = document.getElementById('memory-game-scene');
             document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
@@ -1512,32 +1518,23 @@ document.getElementById('faculties-grid-container').addEventListener('click', (e
             const allCards = sceneElement.querySelectorAll('.memory-card');
             let flippedCards = [];
             let matchedPairs = 0;
-            let lockBoard = true; // --- نبدأ واللوحة مقفلة
+            let lockBoard = true;
 
-            // --- الكود الجديد يبدأ هنا ---
-
-            // 1. عرض كل البطاقات فوراً عند بدء اللعبة
             allCards.forEach(card => card.classList.add('flipped'));
 
-            // 2. بعد 4 ثوانٍ، يتم إخفاء جميع البطاقات
             setTimeout(() => {
                 allCards.forEach(card => card.classList.remove('flipped'));
                 
-                // تحديث الرسالة
                 sceneElement.querySelector('p').textContent = 'ابحث عن أزواج الرموز المتشابهة لكليات الجامعة.';
 
-                // 3. ننتظر انتهاء حركة الإخفاء (600ms) ثم نسمح باللعب
                 setTimeout(() => {
                     lockBoard = false;
-                }, 600); // هذه المدة يجب أن تطابق مدة الانتقال في CSS
+                }, 600);
                 
-            }, 4000); // 4 ثوانٍ
-
-            // --- الكود الجديد ينتهي هنا ---
+            }, 4000);
 
             const handleCardClick = (e) => {
                 const clickedCard = e.target.closest('.memory-card');
-                // الآن هذا السطر سيمنع اللعب خلال فترة العرض الأولية
                 if (lockBoard || !clickedCard || clickedCard.classList.contains('flipped')) return;
 
                 clickedCard.classList.add('flipped');
@@ -1552,12 +1549,7 @@ document.getElementById('faculties-grid-container').addEventListener('click', (e
             const checkForMatch = () => {
                 const [cardOne, cardTwo] = flippedCards;
                 const isMatch = cardOne.dataset.emoji === cardTwo.dataset.emoji;
-
-                if (isMatch) {
-                    disableCards();
-                } else {
-                    unflipCards();
-                }
+                isMatch ? disableCards() : unflipCards();
             };
             
             const disableCards = () => {
@@ -1587,13 +1579,12 @@ document.getElementById('faculties-grid-container').addEventListener('click', (e
 
             const endMemoryGame = () => {
                 setTimeout(() => {
-showModal('🧠 ذاكرة قوية!', 'لقد أتممت تحدي الذاكرة بنجاح. أنت الآن عائد إلى منطقة الألعاب.', () => renderStadiumSelection());                }, 500);
+                    showModal('🧠 ذاكرة قوية!', 'لقد أتممت تحدي الذاكرة بنجاح. أنت الآن عائد إلى منطقة الألعاب.', () => renderStadiumSelection());
+                }, 500);
             };
             
             grid.addEventListener('click', handleCardClick);
         }
-        // ========== نهاية كود لعبة الذاكرة ==========
-        // ========== نهاية كود لعبة الذاكرة ==========
 
         document.body.addEventListener('click', unlockAudio, { once: true });
         
@@ -1622,5 +1613,7 @@ showModal('🧠 ذاكرة قوية!', 'لقد أتممت تحدي الذاكر�
 
         populateFacultiesList();
         populateGuideSelection();
-        restoreGameSession();
+        if (!restoreGameSession()) {
+            landingScreen.classList.remove('hidden');
+        }
     });

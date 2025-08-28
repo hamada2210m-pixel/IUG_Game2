@@ -709,46 +709,49 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
             sceneElement.classList.remove('hidden');
             gameState.currentScene = 'studentaffairs-info';
             saveGameState();
-
             const container = document.getElementById('studentaffairs-info-container');
-            container.innerHTML = `<nav class="tabs-nav"><button class="tab-btn active" data-tab="about">عن العمادة</button><button class="tab-btn" data-tab="services">الأقسام والخدمات</button><button class="tab-btn" data-tab="gallery">ألبوم الصور</button></nav><div class="tabs-content"><div id="tab-about" class="tab-pane active"><div class="info-scene-container"><p>أهلاً وسهلاً بكم في عمادة شئون الطلبة بالجامعة الإسلامية. تعد عمادة شؤون الطلبة من أهم العمادات بالجامعة المختصة بالطلبة، فهي  تعنى بتقديم الخدمات الطلابية، والتي تسهم في تنظيم الأنشطة اللامنهجية والأعمال التطوعية، وتساعد الطالب في إنجاز المعاملات وتسهيل عملية التسجيل والتسجيل للمنح الداخلية والخارجية والقروض الجامعية.</p><h3 class="info-section-title">تاريخ ومهام</h3><p>أنشئت عمادة شؤون الطلبة في عام 1981م. وقد أنيطت بها المهام التالية:</p><ul class="info-list"><li>دراسة مشكلات الطلبة الاقتصادية، ووضع الحلول لها من خلال قسم البحث الاجتماعي.</li><li>الإشراف على النشاط الثقافي والاجتماعي والرياضي والفني بالتنسيق مع مجالس الطلبة.</li><li>متابعة اجتماعيات مجالس الطلبة، وإرشادهم إلى طريق العمل السليم.</li><li>النظر في مشكلات الطلبة اليومية العامة والخاصة، وتنسيب الحلول الملائمة لها.</li><li>الإشراف على حسن استخدام مرافق الجامعة استخداماً سليماً.</li><li>مراقبة انتظام الدراسة، وبحث ظاهرة التغيب، وتنسيب الحلول الملائمة لها.</li></ul></div></div><div id="tab-services" class="tab-pane"><div class="info-scene-container"><div class="accordion-item"><div class="accordion-header">قسم البحث الاجتماعي "خدمات الطلبة"</div><div class="accordion-content"><p>يعد قسم البحث الاجتماعي البوابة الأساسية لمساعدة الطلبة ماليا بهدف إكمال المسيرة التعليمية. وبناءً عليه يتم الاستفادة من خدمات العمادة المتعلقة بالمنح الخارجية والقروض الجامعية.</p><strong>الخطوات المتبعة للاستفادة:</strong><ul class="info-list"><li>يتم توجيه الطلبة لتعبئة استمارة البحث الاجتماعي الكترونيا.</li><li>يقوم الطالب بإرفاق الأوراق الثبوتية الأصلية الكترونيا.</li><li>يقوم الطالب بإحضار الأوراق الثبوتية وتسلميها لموظفي البحث الاجتماعي، لتدقيقها.</li><li>يتم تصنيف حالات الطلبة وفق معايير خاصة تحدد الحالة الاجتماعية للطالب.</li><li>بناء على نتيجة البحث الاجتماعي لكل طالب يتم ترشيح الطلبة للمنح الخارجية.</li></ul></div></div><div class="accordion-item"><div class="accordion-header">الأنشطة اللامنهجية والعمل التطوعي</div><div class="accordion-content"><p>هي مجموعة من الفعاليات المتنوعة الثقافية – الفنية – التدريبية – العلمية والترويحية التي تهدف إلى تنمية شخصية الطالب الجامعي وتزويده بالمهارات والخبرات واستثمار اوقات الفراغ. أما العمل التطوعي فهو أحد المساقات التي تشرف عليها العمادة لتكليف الطلبة بأنشطة وفعاليات تطوعية تصقل مواهبهم.</p></div></div><div class="accordion-item"><div class="accordion-header">قسم النشاط الرياضي</div><div class="accordion-content"><p>لقد أولت عمادة شئون الطلبة الأنشطة الرياضية الفردية والجماعية اهتماما كبيرا لما لها من أثر في صقل وتهذيب شخصية الطالب. ومن أهدافه بث الروح الرياضية، تنمية مواهب الطلبة، غرس المفاهيم الصحيحة للتربية البدنية، نشر الوعي الرياضي، وإعداد المنتخبات لتمثيل الجامعة.</p></div></div><div class="accordion-item"><div class="accordion-header">وحدة التوجيه والارشاد</div><div class="accordion-content"><p>تقدم الوحدة الخدمات التالية للطلبة:</p><ul class="info-list"><li>إرشاد وتوجيه وتوعية.</li><li>استشارات.</li><li>ندوات ومحاضرات.</li><li>ورش عمل.</li><li>دورات ذات علاقة.</li></ul></div></div></div></div><div id="tab-gallery" class="tab-pane"><div class="info-scene-container"><div class="photo-gallery"><img src="https://i.imgur.com/uStyY1N.jpeg" alt="استقبال الطلبة" loading="lazy"><img src="https://i.imgur.com/vHqB3Tj.jpeg" alt="زيارة طلبة الثانوية" loading="lazy"><img src="https://i.imgur.com/1mYdPo3.jpeg" alt="فريق الدبكة" loading="lazy"><img src="https://i.imgur.com/QhXpBmg.jpeg" alt="زيارة الصالة الرياضية" loading="lazy"><img src="https://i.imgur.com/A6mJTOq.jpeg" alt="زيارة لرئيس الجامعة" loading="lazy"><img src="https://i.imgur.com/o1bFjHj.jpeg" alt="استقبال في الأيام الترفيهية" loading="lazy"><img src="https://i.imgur.com/L8JgY1g.jpeg" alt="فريق شئون الطلبة" loading="lazy"><img src="https://i.imgur.com/w2Y9w5E.jpeg" alt="ضيافة طلبة الثانوية" loading="lazy"></div></div></div></div>`;
-            
-            const tabsContainer = sceneElement.querySelector('.tabs-nav');
-            const accordions = sceneElement.querySelectorAll('.accordion-item');
+            if(container){
+                container.innerHTML = `<nav class="tabs-nav"><button class="tab-btn active" data-tab="about">عن العمادة</button><button class="tab-btn" data-tab="services">الأقسام والخدمات</button><button class="tab-btn" data-tab="gallery">ألبوم الصور</button></nav><div class="tabs-content"><div id="tab-about" class="tab-pane active"><div class="info-scene-container"><p>أهلاً وسهلاً بكم في عمادة شئون الطلبة بالجامعة الإسلامية. تعد عمادة شؤون الطلبة من أهم العمادات بالجامعة المختصة بالطلبة، فهي  تعنى بتقديم الخدمات الطلابية، والتي تسهم في تنظيم الأنشطة اللامنهجية والأعمال التطوعية، وتساعد الطالب في إنجاز المعاملات وتسهيل عملية التسجيل والتسجيل للمنح الداخلية والخارجية والقروض الجامعية.</p><h3 class="info-section-title">تاريخ ومهام</h3><p>أنشئت عمادة شؤون الطلبة في عام 1981م. وقد أنيطت بها المهام التالية:</p><ul class="info-list"><li>دراسة مشكلات الطلبة الاقتصادية، ووضع الحلول لها من خلال قسم البحث الاجتماعي.</li><li>الإشراف على النشاط الثقافي والاجتماعي والرياضي والفني بالتنسيق مع مجالس الطلبة.</li><li>متابعة اجتماعيات مجالس الطلبة، وإرشادهم إلى طريق العمل السليم.</li><li>النظر في مشكلات الطلبة اليومية العامة والخاصة، وتنسيب الحلول الملائمة لها.</li><li>الإشراف على حسن استخدام مرافق الجامعة استخداماً سليماً.</li><li>مراقبة انتظام الدراسة، وبحث ظاهرة التغيب، وتنسيب الحلول الملائمة لها.</li></ul></div></div><div id="tab-services" class="tab-pane"><div class="info-scene-container"><div class="accordion-item"><div class="accordion-header">قسم البحث الاجتماعي "خدمات الطلبة"</div><div class="accordion-content"><p>يعد قسم البحث الاجتماعي البوابة الأساسية لمساعدة الطلبة ماليا بهدف إكمال المسيرة التعليمية. وبناءً عليه يتم الاستفادة من خدمات العمادة المتعلقة بالمنح الخارجية والقروض الجامعية.</p><strong>الخطوات المتبعة للاستفادة:</strong><ul class="info-list"><li>يتم توجيه الطلبة لتعبئة استمارة البحث الاجتماعي الكترونيا.</li><li>يقوم الطالب بإرفاق الأوراق الثبوتية الأصلية الكترونيا.</li><li>يقوم الطالب بإحضار الأوراق الثبوتية وتسلميها لموظفي البحث الاجتماعي، لتدقيقها.</li><li>يتم تصنيف حالات الطلبة وفق معايير خاصة تحدد الحالة الاجتماعية للطالب.</li><li>بناء على نتيجة البحث الاجتماعي لكل طالب يتم ترشيح الطلبة للمنح الخارجية.</li></ul></div></div><div class="accordion-item"><div class="accordion-header">الأنشطة اللامنهجية والعمل التطوعي</div><div class="accordion-content"><p>هي مجموعة من الفعاليات المتنوعة الثقافية – الفنية – التدريبية – العلمية والترويحية التي تهدف إلى تنمية شخصية الطالب الجامعي وتزويده بالمهارات والخبرات واستثمار اوقات الفراغ. أما العمل التطوعي فهو أحد المساقات التي تشرف عليها العمادة لتكليف الطلبة بأنشطة وفعاليات تطوعية تصقل مواهبهم.</p></div></div><div class="accordion-item"><div class="accordion-header">قسم النشاط الرياضي</div><div class="accordion-content"><p>لقد أولت عمادة شئون الطلبة الأنشطة الرياضية الفردية والجماعية اهتماما كبيرا لما لها من أثر في صقل وتهذيب شخصية الطالب. ومن أهدافه بث الروح الرياضية، تنمية مواهب الطلبة، غرس المفاهيم الصحيحة للتربية البدنية، نشر الوعي الرياضي، وإعداد المنتخبات لتمثيل الجامعة.</p></div></div><div class="accordion-item"><div class="accordion-header">وحدة التوجيه والارشاد</div><div class="accordion-content"><p>تقدم الوحدة الخدمات التالية للطلبة:</p><ul class="info-list"><li>إرشاد وتوجيه وتوعية.</li><li>استشارات.</li><li>ندوات ومحاضرات.</li><li>ورش عمل.</li><li>دورات ذات علاقة.</li></ul></div></div></div></div><div id="tab-gallery" class="tab-pane"><div class="info-scene-container"><div class="photo-gallery"><img src="https://i.imgur.com/uStyY1N.jpeg" alt="استقبال الطلبة" loading="lazy"><img src="https://i.imgur.com/vHqB3Tj.jpeg" alt="زيارة طلبة الثانوية" loading="lazy"><img src="https://i.imgur.com/1mYdPo3.jpeg" alt="فريق الدبكة" loading="lazy"><img src="https://i.imgur.com/QhXpBmg.jpeg" alt="زيارة الصالة الرياضية" loading="lazy"><img src="https://i.imgur.com/A6mJTOq.jpeg" alt="زيارة لرئيس الجامعة" loading="lazy"><img src="https://i.imgur.com/o1bFjHj.jpeg" alt="استقبال في الأيام الترفيهية" loading="lazy"><img src="https://i.imgur.com/L8JgY1g.jpeg" alt="فريق شئون الطلبة" loading="lazy"><img src="https://i.imgur.com/w2Y9w5E.jpeg" alt="ضيافة طلبة الثانوية" loading="lazy"></div></div></div></div>`;
+                const tabsContainer = sceneElement.querySelector('.tabs-nav');
+                const accordions = sceneElement.querySelectorAll('.accordion-item');
 
-            tabsContainer.addEventListener('click', e => {
-                if (e.target.classList.contains('tab-btn')) {
-                    tabsContainer.querySelector('.active').classList.remove('active');
-                    e.target.classList.add('active');
-                    sceneElement.querySelector('.tab-pane.active').classList.remove('active');
-                    const targetTab = e.target.dataset.tab;
-                    sceneElement.querySelector(`#tab-${targetTab}`).classList.add('active');
-                }
-            });
-
-            accordions.forEach(item => {
-                const header = item.querySelector('.accordion-header');
-                header.addEventListener('click', () => {
-                    const content = item.querySelector('.accordion-content');
-                    if (item.classList.toggle('active')) {
-                        content.style.maxHeight = content.scrollHeight + 'px';
-                    } else {
-                        content.style.maxHeight = '0px';
+                tabsContainer.addEventListener('click', e => {
+                    if (e.target.classList.contains('tab-btn')) {
+                        tabsContainer.querySelector('.active').classList.remove('active');
+                        e.target.classList.add('active');
+                        sceneElement.querySelector('.tab-pane.active').classList.remove('active');
+                        const targetTab = e.target.dataset.tab;
+                        sceneElement.querySelector(`#tab-${targetTab}`).classList.add('active');
                     }
                 });
-            });
 
-            document.getElementById('start-studentaffairs-quiz-btn').onclick = () => {
-                const stageId = 'studentaffairs';
-                const subScenes = Object.values(gameData[stageId].nextScene);
-                if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
-                    const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
-                    const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
-                    showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
-                } else {
-                    renderScene(stageId);
-                }
-            };        
+                accordions.forEach(item => {
+                    const header = item.querySelector('.accordion-header');
+                    header.addEventListener('click', () => {
+                        const content = item.querySelector('.accordion-content');
+                        if (item.classList.toggle('active')) {
+                            content.style.maxHeight = content.scrollHeight + 'px';
+                        } else {
+                            content.style.maxHeight = '0px';
+                        }
+                    });
+                });
+            }
+
+            const startQuizBtn = document.getElementById('start-studentaffairs-quiz-btn');
+            if(startQuizBtn) {
+                startQuizBtn.onclick = () => {
+                    const stageId = 'studentaffairs';
+                    const subScenes = Object.values(gameData[stageId].nextScene);
+                    if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
+                        const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
+                        const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
+                        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
+                    } else {
+                        renderScene(stageId);
+                    }
+                };  
+            }
         }
 
         function renderAdmissionInfoScene() {
@@ -758,30 +761,35 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
             gameState.currentScene = 'admission-info';
             saveGameState();
             const container = document.getElementById('admission-info-container');
-            container.innerHTML = ''; 
-            admissionInfoData.forEach(facultyData => {
-                const card = document.createElement('div');
-                card.className = 'admission-card';
-                let specializationsHTML = '<ul>';
-                facultyData.specializations.forEach(spec => {
-                    const isNew = spec.name.includes('(جديد)');
-                    specializationsHTML += `<li><span class="specialization">${spec.name.replace(' (جديد)', '')} ${isNew ? '<span class="score new-major">جديد</span>' : ''}</span><span class="score">${spec.score}</span></li>`;
+            if(container) {
+                container.innerHTML = ''; 
+                admissionInfoData.forEach(facultyData => {
+                    const card = document.createElement('div');
+                    card.className = 'admission-card';
+                    let specializationsHTML = '<ul>';
+                    facultyData.specializations.forEach(spec => {
+                        const isNew = spec.name.includes('(جديد)');
+                        specializationsHTML += `<li><span class="specialization">${spec.name.replace(' (جديد)', '')} ${isNew ? '<span class="score new-major">جديد</span>' : ''}</span><span class="score">${spec.score}</span></li>`;
+                    });
+                    specializationsHTML += '</ul>';
+                    card.innerHTML = `<h3>${facultyData.faculty}</h3>${specializationsHTML}`;
+                    container.appendChild(card);
                 });
-                specializationsHTML += '</ul>';
-                card.innerHTML = `<h3>${facultyData.faculty}</h3>${specializationsHTML}`;
-                container.appendChild(card);
-            });
-            document.getElementById('start-admission-quiz-btn').onclick = () => {
-                const stageId = 'admission';
-                const subScenes = Object.values(gameData[stageId].nextScene);
-                if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
-                    const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
-                    const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
-                    showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
-                } else {
-                    renderScene(stageId);
-                }
-            };        
+            }
+            const startQuizBtn = document.getElementById('start-admission-quiz-btn');
+            if(startQuizBtn) {
+                startQuizBtn.onclick = () => {
+                    const stageId = 'admission';
+                    const subScenes = Object.values(gameData[stageId].nextScene);
+                    if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
+                        const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
+                        const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
+                        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
+                    } else {
+                        renderScene(stageId);
+                    }
+                };
+            }
         }
 
         function renderGrantsInfoScene() {
@@ -789,16 +797,19 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
             document.getElementById('grants-info-scene').classList.remove('hidden');
             gameState.currentScene = 'grants-info';
             saveGameState();
-            document.getElementById('start-grants-quiz-btn').onclick = () => {
-                const stageId = 'grants';
-                if (gameState.stageScores[stageId] !== undefined) {
-                    const score = gameState.stageScores[stageId];
-                    const total = gameData[stageId].length;
-                    showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك في هذه المرحلة: ${score} / ${total}</strong>`, null);
-                } else {
-                    renderScene(stageId);
-                }
-            };        
+            const startQuizBtn = document.getElementById('start-grants-quiz-btn');
+            if(startQuizBtn) {
+                startQuizBtn.onclick = () => {
+                    const stageId = 'grants';
+                    if (gameState.stageScores[stageId] !== undefined) {
+                        const score = gameState.stageScores[stageId];
+                        const total = gameData[stageId].length;
+                        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك في هذه المرحلة: ${score} / ${total}</strong>`, null);
+                    } else {
+                        renderScene(stageId);
+                    }
+                };
+            }
         }
         
         function renderExchangeInfoScene() {
@@ -806,17 +817,20 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
             document.getElementById('exchange-info-scene').classList.remove('hidden');
             gameState.currentScene = 'exchange-info';
             saveGameState();
-            document.getElementById('start-exchange-quiz-btn').onclick = () => {
-                const stageId = 'exchange';
-                const subScenes = Object.values(gameData[stageId].nextScene);
-                if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
-                    const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
-                    const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
-                    showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
-                } else {
-                    renderScene(stageId);
-                }
-            };        
+            const startQuizBtn = document.getElementById('start-exchange-quiz-btn');
+            if(startQuizBtn) {
+                startQuizBtn.onclick = () => {
+                    const stageId = 'exchange';
+                    const subScenes = Object.values(gameData[stageId].nextScene);
+                    if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
+                        const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
+                        const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
+                        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
+                    } else {
+                        renderScene(stageId);
+                    }
+                };
+            }
         }
         
         function handleAnswer(event) {
@@ -1261,6 +1275,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
         
         function populateFacultiesList() {
             const container = document.getElementById('faculties-grid-container');
+            if(!container) return;
             let content = '';
             collegesData.forEach(college => {
                 content += `<div class="college-info-card" data-url="${college.url}" data-name="${college.name}"><h3>${college.emoji} ${college.name}</h3><p>${college.description}</p></div>`;
@@ -1271,6 +1286,8 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
         function renderFacultiesListScene() {
             document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
             const sceneElement = document.getElementById('faculties-list-scene');
+            if(!sceneElement) return;
+
             sceneElement.innerHTML = `
                 <div class="scene-content">
                     <div class="info-header">
@@ -1333,6 +1350,8 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
                 }
             });
             sceneElement.classList.remove('hidden');
+            gameState.currentScene = 'faculties-list';
+            saveGameState();
         }
         
         function showWebsiteInIframe(url, title) {
@@ -1611,8 +1630,6 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
         preloadImage('assets/images/hares 1.webp');
         preloadImage('assets/images/library_question.webp');
 
-        populateFacultiesList();
-        populateGuideSelection();
         if (!restoreGameSession()) {
             landingScreen.classList.remove('hidden');
         }

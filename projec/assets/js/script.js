@@ -227,7 +227,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
             answeredQuestions: new Set(), selectedGuide: null,
             powerUps: {},
             badges: [],
-            stageScores: {},
+            stageScores: {}, // تمت الإضافة هنا
             currentQuestionAttempts: 0
        };
         let questionTimer = null;
@@ -342,7 +342,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
                     gameState.answeredQuestions = new Set(savedState.answeredQuestions);
                     if (!gameState.powerUps) gameState.powerUps = {};
                     if (!gameState.badges) gameState.badges = [];
-                    if (!gameState.stageScores) gameState.stageScores = {};
+                    if (!gameState.stageScores) gameState.stageScores = {}; // تمت الإضافة هنا
                     return true;
                 }
                 return false;
@@ -610,6 +610,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
                 'exchange-info': renderExchangeInfoScene,
                 'studentaffairs-info': renderStudentAffairsInfoScene,
                 'player-profile': renderPlayerProfile,
+                'stadium': renderStadiumGame,
             };
 
             if (sceneMappings[sceneId]) {
@@ -709,50 +710,46 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
             sceneElement.classList.remove('hidden');
             gameState.currentScene = 'studentaffairs-info';
             saveGameState();
+
             const container = document.getElementById('studentaffairs-info-container');
-            if(container){
-                container.innerHTML = `<nav class="tabs-nav"><button class="tab-btn active" data-tab="about">عن العمادة</button><button class="tab-btn" data-tab="services">الأقسام والخدمات</button><button class="tab-btn" data-tab="gallery">ألبوم الصور</button></nav><div class="tabs-content"><div id="tab-about" class="tab-pane active"><div class="info-scene-container"><p>أهلاً وسهلاً بكم في عمادة شئون الطلبة بالجامعة الإسلامية. تعد عمادة شؤون الطلبة من أهم العمادات بالجامعة المختصة بالطلبة، فهي  تعنى بتقديم الخدمات الطلابية، والتي تسهم في تنظيم الأنشطة اللامنهجية والأعمال التطوعية، وتساعد الطالب في إنجاز المعاملات وتسهيل عملية التسجيل والتسجيل للمنح الداخلية والخارجية والقروض الجامعية.</p><h3 class="info-section-title">تاريخ ومهام</h3><p>أنشئت عمادة شؤون الطلبة في عام 1981م. وقد أنيطت بها المهام التالية:</p><ul class="info-list"><li>دراسة مشكلات الطلبة الاقتصادية، ووضع الحلول لها من خلال قسم البحث الاجتماعي.</li><li>الإشراف على النشاط الثقافي والاجتماعي والرياضي والفني بالتنسيق مع مجالس الطلبة.</li><li>متابعة اجتماعيات مجالس الطلبة، وإرشادهم إلى طريق العمل السليم.</li><li>النظر في مشكلات الطلبة اليومية العامة والخاصة، وتنسيب الحلول الملائمة لها.</li><li>الإشراف على حسن استخدام مرافق الجامعة استخداماً سليماً.</li><li>مراقبة انتظام الدراسة، وبحث ظاهرة التغيب، وتنسيب الحلول الملائمة لها.</li></ul></div></div><div id="tab-services" class="tab-pane"><div class="info-scene-container"><div class="accordion-item"><div class="accordion-header">قسم البحث الاجتماعي "خدمات الطلبة"</div><div class="accordion-content"><p>يعد قسم البحث الاجتماعي البوابة الأساسية لمساعدة الطلبة ماليا بهدف إكمال المسيرة التعليمية. وبناءً عليه يتم الاستفادة من خدمات العمادة المتعلقة بالمنح الخارجية والقروض الجامعية.</p><strong>الخطوات المتبعة للاستفادة:</strong><ul class="info-list"><li>يتم توجيه الطلبة لتعبئة استمارة البحث الاجتماعي الكترونيا.</li><li>يقوم الطالب بإرفاق الأوراق الثبوتية الأصلية الكترونيا.</li><li>يقوم الطالب بإحضار الأوراق الثبوتية وتسلميها لموظفي البحث الاجتماعي، لتدقيقها.</li><li>يتم تصنيف حالات الطلبة وفق معايير خاصة تحدد الحالة الاجتماعية للطالب.</li><li>بناء على نتيجة البحث الاجتماعي لكل طالب يتم ترشيح الطلبة للمنح الخارجية.</li></ul></div></div><div class="accordion-item"><div class="accordion-header">الأنشطة اللامنهجية والعمل التطوعي</div><div class="accordion-content"><p>هي مجموعة من الفعاليات المتنوعة الثقافية – الفنية – التدريبية – العلمية والترويحية التي تهدف إلى تنمية شخصية الطالب الجامعي وتزويده بالمهارات والخبرات واستثمار اوقات الفراغ. أما العمل التطوعي فهو أحد المساقات التي تشرف عليها العمادة لتكليف الطلبة بأنشطة وفعاليات تطوعية تصقل مواهبهم.</p></div></div><div class="accordion-item"><div class="accordion-header">قسم النشاط الرياضي</div><div class="accordion-content"><p>لقد أولت عمادة شئون الطلبة الأنشطة الرياضية الفردية والجماعية اهتماما كبيرا لما لها من أثر في صقل وتهذيب شخصية الطالب. ومن أهدافه بث الروح الرياضية، تنمية مواهب الطلبة، غرس المفاهيم الصحيحة للتربية البدنية، نشر الوعي الرياضي، وإعداد المنتخبات لتمثيل الجامعة.</p></div></div><div class="accordion-item"><div class="accordion-header">وحدة التوجيه والارشاد</div><div class="accordion-content"><p>تقدم الوحدة الخدمات التالية للطلبة:</p><ul class="info-list"><li>إرشاد وتوجيه وتوعية.</li><li>استشارات.</li><li>ندوات ومحاضرات.</li><li>ورش عمل.</li><li>دورات ذات علاقة.</li></ul></div></div></div></div><div id="tab-gallery" class="tab-pane"><div class="info-scene-container"><div class="photo-gallery"><img src="https://i.imgur.com/uStyY1N.jpeg" alt="استقبال الطلبة" loading="lazy"><img src="https://i.imgur.com/vHqB3Tj.jpeg" alt="زيارة طلبة الثانوية" loading="lazy"><img src="https://i.imgur.com/1mYdPo3.jpeg" alt="فريق الدبكة" loading="lazy"><img src="https://i.imgur.com/QhXpBmg.jpeg" alt="زيارة الصالة الرياضية" loading="lazy"><img src="https://i.imgur.com/A6mJTOq.jpeg" alt="زيارة لرئيس الجامعة" loading="lazy"><img src="https://i.imgur.com/o1bFjHj.jpeg" alt="استقبال في الأيام الترفيهية" loading="lazy"><img src="https://i.imgur.com/L8JgY1g.jpeg" alt="فريق شئون الطلبة" loading="lazy"><img src="https://i.imgur.com/w2Y9w5E.jpeg" alt="ضيافة طلبة الثانوية" loading="lazy"></div></div></div></div>`;
-                const tabsContainer = sceneElement.querySelector('.tabs-nav');
-                const accordions = sceneElement.querySelectorAll('.accordion-item');
+            container.innerHTML = `<nav class="tabs-nav"><button class="tab-btn active" data-tab="about">عن العمادة</button><button class="tab-btn" data-tab="services">الأقسام والخدمات</button><button class="tab-btn" data-tab="gallery">ألبوم الصور</button></nav><div class="tabs-content"><div id="tab-about" class="tab-pane active"><div class="info-scene-container"><p>أهلاً وسهلاً بكم في عمادة شئون الطلبة بالجامعة الإسلامية. تعد عمادة شؤون الطلبة من أهم العمادات بالجامعة المختصة بالطلبة، فهي  تعنى بتقديم الخدمات الطلابية، والتي تسهم في تنظيم الأنشطة اللامنهجية والأعمال التطوعية، وتساعد الطالب في إنجاز المعاملات وتسهيل عملية التسجيل والتسجيل للمنح الداخلية والخارجية والقروض الجامعية.</p><h3 class="info-section-title">تاريخ ومهام</h3><p>أنشئت عمادة شؤون الطلبة في عام 1981م. وقد أنيطت بها المهام التالية:</p><ul class="info-list"><li>دراسة مشكلات الطلبة الاقتصادية، ووضع الحلول لها من خلال قسم البحث الاجتماعي.</li><li>الإشراف على النشاط الثقافي والاجتماعي والرياضي والفني بالتنسيق مع مجالس الطلبة.</li><li>متابعة اجتماعيات مجالس الطلبة، وإرشادهم إلى طريق العمل السليم.</li><li>النظر في مشكلات الطلبة اليومية العامة والخاصة، وتنسيب الحلول الملائمة لها.</li><li>الإشراف على حسن استخدام مرافق الجامعة استخداماً سليماً.</li><li>مراقبة انتظام الدراسة، وبحث ظاهرة التغيب، وتنسيب الحلول الملائمة لها.</li></ul></div></div><div id="tab-services" class="tab-pane"><div class="info-scene-container"><div class="accordion-item"><div class="accordion-header">قسم البحث الاجتماعي "خدمات الطلبة"</div><div class="accordion-content"><p>يعد قسم البحث الاجتماعي البوابة الأساسية لمساعدة الطلبة ماليا بهدف إكمال المسيرة التعليمية. وبناءً عليه يتم الاستفادة من خدمات العمادة المتعلقة بالمنح الخارجية والقروض الجامعية.</p><strong>الخطوات المتبعة للاستفادة:</strong><ul class="info-list"><li>يتم توجيه الطلبة لتعبئة استمارة البحث الاجتماعي الكترونيا.</li><li>يقوم الطالب بإرفاق الأوراق الثبوتية الأصلية الكترونيا.</li><li>يقوم الطالب بإحضار الأوراق الثبوتية وتسلميها لموظفي البحث الاجتماعي، لتدقيقها.</li><li>يتم تصنيف حالات الطلبة وفق معايير خاصة تحدد الحالة الاجتماعية للطالب.</li><li>بناء على نتيجة البحث الاجتماعي لكل طالب يتم ترشيح الطلبة للمنح الخارجية.</li></ul></div></div><div class="accordion-item"><div class="accordion-header">الأنشطة اللامنهجية والعمل التطوعي</div><div class="accordion-content"><p>هي مجموعة من الفعاليات المتنوعة الثقافية – الفنية – التدريبية – العلمية والترويحية التي تهدف إلى تنمية شخصية الطالب الجامعي وتزويده بالمهارات والخبرات واستثمار اوقات الفراغ. أما العمل التطوعي فهو أحد المساقات التي تشرف عليها العمادة لتكليف الطلبة بأنشطة وفعاليات تطوعية تصقل مواهبهم.</p></div></div><div class="accordion-item"><div class="accordion-header">قسم النشاط الرياضي</div><div class="accordion-content"><p>لقد أولت عمادة شئون الطلبة الأنشطة الرياضية الفردية والجماعية اهتماما كبيرا لما لها من أثر في صقل وتهذيب شخصية الطالب. ومن أهدافه بث الروح الرياضية، تنمية مواهب الطلبة، غرس المفاهيم الصحيحة للتربية البدنية، نشر الوعي الرياضي، وإعداد المنتخبات لتمثيل الجامعة.</p></div></div><div class="accordion-item"><div class="accordion-header">وحدة التوجيه والارشاد</div><div class="accordion-content"><p>تقدم الوحدة الخدمات التالية للطلبة:</p><ul class="info-list"><li>إرشاد وتوجيه وتوعية.</li><li>استشارات.</li><li>ندوات ومحاضرات.</li><li>ورش عمل.</li><li>دورات ذات علاقة.</li></ul></div></div></div></div><div id="tab-gallery" class="tab-pane"><div class="info-scene-container"><div class="photo-gallery"><img src="https://i.imgur.com/uStyY1N.jpeg" alt="استقبال الطلبة" loading="lazy"><img src="https://i.imgur.com/vHqB3Tj.jpeg" alt="زيارة طلبة الثانوية" loading="lazy"><img src="https://i.imgur.com/1mYdPo3.jpeg" alt="فريق الدبكة" loading="lazy"><img src="https://i.imgur.com/QhXpBmg.jpeg" alt="زيارة الصالة الرياضية" loading="lazy"><img src="https://i.imgur.com/A6mJTOq.jpeg" alt="زيارة لرئيس الجامعة" loading="lazy"><img src="https://i.imgur.com/o1bFjHj.jpeg" alt="استقبال في الأيام الترفيهية" loading="lazy"><img src="https://i.imgur.com/L8JgY1g.jpeg" alt="فريق شئون الطلبة" loading="lazy"><img src="https://i.imgur.com/w2Y9w5E.jpeg" alt="ضيافة طلبة الثانوية" loading="lazy"></div></div></div></div>`;
+            
+            const tabsContainer = sceneElement.querySelector('.tabs-nav');
+            const accordions = sceneElement.querySelectorAll('.accordion-item');
 
-                tabsContainer.addEventListener('click', e => {
-                    if (e.target.classList.contains('tab-btn')) {
-                        tabsContainer.querySelector('.active').classList.remove('active');
-                        e.target.classList.add('active');
-                        sceneElement.querySelector('.tab-pane.active').classList.remove('active');
-                        const targetTab = e.target.dataset.tab;
-                        sceneElement.querySelector(`#tab-${targetTab}`).classList.add('active');
-                    }
-                });
+            tabsContainer.addEventListener('click', e => {
+                if (e.target.classList.contains('tab-btn')) {
+                    tabsContainer.querySelector('.active').classList.remove('active');
+                    e.target.classList.add('active');
+                    sceneElement.querySelector('.tab-pane.active').classList.remove('active');
+                    const targetTab = e.target.dataset.tab;
+                    sceneElement.querySelector(`#tab-${targetTab}`).classList.add('active');
+                }
+            });
 
-                accordions.forEach(item => {
-                    const header = item.querySelector('.accordion-header');
-                    header.addEventListener('click', () => {
-                        const content = item.querySelector('.accordion-content');
-                        if (item.classList.toggle('active')) {
-                            content.style.maxHeight = content.scrollHeight + 'px';
-                        } else {
-                            content.style.maxHeight = '0px';
-                        }
-                    });
-                });
-            }
-
-            const startQuizBtn = document.getElementById('start-studentaffairs-quiz-btn');
-            if(startQuizBtn) {
-                startQuizBtn.onclick = () => {
-                    const stageId = 'studentaffairs';
-                    const subScenes = Object.values(gameData[stageId].nextScene);
-                    if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
-                        const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
-                        const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
-                        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
+            accordions.forEach(item => {
+                const header = item.querySelector('.accordion-header');
+                header.addEventListener('click', () => {
+                    const content = item.querySelector('.accordion-content');
+                    if (item.classList.toggle('active')) {
+                        content.style.maxHeight = content.scrollHeight + 'px';
                     } else {
-                        renderScene(stageId);
+                        content.style.maxHeight = '0px';
                     }
-                };  
-            }
-        }
+                });
+            });
+
+document.getElementById('start-studentaffairs-quiz-btn').onclick = () => {
+    const stageId = 'studentaffairs';
+    const subScenes = Object.values(gameData[stageId].nextScene);
+    if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
+        const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
+        const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
+        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
+    } else {
+        renderScene(stageId);
+    }
+};        }
 
         function renderAdmissionInfoScene() {
             document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
@@ -761,77 +758,63 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
             gameState.currentScene = 'admission-info';
             saveGameState();
             const container = document.getElementById('admission-info-container');
-            if(container) {
-                container.innerHTML = ''; 
-                admissionInfoData.forEach(facultyData => {
-                    const card = document.createElement('div');
-                    card.className = 'admission-card';
-                    let specializationsHTML = '<ul>';
-                    facultyData.specializations.forEach(spec => {
-                        const isNew = spec.name.includes('(جديد)');
-                        specializationsHTML += `<li><span class="specialization">${spec.name.replace(' (جديد)', '')} ${isNew ? '<span class="score new-major">جديد</span>' : ''}</span><span class="score">${spec.score}</span></li>`;
-                    });
-                    specializationsHTML += '</ul>';
-                    card.innerHTML = `<h3>${facultyData.faculty}</h3>${specializationsHTML}`;
-                    container.appendChild(card);
+            container.innerHTML = ''; 
+            admissionInfoData.forEach(facultyData => {
+                const card = document.createElement('div');
+                card.className = 'admission-card';
+                let specializationsHTML = '<ul>';
+                facultyData.specializations.forEach(spec => {
+                    const isNew = spec.name.includes('(جديد)');
+                    specializationsHTML += `<li><span class="specialization">${spec.name.replace(' (جديد)', '')} ${isNew ? '<span class="score new-major">جديد</span>' : ''}</span><span class="score">${spec.score}</span></li>`;
                 });
-            }
-            const startQuizBtn = document.getElementById('start-admission-quiz-btn');
-            if(startQuizBtn) {
-                startQuizBtn.onclick = () => {
-                    const stageId = 'admission';
-                    const subScenes = Object.values(gameData[stageId].nextScene);
-                    if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
-                        const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
-                        const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
-                        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
-                    } else {
-                        renderScene(stageId);
-                    }
-                };
-            }
-        }
+                specializationsHTML += '</ul>';
+                card.innerHTML = `<h3>${facultyData.faculty}</h3>${specializationsHTML}`;
+                container.appendChild(card);
+            });
+document.getElementById('start-admission-quiz-btn').onclick = () => {
+    const stageId = 'admission';
+    const subScenes = Object.values(gameData[stageId].nextScene);
+    if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
+        const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
+        const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
+        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
+    } else {
+        renderScene(stageId);
+    }
+};        }
 
         function renderGrantsInfoScene() {
             document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
             document.getElementById('grants-info-scene').classList.remove('hidden');
             gameState.currentScene = 'grants-info';
             saveGameState();
-            const startQuizBtn = document.getElementById('start-grants-quiz-btn');
-            if(startQuizBtn) {
-                startQuizBtn.onclick = () => {
-                    const stageId = 'grants';
-                    if (gameState.stageScores[stageId] !== undefined) {
-                        const score = gameState.stageScores[stageId];
-                        const total = gameData[stageId].length;
-                        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك في هذه المرحلة: ${score} / ${total}</strong>`, null);
-                    } else {
-                        renderScene(stageId);
-                    }
-                };
-            }
-        }
+document.getElementById('start-grants-quiz-btn').onclick = () => {
+    const stageId = 'grants';
+    if (gameState.stageScores[stageId] !== undefined) {
+        const score = gameState.stageScores[stageId];
+        const total = gameData[stageId].length;
+        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك في هذه المرحلة: ${score} / ${total}</strong>`, null);
+    } else {
+        renderScene(stageId);
+    }
+};        }
         
         function renderExchangeInfoScene() {
             document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
             document.getElementById('exchange-info-scene').classList.remove('hidden');
             gameState.currentScene = 'exchange-info';
             saveGameState();
-            const startQuizBtn = document.getElementById('start-exchange-quiz-btn');
-            if(startQuizBtn) {
-                startQuizBtn.onclick = () => {
-                    const stageId = 'exchange';
-                    const subScenes = Object.values(gameData[stageId].nextScene);
-                    if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
-                        const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
-                        const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
-                        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
-                    } else {
-                        renderScene(stageId);
-                    }
-                };
-            }
-        }
+document.getElementById('start-exchange-quiz-btn').onclick = () => {
+    const stageId = 'exchange';
+    const subScenes = Object.values(gameData[stageId].nextScene);
+    if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
+        const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
+        const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
+        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
+    } else {
+        renderScene(stageId);
+    }
+};        }
         
         function handleAnswer(event) {
             const targetButton = event.target.closest('.option-btn');
@@ -852,6 +835,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
 
             if (sceneData.nextScene && sceneData.nextScene[selectedAnswer]) {
                 const nextSceneId = sceneData.nextScene[selectedAnswer];
+                // التحقق قبل الدخول للتحدي الفرعي
                 if (gameState.stageScores[nextSceneId] !== undefined) {
                     const score = gameState.stageScores[nextSceneId];
                     const total = gameData[nextSceneId].length;
@@ -880,6 +864,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
                 } else if (Array.isArray(gameData[sceneId])) {
                     const nextQuestionIndex = gameState.currentSubQuestionIndex + 1;
                     if (nextQuestionIndex >= gameData[sceneId].length) {
+                        // حفظ النتيجة عند إكمال المرحلة للمرة الأولى
                         if (gameState.stageScores[sceneId] === undefined) {
                             gameState.stageScores[sceneId] = stagePoints;
                             saveGameState();
@@ -1130,28 +1115,29 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
         }
         
         playerForm.addEventListener('submit', startGame);
-
-        document.getElementById('map-scene').addEventListener('click', (e) => {
+document.getElementById('map-scene').addEventListener('click', (e) => {
             const button = e.target.closest('.option-btn');
             if (!button) return;
             const destination = button.dataset.destination;
             
+            const mainDestinationId = destination.replace('-info', '').replace('-list', '');
+
             if (destination === 'stadium') {
                 renderStadiumSelection();
                 return;
             }
 
-            const mainDestinationId = destination.replace('-info', '').replace('-list', '');
+            // --- بداية الكود الجديد للتحقق ---
             const stageData = gameData[mainDestinationId];
             if (stageData) {
-                if (Array.isArray(stageData)) {
+                if (Array.isArray(stageData)) { // للأسئلة المباشرة مثل المكتبة
                     if (gameState.stageScores[mainDestinationId] !== undefined) {
                         const score = gameState.stageScores[mainDestinationId];
                         const total = stageData.length;
                         showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك في هذه المرحلة: ${score} / ${total}</strong>`, null);
                         return;
                     }
-                } else if (stageData.nextScene) {
+                } else if (stageData.nextScene) { // للمراحل التي تحتوي على قائمة تحديات
                     const subScenes = Object.values(stageData.nextScene);
                     if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
                         const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
@@ -1161,6 +1147,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
                     }
                 }
             }
+            // --- نهاية الكود الجديد للتحقق ---
 
             const destinationData = gameData[destination];
 
@@ -1229,13 +1216,16 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
         });
 
       adModal.addEventListener('click', (event) => {
+            // يغلق النافذة عند الضغط على زر الإغلاق، أو زر التخطي، أو الخلفية
             if (event.target.closest('.close-ad-btn, #ad-skip-btn') || event.target.id === 'ad-modal') {
                 adModal.classList.add('hidden');
             }
         });
 
+        // إضافة وظيفة لزر "التفاصيل"
         document.getElementById('ad-details-btn').addEventListener('click', () => {
-            adModal.classList.add('hidden');
+            adModal.classList.add('hidden'); // أولاً، أغلق نافذة الإعلان
+            // ثانياً، اعرض صفحة الويب باستخدام الدالة الجديدة
             showWebsiteInIframe('https://www.iugaza.edu.ps/p29815/', 'إعلان كلية الهندسة');
         });
         
@@ -1275,7 +1265,6 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
         
         function populateFacultiesList() {
             const container = document.getElementById('faculties-grid-container');
-            if(!container) return;
             let content = '';
             collegesData.forEach(college => {
                 content += `<div class="college-info-card" data-url="${college.url}" data-name="${college.name}"><h3>${college.emoji} ${college.name}</h3><p>${college.description}</p></div>`;
@@ -1285,75 +1274,10 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
 
         function renderFacultiesListScene() {
             document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
-            const sceneElement = document.getElementById('faculties-list-scene');
-            if(!sceneElement) return;
-
-            sceneElement.innerHTML = `
-                <div class="scene-content">
-                    <div class="info-header">
-                        <h2 class="scene-title">🏢 استكشف كليات الجامعة</h2>
-                        <p>تعرّف على عالم كل كلية! اضغط على أي بطاقة لتصفح صفحتها التعريفية أو موقعها الرسمي.</p>
-                    </div>
-                    <div class="info-scene-container" id="faculties-grid-container"></div>
-                    <div class="info-footer">
-                        <button id="proceed-to-faculties-quiz-btn" class="action-button">
-                            أنا جاهز... ابدأ تحدي الكليات!
-                            <span class="btn-icon">🧠</span>
-                        </button>
-                    </div>
-                </div>`;
-            populateFacultiesList();
-            
-            document.getElementById('faculties-grid-container').addEventListener('click', (e) => {
-                const card = e.target.closest('.college-info-card');
-                if (!card) return;
-                
-                const url = card.dataset.url;
-                const name = card.dataset.name;
-
-                if (name === 'كلية الاقتصاد والعلوم الإدارية') {
-                    window.location.href = 'economics.html';
-                } else if (name === 'كلية الطب') { 
-                    window.location.href = 'medicine.html'; 
-                } else if (name === 'كلية الهندسة') {
-                    window.location.href = 'engineering.html';
-                } else if (name === 'كلية تكنولوجيا المعلومات') {
-                    window.location.href = 'it.html';
-                } else if (name === 'كلية التمريض') {
-                    window.location.href = 'nursing.html';
-                } else if (name === 'كلية العلوم الصحية') {
-                    window.location.href = 'health-sciences.html';
-                } else if (name === 'كلية العلوم') {
-                    window.location.href = 'science.html';
-                } else if (name === 'كلية الآداب') {
-                    window.location.href = 'arts.html';
-                } else if (name === 'كلية الشريعة والقانون') {
-                    window.location.href = 'sharia.html';
-                } else if (name === 'كلية أصول الدين') {
-                    window.location.href = 'osool.html';
-                } else if (name === 'كلية التربية') {
-                    window.location.href = 'education.html';
-                } else {
-                    showWebsiteInIframe(url, name);
-                }
-            });
-
-            document.getElementById('proceed-to-faculties-quiz-btn').addEventListener('click', () => {
-                const stageId = 'faculties';
-                const subScenes = Object.values(gameData[stageId].nextScene);
-                if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
-                    const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
-                    const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
-                    showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
-                } else {
-                    renderScene(stageId);
-                }
-            });
-            sceneElement.classList.remove('hidden');
+            document.getElementById('faculties-list-scene').classList.remove('hidden');
             gameState.currentScene = 'faculties-list';
             saveGameState();
         }
-        
         function showWebsiteInIframe(url, title) {
             const websiteScene = document.getElementById('college-website-scene');
             websiteScene.innerHTML = `<div class="scene-content"><div class="website-view-header"><button id="back-to-last-scene-btn" class="action-button" style="width: auto; padding: 10px 20px;"><span class="btn-icon">➡️</span> رجوع</button></div><div class="loader-container" id="loader-container"><div class="loader"></div><p>جاري تحميل الصفحة...</p></div></div>`;
@@ -1361,12 +1285,13 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
             document.getElementById('back-to-last-scene-btn').addEventListener('click', () => {
                 websiteScene.classList.add('hidden');
                 websiteScene.innerHTML = '';
+                // يعيد اللاعب إلى آخر مشهد كان فيه قبل فتح الموقع
                 const lastSceneId = gameState.currentScene;
                 const sceneElement = document.getElementById(`${lastSceneId}-scene`);
                 if(sceneElement) {
                     sceneElement.classList.remove('hidden');
                 } else {
-                    renderScene('map');
+                    renderScene('map'); // كخيار احتياطي
                 }
             });
 
@@ -1384,7 +1309,51 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
             };
             websiteScene.querySelector('.scene-content').appendChild(iframe);
         }
-        
+document.getElementById('faculties-grid-container').addEventListener('click', (e) => {
+    const card = e.target.closest('.college-info-card');
+    if (!card) return;
+    
+    const url = card.dataset.url;
+    const name = card.dataset.name;
+
+    if (name === 'كلية الاقتصاد والعلوم الإدارية') {
+        window.location.href = 'economics.html';
+    } else if (name === 'كلية الطب') { 
+        window.location.href = 'medicine.html'; 
+    } else if (name === 'كلية الهندسة') {
+        window.location.href = 'engineering.html';
+    } else if (name === 'كلية تكنولوجيا المعلومات') {
+        window.location.href = 'it.html';
+    } else if (name === 'كلية التمريض') {
+        window.location.href = 'nursing.html';
+    } else if (name === 'كلية العلوم الصحية') {
+        window.location.href = 'health-sciences.html';
+    } else if (name === 'كلية العلوم') {
+        window.location.href = 'science.html';
+    } else if (name === 'كلية الآداب') {
+        window.location.href = 'arts.html';
+    } else if (name === 'كلية الشريعة والقانون') {
+        window.location.href = 'sharia.html';
+    } else if (name === 'كلية أصول الدين') {
+        window.location.href = 'osool.html';
+    } else if (name === 'كلية التربية') { // <<<--- السطر الجديد
+        window.location.href = 'education.html'; // <<<--- السطر الجديد
+    } else {
+        showWebsiteInIframe(url, name);
+    }
+});
+
+        document.getElementById('proceed-to-faculties-quiz-btn').addEventListener('click', () => {
+    const stageId = 'faculties';
+    const subScenes = Object.values(gameData[stageId].nextScene);
+    if (subScenes.every(id => gameState.stageScores[id] !== undefined)) {
+        const totalScore = subScenes.reduce((acc, id) => acc + (gameState.stageScores[id] || 0), 0);
+        const totalQuestions = subScenes.reduce((acc, id) => acc + gameData[id].length, 0);
+        showModal("المرحلة مكتملة", `لقد أكملت هذه المرحلة مسبقاً. <br><strong>نتيجتك الإجمالية: ${totalScore} / ${totalQuestions}</strong>`, null);
+    } else {
+        renderScene(stageId);
+    }
+});
         function populateGuideSelection() {
             const container = document.querySelector('#guide-selection-screen .guides-container');
             container.innerHTML = ''; 
@@ -1463,8 +1432,10 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
             gameState.currentScene = 'player-profile';
             saveGameState();
         }
+    // ========== بداية كود لعبة الملعب ==========
+            // ========== بداية كود لعبة الملعب ==========
 
-        function renderStadiumSelection() {
+    function renderStadiumSelection() {
             const sceneElement = document.getElementById('stadium-selection-scene');
             document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
             sceneElement.classList.remove('hidden');
@@ -1498,15 +1469,19 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
 
                 const game = selectedCard.dataset.game;
                 if (game === 'penalties') {
-                    window.location.href = 'stadium-game.html';
+                    // --- هذا هو التعديل المطلوب ---
+                    window.location.href = 'stadium-game.html'; // الانتقال لصفحة اللعبة الجديدة
                 } else if (game === 'memory') {
-                    renderMemoryGame();
+                    renderMemoryGame(); // لعبة الذاكرة تبقى كما هي
                 }
             });
             
             sceneElement.querySelector('#back-to-map-from-stadium').addEventListener('click', () => renderScene('map'));
         }
+        
 
+        // ========== بداية كود لعبة الذاكرة ==========
+        // ========== بداية كود لعبة الذاكرة ==========
         function renderMemoryGame() {
             const sceneElement = document.getElementById('memory-game-scene');
             document.querySelectorAll('.game-stage').forEach(stage => stage.classList.add('hidden'));
@@ -1537,23 +1512,32 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
             const allCards = sceneElement.querySelectorAll('.memory-card');
             let flippedCards = [];
             let matchedPairs = 0;
-            let lockBoard = true;
+            let lockBoard = true; // --- نبدأ واللوحة مقفلة
 
+            // --- الكود الجديد يبدأ هنا ---
+
+            // 1. عرض كل البطاقات فوراً عند بدء اللعبة
             allCards.forEach(card => card.classList.add('flipped'));
 
+            // 2. بعد 4 ثوانٍ، يتم إخفاء جميع البطاقات
             setTimeout(() => {
                 allCards.forEach(card => card.classList.remove('flipped'));
                 
+                // تحديث الرسالة
                 sceneElement.querySelector('p').textContent = 'ابحث عن أزواج الرموز المتشابهة لكليات الجامعة.';
 
+                // 3. ننتظر انتهاء حركة الإخفاء (600ms) ثم نسمح باللعب
                 setTimeout(() => {
                     lockBoard = false;
-                }, 600);
+                }, 600); // هذه المدة يجب أن تطابق مدة الانتقال في CSS
                 
-            }, 4000);
+            }, 4000); // 4 ثوانٍ
+
+            // --- الكود الجديد ينتهي هنا ---
 
             const handleCardClick = (e) => {
                 const clickedCard = e.target.closest('.memory-card');
+                // الآن هذا السطر سيمنع اللعب خلال فترة العرض الأولية
                 if (lockBoard || !clickedCard || clickedCard.classList.contains('flipped')) return;
 
                 clickedCard.classList.add('flipped');
@@ -1568,7 +1552,12 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
             const checkForMatch = () => {
                 const [cardOne, cardTwo] = flippedCards;
                 const isMatch = cardOne.dataset.emoji === cardTwo.dataset.emoji;
-                isMatch ? disableCards() : unflipCards();
+
+                if (isMatch) {
+                    disableCards();
+                } else {
+                    unflipCards();
+                }
             };
             
             const disableCards = () => {
@@ -1598,12 +1587,13 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
 
             const endMemoryGame = () => {
                 setTimeout(() => {
-                    showModal('🧠 ذاكرة قوية!', 'لقد أتممت تحدي الذاكرة بنجاح. أنت الآن عائد إلى منطقة الألعاب.', () => renderStadiumSelection());
-                }, 500);
+showModal('🧠 ذاكرة قوية!', 'لقد أتممت تحدي الذاكرة بنجاح. أنت الآن عائد إلى منطقة الألعاب.', () => renderStadiumSelection());                }, 500);
             };
             
             grid.addEventListener('click', handleCardClick);
         }
+        // ========== نهاية كود لعبة الذاكرة ==========
+        // ========== نهاية كود لعبة الذاكرة ==========
 
         document.body.addEventListener('click', unlockAudio, { once: true });
         
@@ -1630,7 +1620,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2RjbdyISPTbhfR8h-l
         preloadImage('assets/images/hares 1.webp');
         preloadImage('assets/images/library_question.webp');
 
-        if (!restoreGameSession()) {
-            landingScreen.classList.remove('hidden');
-        }
+        populateFacultiesList();
+        populateGuideSelection();
+        restoreGameSession();
     });

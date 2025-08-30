@@ -213,32 +213,33 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 30px;
+    padding: 12px 25px;
     z-index: 1000;
     box-sizing: border-box;
     border-radius: 0 0 var(--border-radius-main) var(--border-radius-main);
     background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    backdrop-filter: blur(10px);
-    border-bottom: 4px solid var(--secondary-color);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    backdrop-filter: blur(12px);
+    border-bottom: 3px solid var(--secondary-color);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.5);
     transition: all 0.4s ease;
 }
 
 .status-section {
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 15px;
+    flex-wrap: wrap;
 }
 
 .status-section span,
 #player-score-display {
-    border-radius: 30px;
-    padding: 6px 18px;
+    border-radius: 25px;
+    padding: 6px 16px;
     font-weight: bold;
-    font-size: 17px;
+    font-size: 16px;
     color: var(--white-color);
-    text-shadow: 0 0 8px rgba(0,0,0,0.6);
-    box-shadow: 0 0 12px rgba(255,255,255,0.4);
+    text-shadow: 0 0 6px rgba(0,0,0,0.6);
+    box-shadow: 0 0 10px rgba(255,255,255,0.3);
     transition: all 0.3s ease;
 }
 
@@ -248,75 +249,75 @@ h1 {
 }
 
 @keyframes glowPulse {
-    0% { box-shadow: 0 0 8px rgba(255,255,255,0.4); }
-    50% { box-shadow: 0 0 18px rgba(255,255,255,0.8); }
-    100% { box-shadow: 0 0 8px rgba(255,255,255,0.4); }
+    0% { box-shadow: 0 0 6px rgba(255,255,255,0.3); }
+    50% { box-shadow: 0 0 16px rgba(255,255,255,0.7); }
+    100% { box-shadow: 0 0 6px rgba(255,255,255,0.3); }
 }
 
 .status-section span:hover,
 #player-score-display:hover {
-    transform: scale(1.08);
-    box-shadow: 0 0 20px rgba(255,255,255,0.9);
+    transform: scale(1.05);
+    box-shadow: 0 0 16px rgba(255,255,255,0.7);
 }
 
 #player-name-display {
     font-weight: bold;
-    font-size: 18px;
+    font-size: 17px;
     color: var(--white-color);
-    text-shadow: 0 0 8px rgba(0,0,0,0.6);
+    text-shadow: 0 0 6px rgba(0,0,0,0.6);
     transition: text-shadow 0.3s ease;
 }
 
 #player-name-display:hover {
-    text-shadow: 0 0 15px rgba(255,255,255,0.9);
+    text-shadow: 0 0 12px rgba(255,255,255,0.8);
 }
 
 #player-score-display {
     background-color: var(--secondary-color);
     color: var(--text-dark);
-    padding: 6px 15px;
+    padding: 6px 14px;
     border-radius: 20px;
     font-weight: bold;
-    font-size: 16px;
+    font-size: 15px;
 }
 
 .status-bar-btn {
-    padding: 8px 18px;
-    border-radius: 25px;
-    background: rgba(255,255,255,0.15);
+    padding: 7px 16px;
+    border-radius: 22px;
+    background: rgba(255,255,255,0.12);
     color: var(--white-color);
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease;
     backdrop-filter: blur(5px);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
 }
 
 .status-bar-btn:hover {
-    transform: scale(1.12) rotate(-3deg);
-    background: rgba(255,255,255,0.3);
-    box-shadow: 0 0 18px rgba(255,255,255,0.7);
+    transform: scale(1.1) rotate(-2deg);
+    background: rgba(255,255,255,0.25);
+    box-shadow: 0 0 15px rgba(255,255,255,0.6);
 }
 
 #status-bar.hidden {
-    top: -130px;
+    top: -120px;
     transition: top 0.5s ease;
 }
 
 /* ====================== استجابة لجميع الأجهزة ====================== */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     #status-bar {
         flex-direction: column;
         align-items: stretch;
-        padding: 8px 10px;
+        padding: 10px 15px;
         border-radius: 0 0 calc(var(--border-radius-main)/2) calc(var(--border-radius-main)/2);
-        gap: 5px;
+        gap: 6px;
     }
 
     .status-section {
         width: 100%;
         justify-content: space-between;
-        gap: 8px;
+        gap: 6px;
     }
 
     #player-name-display {
@@ -331,16 +332,40 @@ h1 {
 
     .status-bar-btn {
         font-size: 13px;
-        padding: 6px 10px;
-        gap: 5px;
+        padding: 5px 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    #status-bar {
+        padding: 8px 10px;
+    }
+
+    .status-section {
+        gap: 4px;
+    }
+
+    #player-name-display {
+        font-size: 14px;
+    }
+
+    #player-score-display,
+    .status-section span {
+        font-size: 13px;
+        padding: 4px 10px;
+    }
+
+    .status-bar-btn {
+        font-size: 12px;
+        padding: 4px 8px;
     }
 }
 
 /* ====================== الرسوميات والتحريك ====================== */
 @keyframes pulse {
-    0% { transform: scale(1.1); }
-    50% { transform: scale(1.15); }
-    100% { transform: scale(1.1); }
+    0% { transform: scale(1.08); }
+    50% { transform: scale(1.12); }
+    100% { transform: scale(1.08); }
 }
 
 

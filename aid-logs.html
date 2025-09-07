@@ -109,5 +109,32 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="script.js"></script>
+    <div class="modal fade" id="confirmBulkCompleteModal" tabindex="-1" aria-labelledby="confirmBulkCompleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmBulkCompleteModalLabel">تأكيد عملية التسليم</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>أنت على وشك تحديث حالة جميع المساعدات المعروضة إلى "تم التسليم".</p>
+                <div class="alert alert-warning">
+                    <strong>استثناء:</strong> إذا كان هناك أفراد لم يستلموا المساعدة، يرجى إدخال أرقام هوياتهم في المربع أدناه (كل رقم هوية في سطر). سيتم حذف سجلات المساعدة لهؤلاء الأفراد بدلاً من تحديثها.
+                </div>
+                <div class="form-group">
+                    <label for="exceptionIdsTextarea" class="form-label">أرقام هويات غير المستلمين (إن وجد)</label>
+                    <textarea class="form-control" id="exceptionIdsTextarea" rows="4" placeholder="ضع كل رقم هوية في سطر منفصل"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-primary" id="confirmBulkProcessBtn">
+                     <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                     <span class="button-text">تأكيد ومعالجة</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

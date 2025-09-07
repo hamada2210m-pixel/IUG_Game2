@@ -323,7 +323,34 @@ document.addEventListener('DOMContentLoaded', () => {
                 tableBody.innerHTML = result.data.length === 0 ? '<tr><td colspan="3" class="text-center">لا يوجد طلبات جديدة.</td></tr>' : result.data.map(req => `<tr><td>${new Date(req['التاريخ والوقت']).toLocaleString()}</td><td>${req['رقم الهوية']}</td><td><button class="btn btn-sm btn-success clear-password-btn" data-userid="${req['رقم الهوية']}" data-timestamp="${req['التاريخ والوقت']}"><i class="bi bi-check-circle-fill me-1"></i> موافقة ومسح</button></td></tr>`).join('');
             }
         },
+        async handleConfirmBulkProcess(token) {
+    const visibleRows = document.querySelectorAll('#futureAidsTableBody tr[data-beneficiary-id]');
+    const allVisibleBeneficiaryIds = Array.from(visibleRows).map(row => row.dataset.beneficiaryId);
+    
+    const aidRecordsToDelete = document.getElementById('exceptionIdsTextarea').value.split('\n').map(id => id.trim()).filter(id => id);
+    
+    const beneficiaryIdsToComplete = allVisibleBeneficiaryIds.filter(id => !aidRecordsToDelete.includes(id));
+
+    if (beneficiaryIdsToComplete.length === 0 && aidRecordsToDelete.length === 0) {
+        this.showToast('لم يتم تحديد أي إجراء.', false);
+        return;
+    }
+
+    const result = await this.apiCall({
+        action: 'bulkProcessAid',
+        token,
+        beneficiaryIdsToComplete,
+        aidRecordsToDelete
+    }, true);
+
+    if (result) {
+        this.bulkCompleteModal.hide();
+        await this.fetchAidDataAndPopulateTables(token);
+        this.loadFutureAidData();
+    }
+},
     };
 
+    
     App.init();
 });

@@ -1,12 +1,12 @@
-/**
+/** 
  * @file script.js
  * @description Frontend logic for the Family Aid System.
- * @version 5.0 - Interactive future aid table with search, pagination, and bulk actions.
+ * @version 5.2 - Custom confirmation modals and bug fixes.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
     const App = {
-        WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbynq73HgfdxEvLwWj_2C4Ub403ixTcJhcB6kemyjMTEVkotZGkc9sj8mfUIX_GPqDTP/exec',
+        WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbyKiGL61D9y0WqNCbc3EscK3WZYH6XaHkjjc774nQNBCZ3Rhh6TZCGAtaG3ZvYtPl2N/exec',
         aidCategories: {
             "مساعدات مالية": ["نقد مباشر للعائلات المحتاجة", "دفع فواتير (كهرباء، ماء، إيجار)", "قروض حسنة أو صناديق دوارة"],
             "مساعدات غذائية": ["طرود غذائية أساسية", "وجبات جاهزة / مطبوخة", "توزيع مياه للشرب"],
@@ -21,9 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
         pageSize: 10,
         setPasswordModal: null,
         loginPasswordModal: null,
+        confirmationModal: null, // New confirmation modal
         membersList: [],
-
-        // --- NEW STATE FOR FUTURE AID PAGINATION ---
+        allAidRecords: [],
+        allCompletedAidRecords: [],
         allFutureAidRecords: [],
         futureAidCurrentPage: 1,
         futureAidPageSize: 10,
@@ -33,16 +34,44 @@ document.addEventListener('DOMContentLoaded', () => {
             this.initPageBasedOnURL();
             const setPasswordModalElement = document.getElementById('setPasswordModal');
             const loginPasswordModalElement = document.getElementById('loginPasswordModal');
+            const confirmationModalElement = document.getElementById('confirmationModal'); // New line
             if (setPasswordModalElement) {
                 this.setPasswordModal = new bootstrap.Modal(setPasswordModalElement);
             }
             if (loginPasswordModalElement) {
                 this.loginPasswordModal = new bootstrap.Modal(loginPasswordModalElement);
             }
+            if (confirmationModalElement) {
+                this.confirmationModal = new bootstrap.Modal(confirmationModalElement); // New line
+            }
             const bulkModalElement = document.getElementById('confirmBulkCompleteModal');
             if (bulkModalElement) {
                 this.bulkCompleteModal = new bootstrap.Modal(bulkModalElement);
             }
+        },
+
+        showConfirmationModal(message) {
+            return new Promise((resolve) => {
+                const modalBody = document.getElementById('confirmationModalBody');
+                const confirmBtn = document.getElementById('confirmActionBtn');
+                modalBody.textContent = message;
+
+                const onConfirm = () => {
+                    this.confirmationModal.hide();
+                    confirmBtn.removeEventListener('click', onConfirm);
+                    resolve(true);
+                };
+
+                const onCancel = () => {
+                    this.confirmationModal.hide();
+                    confirmBtn.removeEventListener('click', onConfirm);
+                    resolve(false);
+                };
+
+                confirmBtn.addEventListener('click', onConfirm);
+                document.getElementById('confirmationModal').addEventListener('hidden.bs.modal', onCancel, { once: true });
+                this.confirmationModal.show();
+            });
         },
 
         formatDateToEnglish(dateString) {
@@ -215,40 +244,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             tableBody.innerHTML = history.map(item => `<tr><td>${item['نوع المساعدة']}</td><td>${this.formatDateToEnglish(item['تاريخ الاستلام'])}</td><td>${item['مصدر المساعدة'] || '-'}</td><td>${item['ملاحظات'] || '-'}</td></tr>`).join('');
         },
-        loadCompletedAidData(records) {
-    const tableBody = document.getElementById('completedAidsTableBody');
-    const searchTerm = document.getElementById('completedAidSearchInput')?.value.toLowerCase() || '';
-    const pageSize = parseInt(document.getElementById('completedAidPageSizeSelect')?.value, 10) || 10;
-
-    const filteredRecords = records.filter(record => 
-        (record['اسم المستفيد'] || '').toLowerCase().includes(searchTerm) ||
-        (record['نوع المساعدة'] || '').toLowerCase().includes(searchTerm)
-    );
-
-    document.getElementById('completedAidTotalCount').textContent = `إجمالي السجلات: ${filteredRecords.length}`;
-
-    const paginatedRecords = filteredRecords.slice(0, pageSize);
-
-    this.renderCompletedAidTable(paginatedRecords);
-    // يمكنك إضافة دالة للتحكم في Pagination هنا إذا احتجت
-},
-
-renderCompletedAidTable(records) {
-    const tableBody = document.getElementById('completedAidsTableBody');
-    if (records.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="5" class="text-center">لا توجد سجلات.</td></tr>';
-        return;
-    }
-    tableBody.innerHTML = records.map(aid => `
-        <tr>
-            <td>${aid['اسم المستفيد'] || '-'}</td>
-            <td>${aid['معرف المستفيد']}</td>
-            <td>${aid['نوع المساعدة']}</td>
-            <td>${this.formatDateToEnglish(aid['تاريخ الاستلام'])}</td>
-            <td>${aid['مصدر المساعدة'] || '-'}</td>
-        </tr>
-    `).join('');
-},
 
         initAdminPage() {
             const token = sessionStorage.getItem('adminToken');
@@ -272,8 +267,7 @@ renderCompletedAidTable(records) {
             document.getElementById('reportForm')?.addEventListener('submit', e => this.handleReportGeneration(e, token));
             document.getElementById('exportReportBtn')?.addEventListener('click', () => this.exportReportToExcel());
             document.getElementById('exportTemplateBtn')?.addEventListener('click', () => this.exportAidTemplateToExcel());
-            document.getElementById('completedAidSearchInput')?.addEventListener('input', () => this.loadCompletedAidData(this.allAidRecords.filter(aid => String(aid['حالة المساعدة']).trim() === 'Completed')));
-            document.getElementById('completedAidPageSizeSelect')?.addEventListener('change', () => this.loadCompletedAidData(this.allAidRecords.filter(aid => String(aid['حالة المساعدة']).trim() === 'Completed')));
+            
             const searchInput = document.getElementById('aidMemberSearch');
             searchInput?.addEventListener('input', () => {
                 const searchTerm = searchInput.value.toLowerCase();
@@ -324,6 +318,9 @@ renderCompletedAidTable(records) {
                 document.body.innerHTML = originalContent;
                 window.location.reload(); 
             });
+            // إضافة مستمعي الأحداث لجدول المساعدات المكتملة
+            document.getElementById('completedAidSearchInput')?.addEventListener('input', () => this.loadCompletedAidData());
+            document.getElementById('completedAidPageSizeSelect')?.addEventListener('change', () => this.loadCompletedAidData());
         },
 
         async loadAdminDashboard(token) {
@@ -490,11 +487,13 @@ renderCompletedAidTable(records) {
         async fetchAidDataAndPopulateTables(token) {
             const aidResult = await this.apiCall({ action: 'getAllAidRecords', token });
             if (aidResult && aidResult.data) {
+                this.allAidRecords = aidResult.data;
                 this.allFutureAidRecords = aidResult.data.filter(aid => String(aid['حالة المساعدة']).trim() === 'Future');
+                this.allCompletedAidRecords = aidResult.data.filter(aid => String(aid['حالة المساعدة']).trim() === 'Completed');
+                
                 this.futureAidCurrentPage = 1;
                 this.loadFutureAidData();
-                const completedRecords = aidResult.data.filter(aid => String(aid['حالة المساعدة']).trim() === 'Completed');
-        this.loadCompletedAidData(completedRecords);
+                this.loadCompletedAidData();
             }
         },
         loadFutureAidData() {
@@ -509,6 +508,23 @@ renderCompletedAidTable(records) {
             this.renderFutureAidTable(paginatedRecords);
             this.renderFutureAidPagination(filteredRecords.length);
         },
+        loadCompletedAidData() {
+            const tableBody = document.getElementById('completedAidsTableBody');
+            const searchTerm = document.getElementById('completedAidSearchInput')?.value.toLowerCase() || '';
+            const pageSize = parseInt(document.getElementById('completedAidPageSizeSelect')?.value, 10) || 10;
+            
+            const filteredRecords = this.allCompletedAidRecords.filter(record => 
+                (record['اسم المستفيد'] || '').toLowerCase().includes(searchTerm) ||
+                (record['نوع المساعدة'] || '').toLowerCase().includes(searchTerm)
+            );
+            
+            document.getElementById('completedAidTotalCount').textContent = `إجمالي السجلات: ${filteredRecords.length}`;
+            
+            const paginatedRecords = filteredRecords.slice(0, pageSize);
+            
+            this.renderCompletedAidTable(paginatedRecords);
+            // Pagination logic for completed aids would go here if needed.
+        },
         renderFutureAidTable(records) {
             const tableBody = document.getElementById('futureAidsTableBody');
             if (records.length === 0) {
@@ -516,6 +532,22 @@ renderCompletedAidTable(records) {
                 return;
             }
             tableBody.innerHTML = records.map(aid => `<tr data-beneficiary-id="${aid['معرف المستفيد']}"><td>${aid['اسم المستفيد'] || '-'}</td><td>${aid['معرف المستفيد']}</td><td>${aid['نوع المساعدة']}</td><td>${this.formatDateToEnglish(aid['تاريخ الاستلام'])}</td><td>${aid['مصدر المساعدة'] || '-'}</td><td><button class="btn btn-sm btn-success complete-aid-btn" data-id="${aid['معرف المساعدة']}"><i class="bi bi-check-lg"></i></button></td></tr>`).join('');
+        },
+        renderCompletedAidTable(records) {
+            const tableBody = document.getElementById('completedAidsTableBody');
+            if (records.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="5" class="text-center">لا توجد سجلات.</td></tr>';
+                return;
+            }
+            tableBody.innerHTML = records.map(aid => `
+                <tr>
+                    <td>${aid['اسم المستفيد'] || '-'}</td>
+                    <td>${aid['معرف المستفيد']}</td>
+                    <td>${aid['نوع المساعدة']}</td>
+                    <td>${this.formatDateToEnglish(aid['تاريخ الاستلام'])}</td>
+                    <td>${aid['مصدر المساعدة'] || '-'}</td>
+                </tr>
+            `).join('');
         },
         renderFutureAidPagination(total) {
             const container = document.getElementById('futureAidPagination');
@@ -532,7 +564,8 @@ renderCompletedAidTable(records) {
         },
         async handleCompleteSingleAid(e, token) {
             const aidId = e.target.closest('.complete-aid-btn').dataset.id;
-            if (confirm('هل أنت متأكد من تسليم هذه المساعدة؟')) {
+            const confirmed = await this.showConfirmationModal('هل أنت متأكد من تسليم هذه المساعدة؟');
+            if (confirmed) {
                 const result = await this.apiCall({ action: 'updateAidStatus', token, aidId, newStatus: 'Completed' }, true);
                 if (result) this.fetchAidDataAndPopulateTables(token);
             }
@@ -657,23 +690,39 @@ renderCompletedAidTable(records) {
             this.renderCreateAdminForm();
             this.loadAdmins(token);
             document.getElementById('createAdminForm').addEventListener('submit', (e) => this.handleCreateAdminSubmit(e, token));
-            document.getElementById('adminsTable').addEventListener('change', (e) => { if (e.target.classList.contains('status-select')) this.handleStatusChange(e, token); });
+            document.getElementById('adminsTable').addEventListener('click', (e) => { 
+                if (e.target.closest('.toggle-status-btn')) {
+                    this.handleStatusChange(e, token);
+                }
+            });
         },
         async handleStatusChange(event, token) {
-            const select = event.target;
-            const username = select.dataset.username;
-            const newStatus = select.value;
-            if (confirm(`هل أنت متأكد من تغيير حالة المدير ${username}؟`)) {
+            const button = event.target.closest('.toggle-status-btn');
+            const username = button.dataset.username;
+            const currentStatus = button.dataset.status;
+            const newStatus = currentStatus === 'Active' ? 'Inactive' : 'Active';
+            
+            const confirmed = await this.showConfirmationModal(`هل أنت متأكد من تغيير حالة المدير ${username} إلى ${newStatus === 'Active' ? 'نشط' : 'غير نشط'}؟`);
+            
+            if (confirmed) {
                 const result = await this.apiCall({ action: 'updateAdminStatus', token, username, newStatus }, true);
-                if (!result) select.value = newStatus === 'Active' ? 'Inactive' : 'Active'; 
-            } else {
-                select.value = newStatus === 'Active' ? 'Inactive' : 'Active'; 
+                if (result) {
+                    this.loadAdmins(token);
+                }
             }
         },
         renderCreateAdminForm() { document.getElementById('createAdminForm').innerHTML = `<div class="row"><div class="col-md-4 mb-3"><label for="newUsername" class="form-label">اسم المستخدم</label><input type="text" class="form-control" id="newUsername" required></div><div class="col-md-4 mb-3"><label for="newPassword" class="form-label">كلمة المرور</label><input type="password" class="form-control" id="newPassword" required></div><div class="col-md-4 mb-3"><label for="newRole" class="form-label">الصلاحية</label><select id="newRole" class="form-select" required><option value="admin">Admin</option><option value="superadmin">Super Admin</option></select></div></div><button type="submit" class="btn btn-primary">إنشاء حساب</button>`; },
         async handleCreateAdminSubmit(e, token) { e.preventDefault(); const result = await this.apiCall({ action: 'createAdmin', token, username: document.getElementById('newUsername').value, password: document.getElementById('newPassword').value, role: document.getElementById('newRole').value }, true); if (result) { e.target.reset(); this.loadAdmins(token); } },
-        async loadAdmins(token) { const tableBody = document.getElementById('adminsTable'); tableBody.innerHTML = '<tr><td colspan="6" class="text-center">جاري التحميل...</td></tr>'; const result = await this.apiCall({ action: 'getAdmins', token }); if (result && result.admins) this.renderAdminsTable(result.admins); else tableBody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">فشل تحميل القائمة.</td></tr>'; },
-        renderAdminsTable(admins) { document.getElementById('adminsTable').innerHTML = admins.map(admin => `<tr><td>${admin['اسم المستخدم']}</td><td><span class="badge bg-primary">${admin['الصلاحية']}</span></td><td>${this.formatDateToEnglish(admin['تاريخ الإنشاء'])}</td><td><select class="form-select form-select-sm status-select" data-username="${admin['اسم المستخدم']}"><option value="Active" ${admin['الحالة'] === 'Active' ? 'selected' : ''}>نشط</option><option value="Inactive" ${admin['الحالة'] === 'Inactive' ? 'selected' : ''}>غير نشط</option></select></td></tr>`).join(''); },
+        async loadAdmins(token) { const tableBody = document.getElementById('adminsTable'); tableBody.innerHTML = '<tr><td colspan="5" class="text-center">جاري التحميل...</td></tr>'; const result = await this.apiCall({ action: 'getAdmins', token }); if (result && result.admins) this.renderAdminsTable(result.admins); else tableBody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">فشل تحميل القائمة.</td></tr>'; },
+        renderAdminsTable(admins) { 
+            document.getElementById('adminsTable').innerHTML = admins.map(admin => {
+                const statusBadge = admin['الحالة'] === 'Active' ? '<span class="badge bg-success">نشط</span>' : '<span class="badge bg-danger">غير نشط</span>';
+                const actionButton = admin['الحالة'] === 'Active' 
+                    ? `<button class="btn btn-sm btn-danger toggle-status-btn" data-username="${admin['اسم المستخدم']}" data-status="Active"><i class="bi bi-person-x-fill"></i> غير نشط</button>` 
+                    : `<button class="btn btn-sm btn-success toggle-status-btn" data-username="${admin['اسم المستخدم']}" data-status="Inactive"><i class="bi bi-person-check-fill"></i> نشط</button>`;
+                return `<tr><td>${admin['اسم المستخدم']}</td><td><span class="badge bg-primary">${admin['الصلاحية']}</span></td><td>${this.formatDateToEnglish(admin['تاريخ الإنشاء'])}</td><td>${statusBadge}</td><td>${actionButton}</td></tr>`;
+            }).join('');
+        },
         
         async fetchResetRequests(token) {
             const result = await this.apiCall({ action: 'getResetRequests', token });
@@ -690,14 +739,16 @@ renderCompletedAidTable(records) {
         async handleClearPassword(e, token) {
             const button = e.target.closest('.clear-password-btn');
             const { userid, timestamp } = button.dataset;
-            if (confirm(`هل أنت متأكد من مسح كلمة مرور المستخدم ${userid}؟`)) {
+            const confirmed = await this.showConfirmationModal(`هل أنت متأكد من مسح كلمة مرور المستخدم ${userid}؟`);
+            if (confirmed) {
                 const result = await this.apiCall({ action: 'clearMemberPassword', token, userId: userid, timestamp }, true);
                 if (result) this.fetchResetRequests(token);
             }
         },
         async handleResetPassword(e, token) {
             const userId = e.target.closest('.reset-password-btn').dataset.id;
-            if (confirm(`هل أنت متأكد من مسح كلمة مرور المستخدم ${userId}؟`)) {
+            const confirmed = await this.showConfirmationModal(`هل أنت متأكد من مسح كلمة مرور المستخدم ${userId}؟`);
+            if (confirmed) {
                 const result = await this.apiCall({ action: 'clearMemberPassword', token, userId }, true);
                 if (result) this.showToast(`تم مسح كلمة مرور ${userId} بنجاح.`, true);
             }

@@ -1,7 +1,7 @@
 /**
  * @file script.js
  * @description Frontend logic for the Family Aid System.
- * @version 8.0 - Absolutely Complete and Consolidated Version.
+ * @version 8.1 - Fixed "Deliver All" logic to apply to all filtered results across pages.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         membersList: [],
         allCompletedAidRecords: [],
         allFutureAidRecords: [],
+        currentFilteredFutureAid: [], // To store all filtered results for bulk actions
         futureAidCurrentPage: 1,
         futureAidPageSize: 10,
         
@@ -204,6 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadFutureAidData() {
             const searchTerm = document.getElementById('futureAidSearchInput')?.value.toLowerCase() || '';
             let filteredRecords = this.allFutureAidRecords.filter(r => (r['اسم المستفيد'] || '').toLowerCase().includes(searchTerm) || (r['نوع المساعدة'] || '').toLowerCase().includes(searchTerm));
+            this.currentFilteredFutureAid = filteredRecords; // Store for bulk action
             document.getElementById('futureAidTotalCount').textContent = `إجمالي السجلات: ${filteredRecords.length}`;
             const paginatedRecords = filteredRecords.slice((this.futureAidCurrentPage - 1) * this.futureAidPageSize, this.futureAidCurrentPage * this.futureAidPageSize);
             this.renderFutureAidTable(paginatedRecords, searchTerm);
@@ -219,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const message = searchTerm ? 'لا توجد سجلات تطابق البحث.' : 'لا توجد مساعدات مستقبلية حالياً.';
                 tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">${message}</td></tr>`;
             } else {
-                tableBody.innerHTML = records.map(aid => `<tr><td>${aid['اسم المستفيد'] || '-'}</td><td>${aid['معرف المستفيد']}</td><td>${aid['نوع المساعدة']}</td><td>${this.formatDateToEnglish(aid['تاريخ الاستلام'])}</td><td>${aid['مصدر المساعدة'] || '-'}</td><td><button class="btn btn-sm btn-success complete-aid-btn" data-id="${aid['معرف المساعدة']}"><i class="bi bi-check-lg"></i></button></td></tr>`).join('');
+                tableBody.innerHTML = records.map(aid => `<tr data-beneficiary-id="${aid['معرف المستفيد']}"><td>${aid['اسم المستفيد'] || '-'}</td><td>${aid['معرف المستفيد']}</td><td>${aid['نوع المساعدة']}</td><td>${this.formatDateToEnglish(aid['تاريخ الاستلام'])}</td><td>${aid['مصدر المساعدة'] || '-'}</td><td><button class="btn btn-sm btn-success complete-aid-btn" data-id="${aid['معرف المساعدة']}"><i class="bi bi-check-lg"></i></button></td></tr>`).join('');
             }
         },
         renderCompletedAidTable(records, searchTerm) {
@@ -233,12 +235,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         },
         async handleConfirmBulkProcess(token) {
-            const visibleRows = document.querySelectorAll('#futureAidsTableBody tr[data-beneficiary-id]');
-            const allVisibleBeneficiaryIds = Array.from(visibleRows).map(row => row.dataset.beneficiaryId);
-            const aidRecordsToDelete = document.getElementById('exceptionIdsTextarea').value.split('\n').map(id => id.trim()).filter(id => id);
-            const beneficiaryIdsToComplete = allVisibleBeneficiaryIds.filter(id => !aidRecordsToDelete.includes(id));
-            if (beneficiaryIdsToComplete.length === 0 && aidRecordsToDelete.length === 0) { this.showToast('لم يتم تحديد أي إجراء.', false); return; }
-            const result = await this.apiCall({ action: 'bulkProcessAid', token, beneficiaryIdsToComplete, aidRecordsToDelete }, true);
+            const allFilteredBeneficiaryIds = this.currentFilteredFutureAid.map(record => String(record['معرف المستفيد']));
+            const exceptions = document.getElementById('exceptionIdsTextarea').value.split('\n').map(id => id.trim()).filter(id => id);
+            const beneficiaryIdsToComplete = allFilteredBeneficiaryIds.filter(id => !exceptions.includes(id));
+            if (beneficiaryIdsToComplete.length === 0 && exceptions.length === 0) { this.showToast('لم يتم تحديد أي إجراء.', false); return; }
+            const result = await this.apiCall({ action: 'bulkProcessAid', token, beneficiaryIdsToComplete, aidRecordsToDelete: exceptions }, true);
             if (result) {
                 this.bulkCompleteModal.hide();
                 await this.fetchAidDataAndPopulateTables(token);

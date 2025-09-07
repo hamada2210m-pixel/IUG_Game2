@@ -1,7 +1,7 @@
 /**
  * @file script.js
  * @description Frontend logic for the Family Aid System.
- * @version 8.1 - Fixed "Deliver All" logic to apply to all filtered results across pages.
+ * @version 8.2 - Added functionality for single aid delivery button.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         membersList: [],
         allCompletedAidRecords: [],
         allFutureAidRecords: [],
-        currentFilteredFutureAid: [], // To store all filtered results for bulk actions
+        currentFilteredFutureAid: [],
         futureAidCurrentPage: 1,
         futureAidPageSize: 10,
         
@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadFutureAidData() {
             const searchTerm = document.getElementById('futureAidSearchInput')?.value.toLowerCase() || '';
             let filteredRecords = this.allFutureAidRecords.filter(r => (r['اسم المستفيد'] || '').toLowerCase().includes(searchTerm) || (r['نوع المساعدة'] || '').toLowerCase().includes(searchTerm));
-            this.currentFilteredFutureAid = filteredRecords; // Store for bulk action
+            this.currentFilteredFutureAid = filteredRecords;
             document.getElementById('futureAidTotalCount').textContent = `إجمالي السجلات: ${filteredRecords.length}`;
             const paginatedRecords = filteredRecords.slice((this.futureAidCurrentPage - 1) * this.futureAidPageSize, this.futureAidCurrentPage * this.futureAidPageSize);
             this.renderFutureAidTable(paginatedRecords, searchTerm);
@@ -232,6 +232,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 tableBody.innerHTML = '<tr><td colspan="5" class="text-center">لا توجد سجلات تطابق البحث.</td></tr>';
             } else {
                 tableBody.innerHTML = records.map(aid => `<tr><td>${aid['اسم المستفيد'] || '-'}</td><td>${aid['معرف المستفيد']}</td><td>${aid['نوع المساعدة']}</td><td>${this.formatDateToEnglish(aid['تاريخ الاستلام'])}</td><td>${aid['مصدر المساعدة'] || '-'}</td></tr>`).join('');
+            }
+        },
+        async handleCompleteSingleAid(e, token) {
+            const button = e.target.closest('.complete-aid-btn');
+            const aidId = button.dataset.id;
+            const confirmed = await this.showConfirmationModal('هل أنت متأكد من تسليم هذه المساعدة؟');
+            if (confirmed) {
+                const result = await this.apiCall({ action: 'updateAidStatus', token, aidId, newStatus: 'Completed' }, true);
+                if (result) {
+                    await this.fetchAidDataAndPopulateTables(token);
+                    this.loadFutureAidData();
+                }
             }
         },
         async handleConfirmBulkProcess(token) {

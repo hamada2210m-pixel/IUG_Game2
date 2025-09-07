@@ -1,0 +1,270 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+
+:root {
+    --primary-green: #008000;
+    --dark-grey: #212529;
+    --light-grey: #f4f7f6;
+    --border-grey: #dee2e6;
+    --card-hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    --bs-success-rgb: 0, 128, 0; /* For bootstrap components */
+}
+
+body {
+    font-family: 'Cairo', sans-serif;
+    background-color: var(--light-grey);
+    color: var(--dark-grey);
+    direction: rtl;
+    overflow-x: hidden;
+}
+
+/* --- Index Page --- */
+.main-container {
+    max-width: 900px;
+    margin: 3rem auto;
+    padding: 2rem;
+}
+
+.logo {
+    max-width: 130px;
+    margin-bottom: 1.5rem;
+}
+
+.header-section h1 {
+    font-weight: 700;
+}
+
+.selection-cards {
+    margin-top: 2rem;
+}
+
+.selection-card {
+    border: 1px solid var(--border-grey);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 2rem 1rem;
+    background-color: #fff;
+}
+
+.selection-card:hover,
+.selection-card.active {
+    transform: translateY(-5px);
+    box-shadow: var(--card-hover-shadow);
+    border-color: var(--primary-green);
+}
+
+.card-icon {
+    font-size: 3rem;
+    color: var(--primary-green);
+    margin-bottom: 1rem;
+}
+
+.card-title {
+    font-weight: 700;
+}
+
+.auth-form {
+    background: #fff;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    max-width: 450px;
+    margin: 2rem auto 0;
+}
+
+/* --- Shared Styles --- */
+.btn-primary {
+    background-color: var(--primary-green);
+    border-color: var(--primary-green);
+    font-weight: 700;
+    padding: 0.75rem 1rem;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: #006400;
+    border-color: #006400;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.stat-card {
+    text-align: center;
+}
+
+/* --- Dashboard & Admin Pages --- */
+.header {
+    background: #fff;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--border-grey);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+}
+
+.header-logo {
+    height: 50px;
+}
+
+.header-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* --- Footer --- */
+.footer {
+    text-align: center;
+    padding: 1.5rem;
+    background-color: #e9ecef;
+    color: #6c757d;
+    margin-top: 4rem;
+    font-size: 0.9rem;
+}
+
+/* Spinner inside button */
+.btn .spinner-border {
+    margin-left: 5px;
+}
+
+/* --- Footer & Status Indicator Styles --- */
+.footer {
+    text-align: center;
+    padding: 1.5rem;
+    background-color: #e9ecef;
+    color: #6c757d;
+    margin-top: 4rem;
+    font-size: 0.9rem;
+}
+
+.status-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    transition: color 0.5s ease;
+}
+
+.status-dot {
+    height: 12px;
+    width: 12px;
+    background-color: grey;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 8px;
+    animation: pulse 2s infinite;
+}
+
+.status-indicator.connected .status-dot {
+    background-color: #28a745;
+    animation: none;
+}
+
+.status-indicator.disconnected .status-dot {
+    background-color: #dc3545;
+    animation: none;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(108, 117, 125, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(108, 117, 125, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(108, 117, 125, 0);
+    }
+}
+
+/* لإصلاح تنسيق القوائم الرقمية والنقطية في العرض العربي */
+ol,
+ul {
+    list-style-position: inside;
+    padding-right: 0;
+}
+
+/* * تعديل تنسيق أرقام الصفحات (Pagination)
+ * للسماح لها بالالتفاف لأسطر جديدة على الشاشات الصغيرة
+ */
+.pagination {
+    flex-wrap: wrap;
+}
+
+.pagination .page-item {
+    margin-top: 5px;
+}
+
+/* Profile Card Style - M U C H  I M P R O V E D */
+.profile-card {
+    border: 1px solid var(--border-grey);
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.profile-card-header {
+    background-color: var(--light-grey);
+    padding: 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border-grey);
+}
+
+.profile-icon {
+    font-size: 4rem;
+    color: var(--primary-green);
+    margin-bottom: 0.5rem;
+}
+
+.profile-card-body {
+    padding: 1.5rem;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    border: 1px solid var(--border-grey);
+    border-radius: 8px;
+    background-color: #fcfcfc;
+    height: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.info-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.info-item strong {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.25rem;
+    color: #6c757d;
+}
+
+.info-item i {
+    color: var(--primary-green);
+    margin-left: 0.5rem;
+}
+
+.info-item span {
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: var(--dark-grey);
+}
+
+@media (max-width: 767px) {
+    .profile-card-body .row > .col-md-6 {
+        width: 100%;
+    }
+}

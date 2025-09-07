@@ -6,7 +6,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const App = {
-        WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbwb7-O3Tn8aVrEz2kQVli8_40mVwSGNPTxQSroFgrAu3mcdnmZXFsNuJt0xmsYL8SbS/exec',
+        WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbzdJEKnlDruV6qwcF2lZATgXPrl9SDKUZ1gvZBtb6ZWnP0PMhX0kr1JYWDlYjnbhxmx/exec',
         aidCategories: {
             "مساعدات مالية": ["نقد مباشر للعائلات المحتاجة", "دفع فواتير (كهرباء، ماء، إيجار)", "قروض حسنة أو صناديق دوارة"],
             "مساعدات غذائية": ["طرود غذائية أساسية", "وجبات جاهزة / مطبوخة", "توزيع مياه للشرب"],
@@ -277,7 +277,18 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('completeAllAidBtn')?.addEventListener('click', () => this.handleBulkComplete());
             document.getElementById('confirmBulkProcessBtn')?.addEventListener('click', () => this.handleConfirmBulkProcess(token));
             document.getElementById('resetRequestsTableBody')?.addEventListener('click', e => this.handleClearPassword(e, token));
-            document.getElementById('membersTableBody')?.addEventListener('click', e => { if (e.target.closest('.reset-password-btn')) this.handleResetPassword(e, token); });
+            document.getElementById('membersTableBody')?.addEventListener('click', e => { 
+                if (e.target.closest('.reset-password-btn')) this.handleResetPassword(e, token); 
+                if (e.target.closest('.print-member-btn')) this.handlePrintMemberReport(e);
+            });
+            document.getElementById('startPrintBtn')?.addEventListener('click', () => {
+                const printContent = document.getElementById('printReportContent').innerHTML;
+                const originalContent = document.body.innerHTML;
+                document.body.innerHTML = printContent;
+                window.print();
+                document.body.innerHTML = originalContent;
+                window.location.reload(); 
+            });
         },
 
         async loadAdminDashboard(token) {
@@ -338,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tableBody.innerHTML = '<tr><td colspan="5" class="text-center">لا يوجد أفراد لعرضهم.</td></tr>';
                 return;
             }
-            tableBody.innerHTML = members.map(member => `<tr><td>${member['الاسم الكامل']}</td><td>${member['رقم الهوية']}</td><td>${member['رقم الجوال'] || '-'}</td><td>${member['مكان الإقامة'] || '-'}</td><td><button class="btn btn-sm btn-info edit-member-btn" data-member='${JSON.stringify(member)}' data-bs-toggle="modal" data-bs-target="#editMemberModal"><i class="bi bi-pencil-square"></i></button><button class="btn btn-sm btn-warning reset-password-btn" data-id="${member['رقم الهوية']}"><i class="bi bi-key-fill"></i></button></td></tr>`).join('');
+            tableBody.innerHTML = members.map(member => `<tr><td>${member['الاسم الكامل']}</td><td>${member['رقم الهوية']}</td><td>${member['رقم الجوال'] || '-'}</td><td>${member['مكان الإقامة'] || '-'}</td><td><button class="btn btn-sm btn-info edit-member-btn" data-member='${JSON.stringify(member)}' data-bs-toggle="modal" data-bs-target="#editMemberModal"><i class="bi bi-pencil-square"></i></button><button class="btn btn-sm btn-warning reset-password-btn" data-id="${member['رقم الهوية']}"><i class="bi bi-key-fill"></i></button><button class="btn btn-sm btn-secondary print-member-btn" data-id="${member['رقم الهوية']}" data-name="${member['الاسم الكامل']}"><i class="bi bi-printer-fill"></i></button></td></tr>`).join('');
         },
         renderPagination(total, container) {
             const totalPages = Math.ceil(total / this.pageSize);
@@ -351,6 +362,94 @@ document.addEventListener('DOMContentLoaded', () => {
                 html += '</ul></nav>';
             }
             container.innerHTML = html;
+        },
+        
+        async handlePrintMemberReport(e) {
+            const button = e.target.closest('.print-member-btn');
+            const userId = button.dataset.id;
+            const userName = button.dataset.name;
+
+            const [userDataResult, aidHistoryResult, futureAidResult] = await Promise.all([
+                this.apiCall({ action: 'getUserData', userId, token: sessionStorage.getItem('adminToken') }),
+                this.apiCall({ action: 'getUserAidHistory', userId, token: sessionStorage.getItem('adminToken') }),
+                this.apiCall({ action: 'getUserFutureAid', userId, token: sessionStorage.getItem('adminToken') })
+            ]);
+
+            if (userDataResult && aidHistoryResult && futureAidResult) {
+                const userData = userDataResult.data;
+                const aidHistory = aidHistoryResult.data;
+                const futureAid = futureAidResult.data;
+
+                const modalBody = document.getElementById('printReportContent');
+                modalBody.innerHTML = this.generateReportHTML(userData, aidHistory, futureAid);
+
+                const printModal = new bootstrap.Modal(document.getElementById('printReportModal'));
+                printModal.show();
+            }
+        },
+        
+        generateReportHTML(userData, aidHistory, futureAid) {
+            const userInfoHTML = `
+                <h5><i class="bi bi-person-fill me-2"></i>البيانات الشخصية</h5>
+                <table class="table table-bordered table-sm mb-4">
+                    <tr><th>الاسم الكامل</th><td>${userData['الاسم الكامل'] || '-'}</td></tr>
+                    <tr><th>رقم الهوية</th><td>${userData['رقم الهوية'] || '-'}</td></tr>
+                    <tr><th>رقم الجوال</th><td>${userData['رقم الجوال'] || '-'}</td></tr>
+                    <tr><th>مكان الإقامة</th><td>${userData['مكان الإقامة'] || '-'}</td></tr>
+                    <tr><th>اسم الزوجة</th><td>${userData['اسم الزوجة رباعي'] || '-'}</td></tr>
+                    <tr><th>رقم هوية الزوجة</th><td>${userData['رقم هوية الزوجة'] || '-'}</td></tr>
+                </table>
+            `;
+            
+            const aidHistoryHTML = `
+                <h5><i class="bi bi-card-list me-2"></i>سجل المساعدات المكتملة</h5>
+                <table class="table table-bordered table-sm">
+                    <thead><tr><th>نوع المساعدة</th><th>التاريخ</th><th>المصدر</th></tr></thead>
+                    <tbody>
+                        ${aidHistory.length > 0 ?
+                            aidHistory.map(item => `
+                                <tr>
+                                    <td>${item['نوع المساعدة']}</td>
+                                    <td>${this.formatDateToEnglish(item['تاريخ الاستلام'])}</td>
+                                    <td>${item['مصدر المساعدة'] || '-'}</td>
+                                </tr>
+                            `).join('')
+                            : '<tr><td colspan="3" class="text-center">لا يوجد سجل مساعدات.</td></tr>'
+                        }
+                    </tbody>
+                </table>
+            `;
+
+            const futureAidHTML = `
+                <h5><i class="bi bi-calendar-check me-2"></i>المساعدات المستقبلية</h5>
+                <table class="table table-bordered table-sm">
+                    <thead><tr><th>نوع المساعدة</th><th>التاريخ</th><th>المصدر</th></tr></thead>
+                    <tbody>
+                        ${futureAid.length > 0 ?
+                            futureAid.map(item => `
+                                <tr>
+                                    <td>${item['نوع المساعدة']}</td>
+                                    <td>${this.formatDateToEnglish(item['تاريخ الاستلام'])}</td>
+                                    <td>${item['مصدر المساعدة'] || '-'}</td>
+                                </tr>
+                            `).join('')
+                            : '<tr><td colspan="3" class="text-center">لا توجد مساعدات مستقبلية.</td></tr>'
+                        }
+                    </tbody>
+                </table>
+            `;
+
+            return `
+                <div class="print-container">
+                    <div class="text-center mb-4">
+                        <img src="logo.webp" alt="شعار عائلة أبو رجيلة" style="max-width: 80px;">
+                        <h4 class="mt-2">تقرير الفرد: ${userData['الاسم الكامل']}</h4>
+                    </div>
+                    ${userInfoHTML}
+                    ${aidHistoryHTML}
+                    ${futureAidHTML}
+                </div>
+            `;
         },
 
         async fetchAidDataAndPopulateTables(token) {

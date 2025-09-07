@@ -6,7 +6,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const App = {
-        WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbzdJEKnlDruV6qwcF2lZATgXPrl9SDKUZ1gvZBtb6ZWnP0PMhX0kr1JYWDlYjnbhxmx/exec',
+        WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbynq73HgfdxEvLwWj_2C4Ub403ixTcJhcB6kemyjMTEVkotZGkc9sj8mfUIX_GPqDTP/exec',
         aidCategories: {
             "مساعدات مالية": ["نقد مباشر للعائلات المحتاجة", "دفع فواتير (كهرباء، ماء، إيجار)", "قروض حسنة أو صناديق دوارة"],
             "مساعدات غذائية": ["طرود غذائية أساسية", "وجبات جاهزة / مطبوخة", "توزيع مياه للشرب"],
@@ -215,6 +215,40 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             tableBody.innerHTML = history.map(item => `<tr><td>${item['نوع المساعدة']}</td><td>${this.formatDateToEnglish(item['تاريخ الاستلام'])}</td><td>${item['مصدر المساعدة'] || '-'}</td><td>${item['ملاحظات'] || '-'}</td></tr>`).join('');
         },
+        loadCompletedAidData(records) {
+    const tableBody = document.getElementById('completedAidsTableBody');
+    const searchTerm = document.getElementById('completedAidSearchInput')?.value.toLowerCase() || '';
+    const pageSize = parseInt(document.getElementById('completedAidPageSizeSelect')?.value, 10) || 10;
+
+    const filteredRecords = records.filter(record => 
+        (record['اسم المستفيد'] || '').toLowerCase().includes(searchTerm) ||
+        (record['نوع المساعدة'] || '').toLowerCase().includes(searchTerm)
+    );
+
+    document.getElementById('completedAidTotalCount').textContent = `إجمالي السجلات: ${filteredRecords.length}`;
+
+    const paginatedRecords = filteredRecords.slice(0, pageSize);
+
+    this.renderCompletedAidTable(paginatedRecords);
+    // يمكنك إضافة دالة للتحكم في Pagination هنا إذا احتجت
+},
+
+renderCompletedAidTable(records) {
+    const tableBody = document.getElementById('completedAidsTableBody');
+    if (records.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="5" class="text-center">لا توجد سجلات.</td></tr>';
+        return;
+    }
+    tableBody.innerHTML = records.map(aid => `
+        <tr>
+            <td>${aid['اسم المستفيد'] || '-'}</td>
+            <td>${aid['معرف المستفيد']}</td>
+            <td>${aid['نوع المساعدة']}</td>
+            <td>${this.formatDateToEnglish(aid['تاريخ الاستلام'])}</td>
+            <td>${aid['مصدر المساعدة'] || '-'}</td>
+        </tr>
+    `).join('');
+},
 
         initAdminPage() {
             const token = sessionStorage.getItem('adminToken');
@@ -238,7 +272,8 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('reportForm')?.addEventListener('submit', e => this.handleReportGeneration(e, token));
             document.getElementById('exportReportBtn')?.addEventListener('click', () => this.exportReportToExcel());
             document.getElementById('exportTemplateBtn')?.addEventListener('click', () => this.exportAidTemplateToExcel());
-            
+            document.getElementById('completedAidSearchInput')?.addEventListener('input', () => this.loadCompletedAidData(this.allAidRecords.filter(aid => String(aid['حالة المساعدة']).trim() === 'Completed')));
+            document.getElementById('completedAidPageSizeSelect')?.addEventListener('change', () => this.loadCompletedAidData(this.allAidRecords.filter(aid => String(aid['حالة المساعدة']).trim() === 'Completed')));
             const searchInput = document.getElementById('aidMemberSearch');
             searchInput?.addEventListener('input', () => {
                 const searchTerm = searchInput.value.toLowerCase();
@@ -458,6 +493,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.allFutureAidRecords = aidResult.data.filter(aid => String(aid['حالة المساعدة']).trim() === 'Future');
                 this.futureAidCurrentPage = 1;
                 this.loadFutureAidData();
+                const completedRecords = aidResult.data.filter(aid => String(aid['حالة المساعدة']).trim() === 'Completed');
+        this.loadCompletedAidData(completedRecords);
             }
         },
         loadFutureAidData() {

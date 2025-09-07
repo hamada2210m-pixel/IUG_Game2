@@ -1,12 +1,12 @@
 /**
  * @file script.js
  * @description Frontend logic for the Family Aid System.
- * @version 7.0 - Truly Complete and Consolidated Version.
+ * @version 8.0 - Absolutely Complete and Consolidated Version.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
     const App = {
-        WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbz0jW0-2h3wlwtknMNAL---pb_gRCXZ6b6RIGm81RvD6A1N7Y7xjBYom1D9RYIDEcy2/exec',
+        WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbwXRMLiUTmXf7W2mhJp_Zn1-ZXiN1RmDsMuxUtpBoXakPSldbMfMQhMV8pl05WUyQG0/exec',
         aidCategories: {
             "مساعدات مالية": ["نقد مباشر للعائلات المحتاجة", "دفع فواتير (كهرباء، ماء، إيجار)", "قروض حسنة أو صناديق دوارة"],
             "مساعدات غذائية": ["طرود غذائية أساسية", "وجبات جاهزة / مطبوخة", "توزيع مياه للشرب"],
@@ -23,16 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
         futureAidCurrentPage: 1,
         futureAidPageSize: 10,
         
-        // Modal instances
-        setPasswordModal: null,
-        loginPasswordModal: null,
-        forgotPasswordModal: null,
-        confirmationModal: null,
-        userLoginModal: null,
-        adminLoginModal: null,
-        bulkCompleteModal: null,
-        printReportModalInstance: null,
-        editMemberModalInstance: null,
+        setPasswordModal: null, loginPasswordModal: null, forgotPasswordModal: null,
+        confirmationModal: null, userLoginModal: null, adminLoginModal: null,
+        bulkCompleteModal: null, printReportModalInstance: null, editMemberModalInstance: null,
 
         init() {
             this.initModals();
@@ -53,10 +46,10 @@ document.addEventListener('DOMContentLoaded', () => {
         },
 
         async initPageBasedOnURL() {
-            const path = window.location.pathname.split('/').pop();
+            const path = window.location.pathname.split('/').pop() || 'index.html';
             const token = sessionStorage.getItem('adminToken');
-            
             const adminPages = ['admin.html', 'manage-members.html', 'manage-aid.html', 'aid-logs.html', 'reports.html', 'password-resets.html', 'superadmin.html'];
+            
             if (!token && adminPages.includes(path)) {
                 window.location.href = 'index.html';
                 return;
@@ -64,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const pageInitializers = {
                 'index.html': () => this.initIndexPage(),
-                '': () => this.initIndexPage(),
                 'dashboard.html': () => this.initDashboardPage(),
                 'admin.html': () => this.initAdminDashboardPage(token),
                 'manage-members.html': () => this.initManageMembersPage(token),
@@ -80,7 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         },
         
-        // --- API & UTILITIES ---
         async apiCall(payload, showSuccessToast = false) {
             const activeSubmitButton = (document.activeElement?.tagName === 'BUTTON' && document.activeElement.type === 'submit') ? document.activeElement : document.querySelector('button[type="submit"]:not(:disabled)');
             const isButtonTriggered = activeSubmitButton !== null;
@@ -98,7 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleButtonSpinner(show, button) { const btn = button || document.querySelector('button[type="submit"]'); if (!btn) return; btn.disabled = show; btn.querySelector('.spinner-border')?.classList.toggle('d-none', !show); const buttonText = btn.querySelector('.button-text'); if(buttonText) buttonText.style.opacity = show ? 0.5 : 1; },
         formatDateToEnglish(dateString) { if (!dateString) return '-'; try { const date = new Date(dateString); if (isNaN(date.getTime())) return 'Invalid Date'; return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`; } catch (error) { return dateString; } },
         
-        // --- PUBLIC & USER-FACING LOGIC ---
         initIndexPage() {
             document.getElementById('loginForm')?.addEventListener('submit', (e) => this.handleUserLogin(e));
             document.getElementById('adminLoginForm')?.addEventListener('submit', (e) => this.handleAdminLogin(e));
@@ -117,8 +107,9 @@ document.addEventListener('DOMContentLoaded', () => {
         renderUserInfo(data) { const container = document.getElementById('userInfo'); document.getElementById('userName').textContent = data['الاسم الكامل'] || 'عضو العائلة'; document.getElementById('userTitle').textContent = `رقم الهوية: ${data['رقم الهوية'] || '---'}`; container.innerHTML = Object.entries({ 'الاسم الكامل': 'person-heart', 'رقم الهوية': 'person-badge', 'اسم الزوجة رباعي': 'person-heart', 'رقم هوية الزوجة': 'person-badge', 'مكان الإقامة': 'geo-alt-fill', 'رقم الجوال': 'telephone-fill', 'تاريخ الميلاد': 'calendar-check', 'الحالة الاجتماعية': 'heart-fill', 'عدد الأولاد': 'people-fill' }).map(([key, icon]) => `<div class="col-md-6 mb-3"><div class="info-item"><strong><i class="bi bi-${icon} me-2"></i>${key}:</strong><span>${key === 'تاريخ الميلاد' ? this.formatDateToEnglish(data[key]) : (data[key] || '-')}</span></div></div>`).join(''); },
         renderAidHistory(history) { const tableBody = document.getElementById('aidHistoryTableBody'); if (history.length === 0) { tableBody.innerHTML = '<tr><td colspan="4" class="text-center">لا يوجد سجل مساعدات لعرضه.</td></tr>'; return; } tableBody.innerHTML = history.map(item => `<tr><td>${item['نوع المساعدة']}</td><td>${this.formatDateToEnglish(item['تاريخ الاستلام'])}</td><td>${item['مصدر المساعدة'] || '-'}</td><td>${item['ملاحظات'] || '-'}</td></tr>`).join(''); },
 
-        // --- ADMIN PAGES ---
         initAdminDashboardPage(token) { if (sessionStorage.getItem('adminRole') === 'superadmin') document.getElementById('superadmin-link')?.classList.remove('d-none'); this.loadAdminStats(token); },
+        async loadAdminStats(token) { const statsResult = await this.apiCall({ action: 'getAdminStats', token }); if (statsResult?.stats) { document.getElementById('totalMembers').textContent = statsResult.stats.totalIndividuals; document.getElementById('totalFamilies').textContent = statsResult.stats.totalFamilies; document.getElementById('totalAid').textContent = statsResult.stats.totalAid; } },
+
         initManageMembersPage(token) {
             document.getElementById('memberSearchInput')?.addEventListener('input', () => { clearTimeout(this.searchTimeout); this.searchTimeout = setTimeout(() => this.handleMemberSearch(token), 500); });
             document.getElementById('membersTableBody')?.addEventListener('click', e => {
@@ -127,51 +118,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             document.getElementById('startPrintBtn')?.addEventListener('click', () => { setTimeout(() => window.print(), 250); });
         },
-        initManageAidPage(token) {
-             document.getElementById('addAidForm')?.addEventListener('submit', e => this.handleAddAid(e, token));
-             document.getElementById('bulkUploadForm')?.addEventListener('submit', e => this.handleAidFileUpload(e, token));
-             document.getElementById('exportTemplateBtn')?.addEventListener('click', () => this.exportAidTemplateToExcel());
-             document.getElementById('aidMemberSearch')?.addEventListener('input', () => this.handleAidMemberSearch(token));
-             document.getElementById('clearSearchBtn')?.addEventListener('click', () => { document.getElementById('aidMemberSearch').value = ''; this.populateBeneficiaryList([]); });
-             this.populateAidCategories();
-        },
-        async initAidLogsPage(token) {
-            await this.fetchAidDataAndPopulateTables(token);
-            this.loadFutureAidData();
-            document.getElementById('futureAidSearchInput')?.addEventListener('input', () => this.loadFutureAidData());
-            document.getElementById('completedAidSearchInput')?.addEventListener('input', () => this.loadCompletedAidData());
-            document.getElementById('futureAidPageSizeSelect')?.addEventListener('change', (e) => { this.futureAidPageSize = parseInt(e.target.value, 10); this.futureAidCurrentPage = 1; this.loadFutureAidData(); });
-            document.getElementById('futureAidPagination')?.addEventListener('click', (e) => { if (e.target.dataset.page) { this.futureAidCurrentPage = parseInt(e.target.dataset.page, 10); this.loadFutureAidData(); } });
-            document.getElementById('futureAidsTableBody')?.addEventListener('click', e => { if (e.target.closest('.complete-aid-btn')) this.handleCompleteSingleAid(e, token); });
-            document.getElementById('completeAllAidBtn')?.addEventListener('click', () => this.bulkCompleteModal?.show());
-            document.getElementById('confirmBulkProcessBtn')?.addEventListener('click', () => this.handleConfirmBulkProcess(token));
-        },
-        initReportsPage(token) {
-            document.getElementById('reportForm')?.addEventListener('submit', e => this.handleReportGeneration(e, token));
-            document.getElementById('exportReportBtn')?.addEventListener('click', () => this.exportReportToExcel());
-        },
-        initPasswordResetsPage(token) {
-            this.fetchResetRequests(token);
-            document.getElementById('resetRequestsTableBody')?.addEventListener('click', e => this.handleClearPassword(e, token));
-        },
-        initSuperAdminPage(token) {
-            if (sessionStorage.getItem('adminRole') !== 'superadmin') { window.location.href = 'admin.html'; return; }
-            this.renderCreateAdminForm();
-            this.loadAdmins(token);
-            document.getElementById('createAdminForm').addEventListener('submit', (e) => this.handleCreateAdminSubmit(e, token));
-            document.getElementById('adminsTable').addEventListener('click', (e) => { if (e.target.closest('.toggle-status-btn')) this.handleStatusChange(e, token); });
-        },
-
-        // --- CORE LOGIC METHODS ---
-        async loadAdminStats(token) { const statsResult = await this.apiCall({ action: 'getAdminStats', token }); if (statsResult?.stats) { document.getElementById('totalMembers').textContent = statsResult.stats.totalIndividuals; document.getElementById('totalFamilies').textContent = statsResult.stats.totalFamilies; document.getElementById('totalAid').textContent = statsResult.stats.totalAid; } },
         async handleMemberSearch(token) {
             const tableBody = document.getElementById('membersTableBody');
             const searchTerm = document.getElementById('memberSearchInput').value;
-            if (!searchTerm) {
-                tableBody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">يرجى استخدام البحث لعرض الأفراد...</td></tr>';
-                document.getElementById('membersTotalCount').textContent = 'نتائج البحث: 0';
-                return;
-            }
+            if (!searchTerm) { tableBody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">يرجى استخدام البحث لعرض الأفراد...</td></tr>'; document.getElementById('membersTotalCount').textContent = 'نتائج البحث: 0'; return; }
             tableBody.innerHTML = '<tr><td colspan="5" class="text-center">جاري البحث...</td></tr>';
             const result = await this.apiCall({ action: 'getAllMembers', token, searchTerm, page: 1, pageSize: 50 });
             this.renderMembersTable(result ? result.members : [], result ? result.total : 0);
@@ -179,25 +129,8 @@ document.addEventListener('DOMContentLoaded', () => {
         renderMembersTable(members, total) {
             const tableBody = document.getElementById('membersTableBody');
             document.getElementById('membersTotalCount').textContent = `نتائج البحث: ${total}`;
-            if (!members || members.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="5" class="text-center">لا يوجد أفراد يطابقون البحث.</td></tr>';
-                return;
-            }
-            tableBody.innerHTML = members.map(member => 
-                `<tr>
-                    <td>${member['الاسم الكامل']}</td>
-                    <td>${member['رقم الهوية']}</td>
-                    <td>${member['رقم الجوال'] || '-'}</td>
-                    <td>${member['مكان الإقامة'] || '-'}</td>
-                    <td>
-                        <div class="btn-group">
-                            <button class="btn btn-sm btn-info" data-member='${JSON.stringify(member)}' data-bs-toggle="modal" data-bs-target="#editMemberModal" title="تعديل"><i class="bi bi-pencil-square"></i></button>
-                            <button class="btn btn-sm btn-warning reset-password-btn" data-id="${member['رقم الهوية']}" title="مسح كلمة المرور"><i class="bi bi-key-fill"></i></button>
-                            <button class="btn btn-sm btn-secondary print-member-btn" data-id="${member['رقم الهوية']}" title="طباعة تقرير"><i class="bi bi-printer-fill"></i></button>
-                        </div>
-                    </td>
-                </tr>`
-            ).join('');
+            if (!members || members.length === 0) { tableBody.innerHTML = '<tr><td colspan="5" class="text-center">لا يوجد أفراد يطابقون البحث.</td></tr>'; return; }
+            tableBody.innerHTML = members.map(member => `<tr><td>${member['الاسم الكامل']}</td><td>${member['رقم الهوية']}</td><td>${member['رقم الجوال'] || '-'}</td><td>${member['مكان الإقامة'] || '-'}</td><td><div class="btn-group"><button class="btn btn-sm btn-info" data-member='${JSON.stringify(member)}' data-bs-toggle="modal" data-bs-target="#editMemberModal" title="تعديل"><i class="bi bi-pencil-square"></i></button><button class="btn btn-sm btn-warning reset-password-btn" data-id="${member['رقم الهوية']}" title="مسح كلمة المرور"><i class="bi bi-key-fill"></i></button><button class="btn btn-sm btn-secondary print-member-btn" data-id="${member['رقم الهوية']}" title="طباعة تقرير"><i class="bi bi-printer-fill"></i></button></div></td></tr>`).join('');
         },
         async handlePrintMemberReport(e, token) {
             const userId = e.target.closest('.print-member-btn').dataset.id;
@@ -208,31 +141,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.apiCall({ action: 'getUserFutureAid', userId, token })
             ]);
             if (userDataResult && aidHistoryResult && futureAidResult) {
-                const reportHTML = this.generateReportHTML(userDataResult.data, aidHistoryResult.data, futureAidResult.data);
-                document.getElementById('printReportContent').innerHTML = reportHTML;
+                document.getElementById('printReportContent').innerHTML = this.generateReportHTML(userDataResult.data, aidHistoryResult.data, futureAidResult.data);
                 this.printReportModalInstance?.show();
-            } else {
-                this.showToast('فشل تحميل كامل بيانات التقرير.', false);
-            }
+            } else { this.showToast('فشل تحميل كامل بيانات التقرير.', false); }
         },
         generateReportHTML(userData, aidHistory, futureAid) {
-            const formatDate = (dateString) => {
-                if (!dateString) return '-';
-                try { const d = new Date(dateString); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; } catch (e) { return dateString; }
-            };
-            const createTable = (title, icon, data, headers) => {
-                let rows = data.length > 0
-                    ? data.map(item => `<tr>${headers.map(h => `<td>${item[h.key] ? (h.isDate ? formatDate(item[h.key]) : item[h.key]) : '-'}</td>`).join('')}</tr>`).join('')
-                    : `<tr><td colspan="${headers.length}" class="text-center text-muted">لا توجد بيانات</td></tr>`;
-                return `<h5 class="report-section-title"><i class="bi bi-${icon} me-2"></i>${title}</h5><table class="table table-bordered table-sm mb-4"><thead><tr>${headers.map(h => `<th>${h.label}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table>`;
-            };
+            const createTable = (title, icon, data, headers) => `
+                <h5 class="report-section-title"><i class="bi bi-${icon} me-2"></i>${title}</h5>
+                <table class="table table-bordered table-sm mb-4">
+                    <thead><tr>${headers.map(h => `<th>${h.label}</th>`).join('')}</tr></thead>
+                    <tbody>${data.length > 0 ? data.map(item => `<tr>${headers.map(h => `<td>${item[h.key] ? (h.isDate ? this.formatDateToEnglish(item[h.key]) : item[h.key]) : '-'}</td>`).join('')}</tr>`).join('') : `<tr><td colspan="${headers.length}" class="text-center text-muted">لا توجد بيانات</td></tr>`}</tbody>
+                </table>`;
             const userInfoHtml = `<div class="row report-info-grid">${Object.entries({'الاسم الكامل': userData['الاسم الكامل'], 'رقم الهوية': userData['رقم الهوية'], 'رقم الجوال': userData['رقم الجوال'], 'مكان الإقامة': userData['مكان الإقامة'], 'اسم الزوجة': userData['اسم الزوجة رباعي'], 'رقم هوية الزوجة': userData['رقم هوية الزوجة']}).map(([label, value]) => `<div class="col-6"><div class="info-box"><strong>${label}:</strong><span>${value || '-'}</span></div></div>`).join('')}</div>`;
-            const aidHistoryHtml = createTable('سجل المساعدات المكتملة', 'card-list', aidHistory, [{label: 'نوع المساعدة', key: 'نوع المساعدة'}, {label: 'تاريخ الاستلام', key: 'تاريخ الاستلام', isDate: true}, {label: 'المصدر', key: 'مصدر المساعدة'}]);
-            const futureAidHtml = createTable('المساعدات المستقبلية المجدولة', 'calendar-check', futureAid, [{label: 'نوع المساعدة', key: 'نوع المساعدة'}, {label: 'تاريخ الاستلام', key: 'تاريخ الاستلام', isDate: true}, {label: 'المصدر', key: 'مصدر المساعدة'}]);
-            return `<div class="report-header"><img src="logo.webp" alt="شعار"><div><h1>تقرير بيانات فرد</h1><p>عائلة أبو رجيلة (قديح)</p></div></div><h5 class="report-section-title"><i class="bi bi-person-fill me-2"></i>البيانات الشخصية</h5>${userInfoHtml}${aidHistoryHtml}${futureAidHtml}<div class="report-footer"><p>تاريخ الطباعة: ${new Date().toLocaleDateString('ar-EG')}</p><p>نظام عائلة أبو رجيلة © 2025</p></div>`;
+            return `<div class="report-header"><img src="logo.webp" alt="شعار"><div><h1>تقرير بيانات فرد</h1><p>عائلة أبو رجيلة (قديح)</p></div></div><h5 class="report-section-title"><i class="bi bi-person-fill me-2"></i>البيانات الشخصية</h5>${userInfoHtml}${createTable('سجل المساعدات المكتملة', 'card-list', aidHistory, [{label: 'نوع المساعدة', key: 'نوع المساعدة'}, {label: 'تاريخ الاستلام', key: 'تاريخ الاستلام', isDate: true}, {label: 'المصدر', key: 'مصدر المساعدة'}])}${createTable('المساعدات المستقبلية المجدولة', 'calendar-check', futureAid, [{label: 'نوع المساعدة', key: 'نوع المساعدة'}, {label: 'تاريخ الاستلام', key: 'تاريخ الاستلام', isDate: true}, {label: 'المصدر', key: 'مصدر المساعدة'}])}<div class="report-footer"><p>تاريخ الطباعة: ${new Date().toLocaleDateString('ar-EG')}</p><p>نظام عائلة أبو رجيلة © 2025</p></div>`;
         },
         async handleResetPassword(e, token) { const userId = e.target.closest('.reset-password-btn').dataset.id; const confirmed = await this.showConfirmationModal(`هل أنت متأكد من مسح كلمة مرور المستخدم ${userId}؟`); if (confirmed) await this.apiCall({ action: 'clearMemberPassword', token, userId }, true); },
-        async handleClearPassword(e, token) { const button = e.target.closest('.clear-password-btn'); const { userid, timestamp } = button.dataset; const confirmed = await this.showConfirmationModal(`هل أنت متأكد من مسح كلمة مرور المستخدم ${userid}؟`); if (confirmed) { const result = await this.apiCall({ action: 'clearMemberPassword', token, userId: userid, timestamp }, true); if (result) this.fetchResetRequests(token); } },
+
+        initManageAidPage(token) {
+             document.getElementById('addAidForm')?.addEventListener('submit', e => this.handleAddAid(e, token));
+             document.getElementById('bulkUploadForm')?.addEventListener('submit', e => this.handleAidFileUpload(e, token));
+             document.getElementById('exportTemplateBtn')?.addEventListener('click', () => this.exportAidTemplateToExcel());
+             document.getElementById('aidMemberSearch')?.addEventListener('input', () => this.handleAidMemberSearch(token));
+             document.getElementById('clearSearchBtn')?.addEventListener('click', () => { document.getElementById('aidMemberSearch').value = ''; this.populateBeneficiaryList([]); });
+             this.populateAidCategories();
+        },
         populateAidCategories() {
             const categorySelect = document.getElementById('aidCategory'), typeSelect = document.getElementById('aidType');
             if(!categorySelect || !typeSelect) return;
@@ -250,6 +182,18 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         async handleAidFileUpload(e, token) { e.preventDefault(); const file = e.target.xlsxFile.files[0]; if (!file) { this.showToast('الرجاء اختيار ملف.', false); return; } const reader = new FileReader(); reader.onload = async (event) => { const result = await this.apiCall({ action: 'bulkAddAidFromXLSX', token, fileContent: btoa(event.target.result) }, true); if (result) e.target.reset(); }; reader.readAsBinaryString(file); },
         exportAidTemplateToExcel() { const headers = ['معرف المستفيد', 'نوع المساعدة', 'تاريخ الاستلام', 'مصدر المساعدة', 'ملاحظات', 'حالة المساعدة']; const exampleRow = ['123456789', 'نقد مباشر للعائلات المحتاجة', '2025-09-06', 'قسائم/دهش/عضوية', 'Completed']; const wb = XLSX.utils.book_new(); const ws = XLSX.utils.aoa_to_sheet([headers, exampleRow]); XLSX.utils.book_append_sheet(wb, ws, "قالب المساعدات"); XLSX.writeFile(wb, "قالب-المساعدات.xlsx"); },
+        
+        async initAidLogsPage(token) {
+            await this.fetchAidDataAndPopulateTables(token);
+            this.loadFutureAidData();
+            document.getElementById('futureAidSearchInput')?.addEventListener('input', () => this.loadFutureAidData());
+            document.getElementById('completedAidSearchInput')?.addEventListener('input', () => this.loadCompletedAidData());
+            document.getElementById('futureAidPageSizeSelect')?.addEventListener('change', (e) => { this.futureAidPageSize = parseInt(e.target.value, 10); this.futureAidCurrentPage = 1; this.loadFutureAidData(); });
+            document.getElementById('futureAidPagination')?.addEventListener('click', (e) => { if (e.target.dataset.page) { this.futureAidCurrentPage = parseInt(e.target.dataset.page, 10); this.loadFutureAidData(); } });
+            document.getElementById('futureAidsTableBody')?.addEventListener('click', e => { if (e.target.closest('.complete-aid-btn')) this.handleCompleteSingleAid(e, token); });
+            document.getElementById('completeAllAidBtn')?.addEventListener('click', () => this.bulkCompleteModal?.show());
+            document.getElementById('confirmBulkProcessBtn')?.addEventListener('click', () => this.handleConfirmBulkProcess(token));
+        },
         async fetchAidDataAndPopulateTables(token) {
             const aidResult = await this.apiCall({ action: 'getAllAidRecords', token });
             if (aidResult?.data) {
@@ -263,7 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('futureAidTotalCount').textContent = `إجمالي السجلات: ${filteredRecords.length}`;
             const paginatedRecords = filteredRecords.slice((this.futureAidCurrentPage - 1) * this.futureAidPageSize, this.futureAidCurrentPage * this.futureAidPageSize);
             this.renderFutureAidTable(paginatedRecords, searchTerm);
-            // Pagination logic here if needed
         },
         loadCompletedAidData() {
             const searchTerm = document.getElementById('completedAidSearchInput')?.value.toLowerCase() || '';
@@ -288,6 +231,24 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 tableBody.innerHTML = records.map(aid => `<tr><td>${aid['اسم المستفيد'] || '-'}</td><td>${aid['معرف المستفيد']}</td><td>${aid['نوع المساعدة']}</td><td>${this.formatDateToEnglish(aid['تاريخ الاستلام'])}</td><td>${aid['مصدر المساعدة'] || '-'}</td></tr>`).join('');
             }
+        },
+        async handleConfirmBulkProcess(token) {
+            const visibleRows = document.querySelectorAll('#futureAidsTableBody tr[data-beneficiary-id]');
+            const allVisibleBeneficiaryIds = Array.from(visibleRows).map(row => row.dataset.beneficiaryId);
+            const aidRecordsToDelete = document.getElementById('exceptionIdsTextarea').value.split('\n').map(id => id.trim()).filter(id => id);
+            const beneficiaryIdsToComplete = allVisibleBeneficiaryIds.filter(id => !aidRecordsToDelete.includes(id));
+            if (beneficiaryIdsToComplete.length === 0 && aidRecordsToDelete.length === 0) { this.showToast('لم يتم تحديد أي إجراء.', false); return; }
+            const result = await this.apiCall({ action: 'bulkProcessAid', token, beneficiaryIdsToComplete, aidRecordsToDelete }, true);
+            if (result) {
+                this.bulkCompleteModal.hide();
+                await this.fetchAidDataAndPopulateTables(token);
+                this.loadFutureAidData();
+            }
+        },
+
+        initReportsPage(token) {
+            document.getElementById('reportForm')?.addEventListener('submit', e => this.handleReportGeneration(e, token));
+            document.getElementById('exportReportBtn')?.addEventListener('click', () => this.exportReportToExcel());
         },
         async handleReportGeneration(e, token) {
             e.preventDefault();
@@ -316,6 +277,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const wb = XLSX.utils.table_to_book(table, {sheet: "تقرير المساعدات"});
             XLSX.writeFile(wb, "تقرير-المساعدات.xlsx");
         },
+
+        initPasswordResetsPage(token) {
+            this.fetchResetRequests(token);
+            document.getElementById('resetRequestsTableBody')?.addEventListener('click', e => this.handleClearPassword(e, token));
+        },
         async fetchResetRequests(token) {
             const result = await this.apiCall({ action: 'getResetRequests', token });
             if (result?.data) {
@@ -323,34 +289,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 tableBody.innerHTML = result.data.length === 0 ? '<tr><td colspan="3" class="text-center">لا يوجد طلبات جديدة.</td></tr>' : result.data.map(req => `<tr><td>${new Date(req['التاريخ والوقت']).toLocaleString()}</td><td>${req['رقم الهوية']}</td><td><button class="btn btn-sm btn-success clear-password-btn" data-userid="${req['رقم الهوية']}" data-timestamp="${req['التاريخ والوقت']}"><i class="bi bi-check-circle-fill me-1"></i> موافقة ومسح</button></td></tr>`).join('');
             }
         },
-        async handleConfirmBulkProcess(token) {
-    const visibleRows = document.querySelectorAll('#futureAidsTableBody tr[data-beneficiary-id]');
-    const allVisibleBeneficiaryIds = Array.from(visibleRows).map(row => row.dataset.beneficiaryId);
-    
-    const aidRecordsToDelete = document.getElementById('exceptionIdsTextarea').value.split('\n').map(id => id.trim()).filter(id => id);
-    
-    const beneficiaryIdsToComplete = allVisibleBeneficiaryIds.filter(id => !aidRecordsToDelete.includes(id));
+        async handleClearPassword(e, token) {
+            const button = e.target.closest('.clear-password-btn');
+            const { userid, timestamp } = button.dataset;
+            const confirmed = await this.showConfirmationModal(`هل أنت متأكد من مسح كلمة مرور المستخدم ${userid}؟`);
+            if (confirmed) {
+                const result = await this.apiCall({ action: 'clearMemberPassword', token, userId: userid, timestamp }, true);
+                if (result) this.fetchResetRequests(token);
+            }
+        },
 
-    if (beneficiaryIdsToComplete.length === 0 && aidRecordsToDelete.length === 0) {
-        this.showToast('لم يتم تحديد أي إجراء.', false);
-        return;
-    }
-
-    const result = await this.apiCall({
-        action: 'bulkProcessAid',
-        token,
-        beneficiaryIdsToComplete,
-        aidRecordsToDelete
-    }, true);
-
-    if (result) {
-        this.bulkCompleteModal.hide();
-        await this.fetchAidDataAndPopulateTables(token);
-        this.loadFutureAidData();
-    }
-},
+        initSuperAdminPage(token) {
+            if (sessionStorage.getItem('adminRole') !== 'superadmin') { window.location.href = 'admin.html'; return; }
+            this.renderCreateAdminForm();
+            this.loadAdmins(token);
+            document.getElementById('createAdminForm').addEventListener('submit', (e) => this.handleCreateAdminSubmit(e, token));
+            document.getElementById('adminsTable').addEventListener('click', (e) => { if (e.target.closest('.toggle-status-btn')) this.handleStatusChange(e, token); });
+        },
+        renderCreateAdminForm() { document.getElementById('createAdminForm').innerHTML = `<div class="row"><div class="col-md-4 mb-3"><label for="newUsername" class="form-label">اسم المستخدم</label><input type="text" class="form-control" id="newUsername" required></div><div class="col-md-4 mb-3"><label for="newPassword" class="form-label">كلمة المرور</label><input type="password" class="form-control" id="newPassword" required></div><div class="col-md-4 mb-3"><label for="newRole" class="form-label">الصلاحية</label><select id="newRole" class="form-select" required><option value="admin">Admin</option><option value="superadmin">Super Admin</option></select></div></div><button type="submit" class="btn btn-primary">إنشاء حساب</button>`; },
+        async handleCreateAdminSubmit(e, token) { e.preventDefault(); const result = await this.apiCall({ action: 'createAdmin', token, username: document.getElementById('newUsername').value, password: document.getElementById('newPassword').value, role: document.getElementById('newRole').value }, true); if (result) { e.target.reset(); this.loadAdmins(token); } },
+        async loadAdmins(token) { const tableBody = document.getElementById('adminsTable'); tableBody.innerHTML = '<tr><td colspan="5" class="text-center">جاري التحميل...</td></tr>'; const result = await this.apiCall({ action: 'getAdmins', token }); if (result?.admins) this.renderAdminsTable(result.admins); else tableBody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">فشل تحميل القائمة.</td></tr>'; },
+        renderAdminsTable(admins) { document.getElementById('adminsTable').innerHTML = admins.map(admin => `<tr><td>${admin['اسم المستخدم']}</td><td><span class="badge bg-primary">${admin['الصلاحية']}</span></td><td>${this.formatDateToEnglish(admin['تاريخ الإنشاء'])}</td><td><span class="badge bg-${admin['الحالة'] === 'Active' ? 'success' : 'danger'}">${admin['الحالة'] === 'Active' ? 'نشط' : 'غير نشط'}</span></td><td><button class="btn btn-sm btn-${admin['الحالة'] === 'Active' ? 'danger' : 'success'} toggle-status-btn" data-username="${admin['اسم المستخدم']}" data-status="${admin['الحالة']}"><i class="bi bi-person-${admin['الحالة'] === 'Active' ? 'x' : 'check'}-fill"></i> ${admin['الحالة'] === 'Active' ? 'إلغاء تنشيط' : 'تنشيط'}</button></td></tr>`).join(''); },
+        async handleStatusChange(event, token) { const button = event.target.closest('.toggle-status-btn'); const username = button.dataset.username; const newStatus = button.dataset.status === 'Active' ? 'Inactive' : 'Active'; const confirmed = await this.showConfirmationModal(`هل أنت متأكد من تغيير حالة المدير ${username} إلى ${newStatus === 'Active' ? 'نشط' : 'غير نشط'}؟`); if (confirmed) { const result = await this.apiCall({ action: 'updateAdminStatus', token, username, newStatus }, true); if (result) this.loadAdmins(token); } },
     };
 
-    
     App.init();
 });

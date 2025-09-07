@@ -1,12 +1,12 @@
-/** 
+/**
  * @file script.js
  * @description Frontend logic for the Family Aid System.
- * @version 5.2 - Custom confirmation modals and bug fixes.
+ * @version 5.3 - Unified login modals, custom prompts, and improved admin features.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
     const App = {
-        WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbyKiGL61D9y0WqNCbc3EscK3WZYH6XaHkjjc774nQNBCZ3Rhh6TZCGAtaG3ZvYtPl2N/exec',
+        WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbwb7-O3Tn8aVrEz2kQVli8_40mVwSGNPTxQSroFgrAu3mcdnmZXFsNuJt0xmsYL8SbS/exec',
         aidCategories: {
             "مساعدات مالية": ["نقد مباشر للعائلات المحتاجة", "دفع فواتير (كهرباء، ماء، إيجار)", "قروض حسنة أو صناديق دوارة"],
             "مساعدات غذائية": ["طرود غذائية أساسية", "وجبات جاهزة / مطبوخة", "توزيع مياه للشرب"],
@@ -21,7 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
         pageSize: 10,
         setPasswordModal: null,
         loginPasswordModal: null,
-        confirmationModal: null, // New confirmation modal
+        confirmationModal: null,
+        promptModal: null,
         membersList: [],
         allAidRecords: [],
         allCompletedAidRecords: [],
@@ -34,7 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
             this.initPageBasedOnURL();
             const setPasswordModalElement = document.getElementById('setPasswordModal');
             const loginPasswordModalElement = document.getElementById('loginPasswordModal');
-            const confirmationModalElement = document.getElementById('confirmationModal'); // New line
+            const confirmationModalElement = document.getElementById('confirmationModal');
+            const promptModalElement = document.getElementById('promptModal');
             if (setPasswordModalElement) {
                 this.setPasswordModal = new bootstrap.Modal(setPasswordModalElement);
             }
@@ -42,7 +44,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.loginPasswordModal = new bootstrap.Modal(loginPasswordModalElement);
             }
             if (confirmationModalElement) {
-                this.confirmationModal = new bootstrap.Modal(confirmationModalElement); // New line
+                this.confirmationModal = new bootstrap.Modal(confirmationModalElement);
+            }
+            if (promptModalElement) {
+                this.promptModal = new bootstrap.Modal(promptModalElement);
             }
             const bulkModalElement = document.getElementById('confirmBulkCompleteModal');
             if (bulkModalElement) {
@@ -129,8 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
         async checkServerStatus() { const statusEl = document.getElementById('server-status'); if (!statusEl) return; const statusText = statusEl.querySelector('.status-text'); try { const response = await fetch(this.WEB_APP_URL); if(!response.ok) throw new Error("Server not reachable"); const data = await response.json(); if (data.status === 'success') { statusEl.classList.add('connected'); statusText.textContent = `متصل (إصدار: ${data.version})`; } else { throw new Error('Invalid response'); } } catch (error) { statusEl.classList.add('disconnected'); statusText.textContent = 'غير متصل بالخادم'; } },
 
         initIndexPage() {
-            document.getElementById('user-card')?.addEventListener('click', () => this.toggleAuthForm(true));
-            document.getElementById('admin-card')?.addEventListener('click', () => this.toggleAuthForm(false));
             document.getElementById('loginForm')?.addEventListener('submit', (e) => this.handleUserLogin(e));
             document.getElementById('adminLoginForm')?.addEventListener('submit', (e) => this.handleAdminLogin(e));
             document.getElementById('setPasswordForm')?.addEventListener('submit', (e) => this.handleModalSetPassword(e));
@@ -209,11 +212,35 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         async handleForgotPassword(e) {
             e.preventDefault();
-            const userId = prompt("الرجاء إدخال رقم هويتك:");
+            
+            // Hide the previous modal (loginPasswordModal) before showing the new one
+            if (this.loginPasswordModal) {
+                this.loginPasswordModal.hide();
+            }
+            
+            const promptUserIdInput = document.getElementById('promptUserId');
+            const promptConfirmBtn = document.getElementById('promptConfirmBtn');
+            
+            this.promptModal.show();
+            
+            const resultPromise = new Promise((resolve) => {
+                promptConfirmBtn.onclick = () => {
+                    const userId = promptUserIdInput.value;
+                    this.promptModal.hide();
+                    resolve(userId);
+                };
+                document.getElementById('promptModal').addEventListener('hidden.bs.modal', () => {
+                    resolve(null);
+                }, { once: true });
+            });
+            
+            const userId = await resultPromise;
+            
             if (userId) {
                 const result = await this.apiCall({ action: 'requestPasswordReset', userId });
                 if (result) this.showToast(result.message, true);
             }
+            promptUserIdInput.value = '';
         },
 
         initDashboardPage() {
@@ -318,7 +345,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.body.innerHTML = originalContent;
                 window.location.reload(); 
             });
-            // إضافة مستمعي الأحداث لجدول المساعدات المكتملة
             document.getElementById('completedAidSearchInput')?.addEventListener('input', () => this.loadCompletedAidData());
             document.getElementById('completedAidPageSizeSelect')?.addEventListener('change', () => this.loadCompletedAidData());
         },
@@ -523,7 +549,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const paginatedRecords = filteredRecords.slice(0, pageSize);
             
             this.renderCompletedAidTable(paginatedRecords);
-            // Pagination logic for completed aids would go here if needed.
         },
         renderFutureAidTable(records) {
             const tableBody = document.getElementById('futureAidsTableBody');

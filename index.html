@@ -13,22 +13,22 @@
     <div class="main-container">
         <header class="header-section text-center">
             <img src="logo.webp" alt="شعار عائلة أبو رجيلة" class="logo">
-            <h1>نظام إدارة بيانات عائلة أبو رجيلة (قديح)</h1>
+            <h1>نظام إدارة بيانات عائلة أبو رجيلة</h1>
             <p class="lead text-muted">بوابة آمنة وموحدة لجميع خدمات العائلة.</p>
         </header>
 
         <main class="selection-cards row">
             <div class="col-lg-6 mb-4">
-                <div class="card h-100 text-center selection-card" id="user-card">
+                <div class="card h-100 text-center selection-card" id="user-card" data-bs-toggle="modal" data-bs-target="#user-login-modal">
                     <div class="card-body">
                         <i class="bi bi-people-fill card-icon"></i>
                         <h3 class="card-title">دخول فرد من العائلة</h3>
-                        <p class="card-text">لعرسض بياناتك الشخصية وسجل المساعدات.</p>
+                        <p class="card-text">لعرض بياناتك الشخصية وسجل المساعدات.</p>
                     </div>
                 </div>
             </div>
             <div class="col-lg-6 mb-4">
-                <div class="card h-100 text-center selection-card" id="admin-card">
+                <div class="card h-100 text-center selection-card" id="admin-card" data-bs-toggle="modal" data-bs-target="#admin-login-modal">
                     <div class="card-body">
                         <i class="bi bi-shield-lock-fill card-icon"></i>
                         <h3 class="card-title">تسجيل دخول المدير</h3>
@@ -37,46 +37,62 @@
                 </div>
             </div>
         </main>
-
-        <section class="login-forms-container mt-4">
-            <div id="user-login-form" class="auth-form d-none">
-                <h4 class="mb-3">تسجيل دخول الأفراد</h4>
-                <form id="loginForm">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="userId" placeholder="رقم هويتك" required>
-                        <label for="userId">رقم الهوية الخاص بك</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="spouseId" placeholder="رقم هوية الزوجة" required>
-                        <label for="spouseId">رقم هوية الزوجة</label>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">
-                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                        <span class="button-text">تحقق ودخول</span>
-                    </button>
-                </form>
-            </div>
-
-            <div id="admin-login-form" class="auth-form d-none">
-                <h4 class="mb-3">تسجيل دخول المدير</h4>
-                <form id="adminLoginForm">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="username" placeholder="اسم المستخدم" required>
-                        <label for="username">اسم المستخدم</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="password" class="form-control" id="password" placeholder="كلمة المرور" required>
-                        <label for="password">كلمة المرور</label>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">
-                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                        <span class="button-text">دخول</span>
-                    </button>
-                </form>
-            </div>
-        </section>
     </div>
     
+    <div class="modal fade" id="user-login-modal" tabindex="-1" aria-labelledby="userLoginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userLoginModalLabel">تسجيل دخول الأفراد</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="userId" placeholder="رقم هويتك" required>
+                            <label for="userId">رقم الهوية الخاص بك</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="spouseId" placeholder="رقم هوية الزوجة" required>
+                            <label for="spouseId">رقم هوية الزوجة</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                            <span class="button-text">تحقق ودخول</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="admin-login-modal" tabindex="-1" aria-labelledby="adminLoginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="adminLoginModalLabel">تسجيل دخول المدير</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="adminLoginForm">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="username" placeholder="اسم المستخدم" required>
+                            <label for="username">اسم المستخدم</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="password" class="form-control" id="password" placeholder="كلمة المرور" required>
+                            <label for="password">كلمة المرور</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                            <span class="button-text">دخول</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="setPasswordModal" tabindex="-1">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -126,7 +142,29 @@
           </div>
         </div>
     </div>
-
+    
+    <div class="modal fade" id="promptModal" tabindex="-1" aria-labelledby="promptModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="promptModalLabel">إعادة تعيين كلمة المرور</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>الرجاء إدخال رقم الهوية الخاص بك لإعادة تعيين كلمة المرور:</p>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="promptUserId" placeholder="رقم هويتك">
+                        <label for="promptUserId">رقم الهوية</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" id="promptConfirmBtn">تأكيد</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <footer class="footer">
         <div id="server-status" class="status-indicator">
             <span class="status-dot"></span>

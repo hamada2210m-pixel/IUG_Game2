@@ -1,12 +1,11 @@
-/** 
- * @file script.js
+/** * @file script.js
  * @description Frontend logic for the Family Aid System.
- * @version 5.2 - Custom confirmation modals and bug fixes.
+ * @version 5.6 - Removed client-side pagination for member search and improved loading states.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
     const App = {
-        WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbyKiGL61D9y0WqNCbc3EscK3WZYH6XaHkjjc774nQNBCZ3Rhh6TZCGAtaG3ZvYtPl2N/exec',
+        WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbyb0CAQ7qdfQlgEXHlvO9T3uBVVSjodGlvQ7niFPZK6Sc5f751y_3Zc_FaV-yV_sOFc/exec',
         aidCategories: {
             "مساعدات مالية": ["نقد مباشر للعائلات المحتاجة", "دفع فواتير (كهرباء، ماء، إيجار)", "قروض حسنة أو صناديق دوارة"],
             "مساعدات غذائية": ["طرود غذائية أساسية", "وجبات جاهزة / مطبوخة", "توزيع مياه للشرب"],
@@ -21,7 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
         pageSize: 10,
         setPasswordModal: null,
         loginPasswordModal: null,
-        confirmationModal: null, // New confirmation modal
+        forgotPasswordModal: null,
+        confirmationModal: null,
+        userLoginModal: null,
+        adminLoginModal: null,
         membersList: [],
         allAidRecords: [],
         allCompletedAidRecords: [],
@@ -34,17 +36,30 @@ document.addEventListener('DOMContentLoaded', () => {
             this.initPageBasedOnURL();
             const setPasswordModalElement = document.getElementById('setPasswordModal');
             const loginPasswordModalElement = document.getElementById('loginPasswordModal');
-            const confirmationModalElement = document.getElementById('confirmationModal'); // New line
+            const forgotPasswordModalElement = document.getElementById('forgotPasswordModal');
+            const confirmationModalElement = document.getElementById('confirmationModal');
+            const userLoginModalElement = document.getElementById('userLoginModal');
+            const adminLoginModalElement = document.getElementById('adminLoginModal');
+            const bulkModalElement = document.getElementById('confirmBulkCompleteModal');
+
             if (setPasswordModalElement) {
                 this.setPasswordModal = new bootstrap.Modal(setPasswordModalElement);
             }
             if (loginPasswordModalElement) {
                 this.loginPasswordModal = new bootstrap.Modal(loginPasswordModalElement);
             }
-            if (confirmationModalElement) {
-                this.confirmationModal = new bootstrap.Modal(confirmationModalElement); // New line
+            if (forgotPasswordModalElement) {
+                this.forgotPasswordModal = new bootstrap.Modal(forgotPasswordModalElement);
             }
-            const bulkModalElement = document.getElementById('confirmBulkCompleteModal');
+            if (confirmationModalElement) {
+                this.confirmationModal = new bootstrap.Modal(confirmationModalElement);
+            }
+            if (userLoginModalElement) {
+                this.userLoginModal = new bootstrap.Modal(userLoginModalElement);
+            }
+            if (adminLoginModalElement) {
+                this.adminLoginModal = new bootstrap.Modal(adminLoginModalElement);
+            }
             if (bulkModalElement) {
                 this.bulkCompleteModal = new bootstrap.Modal(bulkModalElement);
             }
@@ -129,25 +144,27 @@ document.addEventListener('DOMContentLoaded', () => {
         async checkServerStatus() { const statusEl = document.getElementById('server-status'); if (!statusEl) return; const statusText = statusEl.querySelector('.status-text'); try { const response = await fetch(this.WEB_APP_URL); if(!response.ok) throw new Error("Server not reachable"); const data = await response.json(); if (data.status === 'success') { statusEl.classList.add('connected'); statusText.textContent = `متصل (إصدار: ${data.version})`; } else { throw new Error('Invalid response'); } } catch (error) { statusEl.classList.add('disconnected'); statusText.textContent = 'غير متصل بالخادم'; } },
 
         initIndexPage() {
-            document.getElementById('user-card')?.addEventListener('click', () => this.toggleAuthForm(true));
-            document.getElementById('admin-card')?.addEventListener('click', () => this.toggleAuthForm(false));
             document.getElementById('loginForm')?.addEventListener('submit', (e) => this.handleUserLogin(e));
             document.getElementById('adminLoginForm')?.addEventListener('submit', (e) => this.handleAdminLogin(e));
             document.getElementById('setPasswordForm')?.addEventListener('submit', (e) => this.handleModalSetPassword(e));
             document.getElementById('userPasswordForm')?.addEventListener('submit', (e) => this.handleModalLogin(e));
             document.getElementById('loginModalForgotPassword')?.addEventListener('click', (e) => this.handleForgotPassword(e));
+            document.getElementById('forgotPasswordForm')?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const userId = document.getElementById('forgotPasswordUserId').value;
+                const result = await this.apiCall({ action: 'requestPasswordReset', userId }, true);
+                if (result) {
+                    this.forgotPasswordModal.hide();
+                }
+            });
         },
-        toggleAuthForm(showUser) {
-            document.getElementById('user-card').classList.toggle('active', showUser);
-            document.getElementById('admin-card').classList.toggle('active', !showUser);
-            document.getElementById('user-login-form').classList.toggle('d-none', !showUser);
-            document.getElementById('admin-login-form').classList.toggle('d-none', showUser);
-        },
+        
         async handleUserLogin(e) {
             e.preventDefault();
             const form = e.target;
             const userId = form.querySelector('#userId').value;
             const spouseId = form.querySelector('#spouseId').value;
+            this.userLoginModal.hide();
             const result = await this.apiCall({ action: 'checkPasswordStatus', id: userId, spouse_id: spouseId });
             if (!result) return;
             if (result.message === 'password_required') {
@@ -188,9 +205,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const userId = document.getElementById('loginModalUserId').value;
             const spouseId = document.getElementById('loginModalSpouseId').value;
             const password = document.getElementById('loginModalPassword').value;
+            this.loginPasswordModal.hide();
             const result = await this.apiCall({ action: 'userLoginWithPassword', id: userId, spouse_id: spouseId, password: password });
             if (result) {
-                this.loginPasswordModal.hide();
                 this.showToast(`أهلاً بك، ${result.user_name}`, true);
                 localStorage.setItem('loggedInUserId', result.user_id);
                 localStorage.setItem('loggedInUserName', result.user_name);
@@ -199,8 +216,9 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         async handleAdminLogin(e) { 
             e.preventDefault(); 
+            this.adminLoginModal.hide();
             const result = await this.apiCall({ action: 'adminLogin', username: document.getElementById('username').value, password: document.getElementById('password').value }); 
-            if (result) { 
+            if (result) {
                 this.showToast("تم تسجيل الدخول بنجاح.", true); 
                 sessionStorage.setItem('adminToken', result.token); 
                 sessionStorage.setItem('adminRole', result.role); 
@@ -209,11 +227,8 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         async handleForgotPassword(e) {
             e.preventDefault();
-            const userId = prompt("الرجاء إدخال رقم هويتك:");
-            if (userId) {
-                const result = await this.apiCall({ action: 'requestPasswordReset', userId });
-                if (result) this.showToast(result.message, true);
-            }
+            this.loginPasswordModal.hide();
+            this.forgotPasswordModal.show();
         },
 
         initDashboardPage() {
@@ -260,8 +275,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         setupAdminListeners(token) {
             document.getElementById('memberSearchInput')?.addEventListener('input', e => this.handleSearch(e, token));
+            // Removed pagination event listener for members as it's not needed anymore
             document.getElementById('pageSizeSelect')?.addEventListener('change', (e) => { this.pageSize = e.target.value; this.currentPage = 1; this.loadMembers(token); });
-            document.getElementById('memberPagination')?.addEventListener('click', (e) => { if (e.target.dataset.page) { this.currentPage = parseInt(e.target.dataset.page); this.loadMembers(token); } });
             document.getElementById('addAidForm')?.addEventListener('submit', e => this.handleAddAid(e, token));
             document.getElementById('bulkUploadForm')?.addEventListener('submit', e => this.handleAidFileUpload(e, token));
             document.getElementById('reportForm')?.addEventListener('submit', e => this.handleReportGeneration(e, token));
@@ -269,12 +284,8 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('exportTemplateBtn')?.addEventListener('click', () => this.exportAidTemplateToExcel());
             
             const searchInput = document.getElementById('aidMemberSearch');
-            searchInput?.addEventListener('input', () => {
-                const searchTerm = searchInput.value.toLowerCase();
-                const filteredMembers = this.membersList.filter(member => member.name.toLowerCase().includes(searchTerm) || String(member.id).includes(searchTerm));
-                this.populateBeneficiaryList(filteredMembers);
-            });
-            document.getElementById('clearSearchBtn')?.addEventListener('click', () => { searchInput.value = ''; this.populateBeneficiaryList(this.membersList); });
+            searchInput?.addEventListener('input', () => this.handleAidMemberSearch());
+            document.getElementById('clearSearchBtn')?.addEventListener('click', () => { searchInput.value = ''; this.populateBeneficiaryList([]); });
             
             const categorySelect = document.getElementById('aidCategory');
             const typeSelect = document.getElementById('aidType');
@@ -318,13 +329,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.body.innerHTML = originalContent;
                 window.location.reload(); 
             });
-            // إضافة مستمعي الأحداث لجدول المساعدات المكتملة
             document.getElementById('completedAidSearchInput')?.addEventListener('input', () => this.loadCompletedAidData());
             document.getElementById('completedAidPageSizeSelect')?.addEventListener('change', () => this.loadCompletedAidData());
         },
 
         async loadAdminDashboard(token) {
-            this.loadAllMembersForSearch();
             const statsResult = await this.apiCall({ action: 'getAdminStats', token });
             if (statsResult && statsResult.stats) {
                 document.getElementById('totalMembers').textContent = statsResult.stats.totalIndividuals;
@@ -335,18 +344,34 @@ document.addEventListener('DOMContentLoaded', () => {
             this.fetchResetRequests(token);
         },
         
-        async loadAllMembersForSearch() {
-            const result = await this.apiCall({ action: 'getAllMembers', token: sessionStorage.getItem('adminToken'), page: 1, pageSize: 5000 }); 
+        async handleAidMemberSearch() {
+            const searchInput = document.getElementById('aidMemberSearch');
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            if (searchTerm.length < 2) {
+                this.populateBeneficiaryList([]);
+                return;
+            }
+
+            const result = await this.apiCall({
+                action: 'getAllMembers',
+                token: sessionStorage.getItem('adminToken'),
+                searchTerm: searchTerm,
+                page: 1,
+                pageSize: 50
+            });
+
             if (result && result.members) {
                 this.membersList = result.members.map(member => ({ id: member['رقم الهوية'], name: member['الاسم الكامل'] }));
                 this.populateBeneficiaryList(this.membersList);
             }
         },
+        
         populateBeneficiaryList(members) {
             const selectList = document.getElementById('aidMemberSelect');
             selectList.innerHTML = '';
             if (members.length === 0) {
-                selectList.innerHTML = '<option disabled>لا توجد نتائج تطابق البحث</option>';
+                selectList.innerHTML = '<option disabled selected>لا توجد نتائج تطابق البحث</option>';
                 return;
             }
             members.forEach(member => {
@@ -355,25 +380,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 option.textContent = `${member.name} | ${member.id}`;
                 selectList.appendChild(option);
             });
+            if(members.length > 0) {
+                selectList.value = members[0].id;
+            }
         },
-        
+
+        // This function is now simplified to not handle pagination links
         async loadMembers(token) {
             const tableBody = document.getElementById('membersTableBody');
             tableBody.innerHTML = '<tr><td colspan="5" class="text-center">جاري تحميل الأفراد...</td></tr>';
-            const result = await this.apiCall({ action: 'getAllMembers', token: token, searchTerm: document.getElementById('memberSearchInput').value, page: this.currentPage, pageSize: this.pageSize });
+            const searchTerm = document.getElementById('memberSearchInput').value;
+            const result = await this.apiCall({ action: 'getAllMembers', token: token, searchTerm: searchTerm, page: 1, pageSize: 5000 });
             if (result && result.members) {
                 this.renderMembersTable(result.members);
                 document.getElementById('membersTotalCount').textContent = `إجمالي الأفراد: ${result.total}`;
-                this.renderPagination(result.total, document.getElementById('memberPagination'));
+                // Removed renderPagination call
             } else {
                 tableBody.innerHTML = '<tr><td colspan="5" class="text-center">لا يوجد أفراد لعرضهم.</td></tr>';
                 document.getElementById('membersTotalCount').textContent = 'إجمالي الأفراد: 0';
-                document.getElementById('memberPagination').innerHTML = '';
             }
         },
         async handleSearch(e, token, isButtonClick = false) {
             clearTimeout(this.searchTimeout);
-            this.searchTimeout = setTimeout(() => { this.currentPage = 1; this.loadMembers(token); }, isButtonClick ? 0 : 500);
+            this.searchTimeout = setTimeout(() => { this.loadMembers(token); }, isButtonClick ? 0 : 500);
         },
         renderMembersTable(members) {
             const tableBody = document.getElementById('membersTableBody');
@@ -383,17 +412,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             tableBody.innerHTML = members.map(member => `<tr><td>${member['الاسم الكامل']}</td><td>${member['رقم الهوية']}</td><td>${member['رقم الجوال'] || '-'}</td><td>${member['مكان الإقامة'] || '-'}</td><td><button class="btn btn-sm btn-info edit-member-btn" data-member='${JSON.stringify(member)}' data-bs-toggle="modal" data-bs-target="#editMemberModal"><i class="bi bi-pencil-square"></i></button><button class="btn btn-sm btn-warning reset-password-btn" data-id="${member['رقم الهوية']}"><i class="bi bi-key-fill"></i></button><button class="btn btn-sm btn-secondary print-member-btn" data-id="${member['رقم الهوية']}" data-name="${member['الاسم الكامل']}"><i class="bi bi-printer-fill"></i></button></td></tr>`).join('');
         },
+        // Removed renderPagination as it's no longer used for the member table
         renderPagination(total, container) {
-            const totalPages = Math.ceil(total / this.pageSize);
-            let html = '';
-            if (totalPages > 1) {
-                html = '<nav><ul class="pagination pagination-sm">';
-                for (let i = 1; i <= totalPages; i++) {
-                    html += `<li class="page-item ${i === this.currentPage ? 'active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
-                }
-                html += '</ul></nav>';
-            }
-            container.innerHTML = html;
+            // This function is now empty
         },
         
         async handlePrintMemberReport(e) {
@@ -523,7 +544,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const paginatedRecords = filteredRecords.slice(0, pageSize);
             
             this.renderCompletedAidTable(paginatedRecords);
-            // Pagination logic for completed aids would go here if needed.
         },
         renderFutureAidTable(records) {
             const tableBody = document.getElementById('futureAidsTableBody');
@@ -672,7 +692,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const headers = ['معرف المستفيد', 'نوع المساعدة', 'تاريخ الاستلام', 'مصدر المساعدة', 'ملاحظات', 'حالة المساعدة'];
             const exampleRow = ['123456789', 'نقد مباشر للعائلات المحتاجة', '2025-09-06', 'قسائم/دهش/عضوية', 'ملاحظات حول المساعدة', 'Completed'];
             
-            // إنشاء مصفوفة تحتوي على العناوين والصف النموذجي
             const data = [headers, exampleRow];
             
             const wb = XLSX.utils.book_new();

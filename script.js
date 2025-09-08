@@ -6,7 +6,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const App = {
-        WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbyLsgJoTOsYxC84KUCV6na4bD3OkozcCK3rl4Rt7HsiDzSqd2T8imnm75j5cYD5Pp8/exec',
+        WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbzL3Dv4CJJhZpqTJghuH3OnfOu0PvCwx_mQ1UzcHHXuhsW_WcOmp-RSp4ryMFL4oE6V/exec',
         aidCategories: {
             "مساعدات مالية": ["نقد مباشر للعائلات المحتاجة", "دفع فواتير (كهرباء، ماء، إيجار)", "قروض حسنة أو صناديق دوارة"],
             "مساعدات غذائية": ["طرود غذائية أساسية", "وجبات جاهزة / مطبوخة", "توزيع مياه للشرب"],
@@ -131,20 +131,22 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // --- *** مجموعة الوظائف المحدثة لشاشة المستخدم *** ---
 
-        async loadUserData(userId) {
-            // جلب بيانات المستخدم الشخصية
-            const userDataResult = await this.apiCall({ action: 'getUserData', userId });
-            if (userDataResult) this.renderUserInfo(userDataResult.data);
-        
-            // جلب بيانات المساعدات (مستقبلية ومكتملة) في نفس الوقت
-            const [aidHistoryResult, futureAidResult] = await Promise.all([
-                this.apiCall({ action: 'getUserAidHistory', userId }),
-                this.apiCall({ action: 'getUserFutureAid', userId, token: sessionStorage.getItem('adminToken') }) 
-            ]);
-        
-            if (aidHistoryResult) this.renderCompletedAid(aidHistoryResult.data);
-            if (futureAidResult) this.renderFutureAid(futureAidResult.data);
-        },
+       // في ملف script.js
+async loadUserData(userId) {
+    // جلب بيانات المستخدم الشخصية
+    const userDataResult = await this.apiCall({ action: 'getUserData', userId });
+    if (userDataResult) this.renderUserInfo(userDataResult.data);
+
+    // جلب بيانات المساعدات (مستقبلية ومكتملة) في نفس الوقت
+    const [aidHistoryResult, futureAidResult] = await Promise.all([
+        this.apiCall({ action: 'getUserAidHistory', userId }),
+        // ▼▼▼ تم تصحيح هذا السطر ▼▼▼
+        this.apiCall({ action: 'getUserFutureAid', userId }) 
+    ]);
+
+    if (aidHistoryResult) this.renderCompletedAid(aidHistoryResult.data);
+    if (futureAidResult) this.renderFutureAid(futureAidResult.data);
+},
         
         renderUserInfo(data) {
             document.getElementById('userName').textContent = data['الاسم الكامل'] || 'عضو العائلة';

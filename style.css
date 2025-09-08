@@ -464,3 +464,22 @@ body {
     padding: 2rem;
     color: #6c757d;
 }
+/* --- Events Modal Styling --- */
+#eventsModal .modal-header {
+    padding: 1.5rem 2rem;
+}
+
+#eventsModal .modal-body {
+    padding: 1.5rem 2rem 2rem;
+}
+
+#eventsModal .nav-tabs .nav-link {
+    font-weight: 600;
+    color: #6c757d;
+}
+
+#eventsModal .nav-tabs .nav-link.active {
+    color: var(--primary-green);
+    border-color: var(--primary-green);
+    border-bottom-width: 3px;
+}

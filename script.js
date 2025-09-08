@@ -113,15 +113,52 @@ document.addEventListener('DOMContentLoaded', () => {
                 statusText.textContent = 'الخادم غير متصل';
             }
         },
+// في ملف script.js
+initIndexPage() {
+    // ربط نماذج الدخول (تبقى كما هي)
+    document.getElementById('loginForm')?.addEventListener('submit', (e) => this.handleUserLogin(e));
+    document.getElementById('adminLoginForm')?.addEventListener('submit', (e) => this.handleAdminLogin(e));
+    document.getElementById('setPasswordForm')?.addEventListener('submit', (e) => this.handleModalSetPassword(e));
+    document.getElementById('userPasswordForm')?.addEventListener('submit', (e) => this.handleModalLogin(e));
+    document.getElementById('loginModalForgotPassword')?.addEventListener('click', (e) => this.handleForgotPassword(e));
+    document.getElementById('forgotPasswordForm')?.addEventListener('submit', async (e) => { e.preventDefault(); const userId = document.getElementById('forgotPasswordUserId').value; const result = await this.apiCall({ action: 'requestPasswordReset', userId }, true); if (result) this.forgotPasswordModal.hide(); });
 
-        initIndexPage() {
-            document.getElementById('loginForm')?.addEventListener('submit', (e) => this.handleUserLogin(e));
-            document.getElementById('adminLoginForm')?.addEventListener('submit', (e) => this.handleAdminLogin(e));
-            document.getElementById('setPasswordForm')?.addEventListener('submit', (e) => this.handleModalSetPassword(e));
-            document.getElementById('userPasswordForm')?.addEventListener('submit', (e) => this.handleModalLogin(e));
-            document.getElementById('loginModalForgotPassword')?.addEventListener('click', (e) => this.handleForgotPassword(e));
-            document.getElementById('forgotPasswordForm')?.addEventListener('submit', async (e) => { e.preventDefault(); const userId = document.getElementById('forgotPasswordUserId').value; const result = await this.apiCall({ action: 'requestPasswordReset', userId }, true); if (result) this.forgotPasswordModal.hide(); });
-        },
+    // --- الكود المحدث لصفحة الأحداث ---
+    const eventsModal = document.getElementById('eventsModal');
+    if (eventsModal) {
+        const viewEventsTab = document.getElementById('view-events-tab');
+        
+        // تحميل السجل عند فتح النافذة لأول مرة
+        eventsModal.addEventListener('show.bs.modal', () => {
+             this.loadEvents();
+        });
+
+        // ربط نموذج إضافة حدث (بدون الحاجة لصلاحيات)
+        document.getElementById('addEventForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const form = e.target;
+            const payload = {
+                action: 'addEvent',
+                // لا نرسل التوكن بعد الآن
+                eventType: form.eventType.value,
+                personName: form.personName.value,
+                personId: form.personId.value,
+                eventDate: form.eventDate.value,
+                eventNotes: form.eventNotes.value,
+            };
+
+            const result = await this.apiCall(payload, true);
+            if (result) {
+                form.reset();
+                // الانتقال إلى تبويب السجل وعرض البيانات المحدثة
+                const tab = new bootstrap.Tab(viewEventsTab);
+                tab.show();
+                this.loadEvents(); // إعادة تحميل السجل
+            }
+        });
+    }
+},
         initDashboardPage() { const userId = localStorage.getItem('loggedInUserId'); if (!userId) { window.location.href = 'index.html'; return; } this.loadUserData(userId); },
         async handleUserLogin(e) { e.preventDefault(); const form = e.target; const userId = form.querySelector('#userId').value; const spouseId = form.querySelector('#spouseId').value; this.userLoginModal.hide(); const result = await this.apiCall({ action: 'checkPasswordStatus', id: userId, spouse_id: spouseId }); if (!result) return; if (result.message === 'password_required') { document.getElementById('modalUserId').value = userId; this.setPasswordModal.show(); } else if (result.message === 'password_exists') { document.getElementById('loginModalUserId').value = userId; document.getElementById('loginModalSpouseId').value = spouseId; this.loginPasswordModal.show(); } },
         async handleModalSetPassword(e) { e.preventDefault(); const userId = document.getElementById('modalUserId').value; const newPassword = document.getElementById('modalNewPassword').value; const confirmPassword = document.getElementById('modalConfirmPassword').value; if (newPassword !== confirmPassword) { this.showToast('كلمة المرور وتأكيدها غير متطابقين.', false); return; } if (newPassword.length < 6) { this.showToast('كلمة المرور يجب أن لا تقل عن 6 أحرف.', false); return; } const result = await this.apiCall({ action: 'setMemberPassword', userId: userId, password: newPassword }, true); if (result) { this.setPasswordModal.hide(); localStorage.setItem('loggedInUserId', userId); localStorage.setItem('loggedInUserName', result.userName); window.location.href = 'dashboard.html'; } },

@@ -1,12 +1,12 @@
 /**
  * @file script.js
  * @description Frontend logic for the Family Aid System.
- * @version 8.3 - Completed member edit functionality, improved aid delivery UX, and activated server status check.
+ * @version 8.4 - Redesigned user dashboard aid history section.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
     const App = {
-        WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbxpXzDytwu8nRraRmicv-nncFkwB6j-ICgjQ5mvyJckIpLU8BCn9wvE3zANW5jt1wdM/exec',
+        WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbyLsgJoTOsYxC84KUCV6na4bD3OkozcCK3rl4Rt7HsiDzSqd2T8imnm75j5cYD5Pp8/exec',
         aidCategories: {
             "مساعدات مالية": ["نقد مباشر للعائلات المحتاجة", "دفع فواتير (كهرباء، ماء، إيجار)", "قروض حسنة أو صناديق دوارة"],
             "مساعدات غذائية": ["طرود غذائية أساسية", "وجبات جاهزة / مطبوخة", "توزيع مياه للشرب"],
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         init() {
             this.initModals();
             this.initPageBasedOnURL();
-            this.checkServerStatus(); // <-- **تم التفعيل**
+            this.checkServerStatus();
         },
         
         initModals() {
@@ -91,7 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleButtonSpinner(show, button) { const btn = button || document.querySelector('button[type="submit"]'); if (!btn) return; btn.disabled = show; btn.querySelector('.spinner-border')?.classList.toggle('d-none', !show); const buttonText = btn.querySelector('.button-text'); if(buttonText) buttonText.style.opacity = show ? 0.5 : 1; },
         formatDateToEnglish(dateString) { if (!dateString) return '-'; try { const date = new Date(dateString); if (isNaN(date.getTime())) return 'Invalid Date'; return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`; } catch (error) { return dateString; } },
         
-        // --- **وظيفة جديدة** ---
         async checkServerStatus() {
             const statusDiv = document.getElementById('server-status');
             if (!statusDiv) return;
@@ -129,56 +128,143 @@ document.addEventListener('DOMContentLoaded', () => {
         async handleModalLogin(e) { e.preventDefault(); const userId = document.getElementById('loginModalUserId').value; const spouseId = document.getElementById('loginModalSpouseId').value; const password = document.getElementById('loginModalPassword').value; this.loginPasswordModal.hide(); const result = await this.apiCall({ action: 'userLoginWithPassword', id: userId, spouse_id: spouseId, password: password }); if (result) { this.showToast(`أهلاً بك، ${result.user_name}`, true); localStorage.setItem('loggedInUserId', result.user_id); localStorage.setItem('loggedInUserName', result.user_name); setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000); } },
         async handleAdminLogin(e) { e.preventDefault(); this.adminLoginModal.hide(); const result = await this.apiCall({ action: 'adminLogin', username: document.getElementById('username').value, password: document.getElementById('password').value }); if (result) { this.showToast("تم تسجيل الدخول بنجاح.", true); sessionStorage.setItem('adminToken', result.token); sessionStorage.setItem('adminRole', result.role); window.location.href = 'admin.html'; } },
         async handleForgotPassword(e) { e.preventDefault(); this.loginPasswordModal.hide(); this.forgotPasswordModal.show(); },
-        async loadUserData(userId) { const userDataResult = await this.apiCall({ action: 'getUserData', userId }); if (userDataResult) this.renderUserInfo(userDataResult.data); const aidHistoryResult = await this.apiCall({ action: 'getUserAidHistory', userId }); if (aidHistoryResult) this.renderAidHistory(aidHistoryResult.data); },
-        renderUserInfo(data) { const container = document.getElementById('userInfo'); document.getElementById('userName').textContent = data['الاسم الكامل'] || 'عضو العائلة'; document.getElementById('userTitle').textContent = `رقم الهوية: ${data['رقم الهوية'] || '---'}`; container.innerHTML = Object.entries({ 'الاسم الكامل': 'person-heart', 'رقم الهوية': 'person-badge', 'اسم الزوجة رباعي': 'person-heart', 'رقم هوية الزوجة': 'person-badge', 'مكان الإقامة': 'geo-alt-fill', 'رقم الجوال': 'telephone-fill', 'تاريخ الميلاد': 'calendar-check', 'الحالة الاجتماعية': 'heart-fill', 'عدد الأولاد': 'people-fill' }).map(([key, icon]) => `<div class="col-md-6 mb-3"><div class="info-item"><strong><i class="bi bi-${icon} me-2"></i>${key}:</strong><span>${key === 'تاريخ الميلاد' ? this.formatDateToEnglish(data[key]) : (data[key] || '-')}</span></div></div>`).join(''); },
-        renderAidHistory(history) { const tableBody = document.getElementById('aidHistoryTableBody'); if (history.length === 0) { tableBody.innerHTML = '<tr><td colspan="4" class="text-center">لا يوجد سجل مساعدات لعرضه.</td></tr>'; return; } tableBody.innerHTML = history.map(item => `<tr><td>${item['نوع المساعدة']}</td><td>${this.formatDateToEnglish(item['تاريخ الاستلام'])}</td><td>${item['مصدر المساعدة'] || '-'}</td><td>${item['ملاحظات'] || '-'}</td></tr>`).join(''); },
+        
+        // --- *** مجموعة الوظائف المحدثة لشاشة المستخدم *** ---
 
-        initAdminDashboardPage(token) { if (sessionStorage.getItem('adminRole') === 'superadmin') document.getElementById('superadmin-link')?.classList.remove('d-none'); this.loadAdminStats(token); },
-// في ملف script.js
-async loadAdminStats(token) {
-    const statsResult = await this.apiCall({ action: 'getAdminStats', token });
-    if (statsResult?.stats) {
-        // الإحصائيات القديمة
-        document.getElementById('totalMembers').textContent = statsResult.stats.totalIndividuals;
-        document.getElementById('totalFamilies').textContent = statsResult.stats.totalFamilies;
-        document.getElementById('totalAid').textContent = statsResult.stats.totalAid;
+        async loadUserData(userId) {
+            // جلب بيانات المستخدم الشخصية
+            const userDataResult = await this.apiCall({ action: 'getUserData', userId });
+            if (userDataResult) this.renderUserInfo(userDataResult.data);
+        
+            // جلب بيانات المساعدات (مستقبلية ومكتملة) في نفس الوقت
+            const [aidHistoryResult, futureAidResult] = await Promise.all([
+                this.apiCall({ action: 'getUserAidHistory', userId }),
+                this.apiCall({ action: 'getUserFutureAid', userId, token: sessionStorage.getItem('adminToken') }) 
+            ]);
+        
+            if (aidHistoryResult) this.renderCompletedAid(aidHistoryResult.data);
+            if (futureAidResult) this.renderFutureAid(futureAidResult.data);
+        },
+        
+        renderUserInfo(data) {
+            document.getElementById('userName').textContent = data['الاسم الكامل'] || 'عضو العائلة';
+            document.getElementById('userTitle').textContent = `رقم الهوية: ${data['رقم الهوية'] || '---'}`;
+        
+            const container = document.getElementById('userInfo');
+        
+            const sections = {
+                "البيانات الشخصية": [
+                    { key: 'الاسم الكامل', label: 'الاسم الكامل', icon: 'bi-person-fill' },
+                    { key: 'رقم الهوية', label: 'رقم الهوية', icon: 'bi-person-badge' },
+                    { key: 'الحالة الاجتماعية', label: 'الحالة الاجتماعية', icon: 'bi-heart-fill' },
+                    { key: 'تاريخ الميلاد', label: 'تاريخ الميلاد', icon: 'bi-calendar-event' },
+                ],
+                "بيانات العائلة": [
+                    { key: 'اسم الزوجة رباعي', label: 'اسم الزوجة', icon: 'bi-person-heart' },
+                    { key: 'رقم هوية الزوجة', label: 'رقم هوية الزوجة', icon: 'bi-person-badge-fill' },
+                    { key: 'عدد الأولاد', label: 'عدد الأولاد', icon: 'bi-people-fill' },
+                ],
+                "معلومات التواصل": [
+                    { key: 'رقم الجوال', label: 'رقم الجوال', icon: 'bi-telephone-fill' },
+                    { key: 'مكان الإقامة', label: 'مكان الإقامة', icon: 'bi-geo-alt-fill' },
+                ]
+            };
+        
+            let html = '';
+            for (const sectionTitle in sections) {
+                html += `<h6 class="info-section-title">${sectionTitle}</h6>`;
+                html += `<div class="row">`;
+                sections[sectionTitle].forEach(field => {
+                    let value = data[field.key] || '-';
+                    if (field.key === 'تاريخ الميلاد' && value !== '-') {
+                        value = this.formatDateToEnglish(value);
+                    }
+                    html += `<div class="col-lg-6"><div class="info-item-pro"><i class="bi ${field.icon}"></i><span class="info-label">${field.label}:</span><span class="info-value">${value}</span></div></div>`;
+                });
+                html += `</div>`;
+            }
+            container.innerHTML = html;
+        },
 
-        // الإحصائيات الجديدة
-        document.getElementById('totalDivorced').textContent = statsResult.stats.divorced || 0;
-        document.getElementById('totalMartyrs').textContent = statsResult.stats.martyrs || 0;
-        document.getElementById('totalWounded').textContent = statsResult.stats.wounded || 0;
-        document.getElementById('branchAhmad').textContent = statsResult.stats.branchAhmad || 0;
-        document.getElementById('branchHamed').textContent = statsResult.stats.branchHamed || 0;
-        document.getElementById('branchHamdan').textContent = statsResult.stats.branchHamdan || 0;
-        document.getElementById('branchHammad').textContent = statsResult.stats.branchHammad || 0;
-    }
-},
-        // --- **الوظيفة الكاملة والمحدثة** ---
+        renderFutureAid(futureAid) {
+            const tableBody = document.getElementById('futureAidTableBody');
+            if (!tableBody) return;
+        
+            if (futureAid.length === 0) {
+                tableBody.innerHTML = '<tr class="no-data-row"><td colspan="4">لا توجد مساعدات مجدولة حالياً.</td></tr>';
+                return;
+            }
+        
+            tableBody.innerHTML = futureAid.map(item => `
+                <tr>
+                    <td>${item['نوع المساعدة']}</td>
+                    <td>${this.formatDateToEnglish(item['تاريخ الاستلام'])}</td>
+                    <td>${item['مصدر المساعدة'] || '-'}</td>
+                    <td>${item['ملاحظات'] || '-'}</td>
+                </tr>
+            `).join('');
+        },
+        
+        renderCompletedAid(history) {
+            const tableBody = document.getElementById('aidHistoryTableBody');
+            if (!tableBody) return;
+        
+            if (history.length === 0) {
+                tableBody.innerHTML = '<tr class="no-data-row"><td colspan="4">لا يوجد سجل مساعدات لعرضه.</td></tr>';
+                return;
+            }
+        
+            tableBody.innerHTML = history.map(item => `
+                <tr>
+                    <td>${item['نوع المساعدة']}</td>
+                    <td>${this.formatDateToEnglish(item['تاريخ الاستلام'])}</td>
+                    <td>${item['مصدر المساعدة'] || '-'}</td>
+                    <td>${item['ملاحظات'] || '-'}</td>
+                </tr>
+            `).join('');
+        },
+
+        // --- نهاية مجموعة الوظائف المحدثة ---
+
+        initAdminDashboardPage(token) { 
+            if (sessionStorage.getItem('adminRole') === 'superadmin') document.getElementById('superadmin-link')?.classList.remove('d-none'); 
+            this.loadAdminStats(token); 
+        },
+        async loadAdminStats(token) {
+            const statsResult = await this.apiCall({ action: 'getAdminStats', token });
+            if (statsResult?.stats) {
+                document.getElementById('totalMembers').textContent = statsResult.stats.totalIndividuals;
+                document.getElementById('totalFamilies').textContent = statsResult.stats.totalFamilies;
+                document.getElementById('totalAid').textContent = statsResult.stats.totalAid;
+                document.getElementById('totalDivorced').textContent = statsResult.stats.divorced || 0;
+                document.getElementById('totalMartyrs').textContent = statsResult.stats.martyrs || 0;
+                document.getElementById('totalWounded').textContent = statsResult.stats.wounded || 0;
+                document.getElementById('branchAhmad').textContent = statsResult.stats.branchAhmad || 0;
+                document.getElementById('branchHamed').textContent = statsResult.stats.branchHamed || 0;
+                document.getElementById('branchHamdan').textContent = statsResult.stats.branchHamdan || 0;
+                document.getElementById('branchHammad').textContent = statsResult.stats.branchHammad || 0;
+            }
+        },
+
         initManageMembersPage(token) {
             const editMemberModalElement = document.getElementById('editMemberModal');
 
-            // منطق البحث عن الأعضاء
             document.getElementById('memberSearchInput')?.addEventListener('input', () => { 
                 clearTimeout(this.searchTimeout); 
                 this.searchTimeout = setTimeout(() => this.handleMemberSearch(token), 500); 
             });
             
-            // منطق الأزرار داخل جدول الأعضاء (طباعة ومسح كلمة المرور)
             document.getElementById('membersTableBody')?.addEventListener('click', e => {
                 if (e.target.closest('.print-member-btn')) this.handlePrintMemberReport(e, token);
                 if (e.target.closest('.reset-password-btn')) this.handleResetPassword(e, token);
             });
             
-            // منطق زر الطباعة النهائي داخل نافذة التقرير
             document.getElementById('startPrintBtn')?.addEventListener('click', () => { 
                 setTimeout(() => window.print(), 250); 
             });
 
-            // --- منطق تعديل بيانات الفرد المضاف حديثًا ---
-
-            // 1. حدث يتم تفعيله عند فتح نافذة التعديل لتعبئة البيانات
             editMemberModalElement?.addEventListener('show.bs.modal', (event) => {
-                const button = event.relatedTarget; // الزر الذي قام بفتح النافذة
+                const button = event.relatedTarget;
                 const memberData = JSON.parse(button.dataset.member);
                 
                 document.getElementById('editMemberId').value = memberData['رقم الهوية'];
@@ -189,7 +275,6 @@ async loadAdminStats(token) {
                 document.getElementById('editSpouseFullName').value = memberData['اسم الزوجة رباعي'];
             });
 
-            // 2. حدث يتم تفعيله عند الضغط على زر "حفظ التغييرات" لإرسال البيانات
             document.getElementById('editMemberForm')?.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const form = e.target;
@@ -325,7 +410,6 @@ async loadAdminStats(token) {
                 tableBody.innerHTML = records.map(aid => `<tr><td>${aid['اسم المستفيد'] || '-'}</td><td>${aid['معرف المستفيد']}</td><td>${aid['نوع المساعدة']}</td><td>${this.formatDateToEnglish(aid['تاريخ الاستلام'])}</td><td>${aid['مصدر المساعدة'] || '-'}</td></tr>`).join('');
             }
         },
-        // --- **الوظيفة المحسنة** ---
         async handleCompleteSingleAid(e, token) {
             const button = e.target.closest('.complete-aid-btn');
             const aidId = button.dataset.id;
@@ -448,14 +532,12 @@ async loadAdminStats(token) {
 
                 const confirmHandler = () => {
                     confirmationModal.hide();
-                    confirmBtn.removeEventListener('click', confirmHandler);
                     resolve(true);
                 };
                 
-                confirmBtn.addEventListener('click', confirmHandler);
+                confirmBtn.addEventListener('click', confirmHandler, { once: true });
 
                 confirmationModalEl.addEventListener('hidden.bs.modal', () => {
-                    confirmBtn.removeEventListener('click', confirmHandler);
                     resolve(false);
                 }, { once: true });
             });

@@ -346,3 +346,121 @@ body {
 .stat-item .bi-bandaid-fill { color: #17a2b8 !important; } /* أزرق سماوي - للجرحى */
 .stat-item .bi-person-x-fill { color: #6c757d !important; } /* رمادي - للمطلقات */
 .stat-item .bi-person-circle { color: #343a40 !important; } /* داكن - للفروع */
+/* --- Professional Dashboard Profile Card --- */
+.profile-card-professional {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07);
+    overflow: hidden; /* لإخفاء أي زوائد من العناصر الداخلية */
+}
+
+.card-header-professional {
+    background: linear-gradient(135deg, var(--primary-green), #006400);
+    color: white;
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    border-bottom: none;
+}
+
+.card-header-professional .profile-icon {
+    font-size: 4rem;
+    margin-left: 1.5rem;
+    opacity: 0.8;
+}
+
+.card-header-professional h4 {
+    font-weight: 700;
+    font-size: 1.8rem;
+}
+
+.card-header-professional .text-muted {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-size: 1rem;
+}
+
+.card-body-professional {
+    padding: 2rem;
+}
+
+.info-section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary-green);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.info-item-pro {
+    display: flex;
+    align-items: center;
+    background-color: #f8f9fa;
+    padding: 0.8rem 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #e9ecef;
+}
+
+.info-item-pro i {
+    font-size: 1.2rem;
+    color: #6c757d;
+    margin-left: 1rem;
+    width: 20px; /* لتوحيد عرض الأيقونات */
+}
+
+.info-item-pro .info-label {
+    color: #6c757d;
+    font-weight: 600;
+}
+
+.info-item-pro .info-value {
+    margin-right: auto;
+    font-weight: 600;
+    color: #343a40;
+}
+/* --- Professional Dashboard Aid Cards --- */
+.aid-card {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07);
+    overflow: hidden;
+}
+
+.aid-card .card-header {
+    color: white;
+    padding: 1rem 1.5rem;
+    border-bottom: none;
+}
+
+.aid-card .aid-header-future {
+    background: linear-gradient(135deg, #17a2b8, #138496); /* تدرج سماوي */
+}
+
+.aid-card .aid-header-completed {
+    background: linear-gradient(135deg, #6c757d, #5a6268); /* تدرج رمادي */
+}
+
+.aid-card .table {
+    border-top: none; /* إزالة الخط العلوي للجدول */
+}
+
+.aid-card .table thead th {
+    background-color: #f8f9fa;
+    border-bottom-width: 1px;
+    font-weight: 600;
+}
+
+.aid-card .table td {
+    padding: 1rem 1.5rem;
+}
+
+.aid-card .table-hover tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.aid-card .no-data-row td {
+    text-align: center;
+    padding: 2rem;
+    color: #6c757d;
+}

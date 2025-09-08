@@ -19,40 +19,65 @@
             <a href="index.html" onclick="localStorage.clear();" class="btn btn-outline-danger">تسجيل الخروج</a>
         </div>
     </header>
-    <main class="container my-4">
-        <div class="card profile-card mb-4">
-            <div class="profile-card-header">
-                <i class="bi bi-person-circle profile-icon"></i>
-                <h4 class="mb-0" id="userName">عضو العائلة</h4>
-                <p class="text-muted" id="userTitle">رقم الهوية: ---</p>
-            </div>
-            <div class="profile-card-body">
-                <h5 class="mb-3"><i class="bi bi-info-circle me-2 text-success"></i>البيانات الشخصية</h5>
-                <div class="row" id="userInfo">
-                    </div>
+  <main class="container my-4">
+    <div class="card profile-card-professional mb-4">
+        <div class="card-header-professional">
+            <i class="bi bi-person-circle profile-icon"></i>
+            <div>
+                <h4 class="mb-0" id="userName">جاري التحميل...</h4>
+                <p class="text-muted mb-0" id="userTitle">رقم الهوية: ---</p>
             </div>
         </div>
-        <div class="card mb-4">
-            <div class="card-header bg-white border-0 pt-3">
-                <h3><i class="bi bi-card-list me-2 text-success"></i>سجل المساعدات</h3>
+        <div class="card-body-professional" id="userInfo">
+            <div class="text-center p-5">
+                <div class="spinner-border text-success" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
             </div>
-            <div class="card-body table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>نوع المساعدة</th>
-                            <th>تاريخ الاستلام</th>
-                            <th>مصدر المساعدة</th>
-                            <th>ملاحظات</th>
-                        </tr>
-                    </thead>
-                    <tbody id="aidHistoryTableBody">
-                        <tr><td colspan="4" class="text-center">جاري تحميل سجل المساعدات...</td></tr>
+        </div>
+    </div>
+<div class="card aid-card mb-4">
+    <div class="card-header aid-header-future">
+        <h5 class="mb-0"><i class="bi bi-calendar-check-fill me-2"></i>المساعدات المستقبلية المجدولة</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>نوع المساعدة</th>
+                        <th>تاريخ الاستلام المتوقع</th>
+                        <th>مصدر المساعدة</th>
+                        <th>ملاحظات</th>
+                    </tr>
+                </thead>
+                <tbody id="futureAidTableBody">
                     </tbody>
-                </table>
-            </div>
+            </table>
         </div>
-    </main>
+    </div>
+</div>
+
+<div class="card aid-card">
+    <div class="card-header aid-header-completed">
+        <h5 class="mb-0"><i class="bi bi-card-checklist me-2"></i>سجل المساعدات المكتملة</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>نوع المساعدة</th>
+                        <th>تاريخ الاستلام</th>
+                        <th>مصدر المساعدة</th>
+                        <th>ملاحظات</th>
+                    </tr>
+                </thead>
+                <tbody id="aidHistoryTableBody">
+                    </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 <footer class="footer">
     <div id="server-status" class="status-indicator mb-2">

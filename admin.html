@@ -21,29 +21,102 @@
         </div>
     </header>
 
-    <main class="container my-4">
-        <div class="card stat-card mb-4">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="card-title">إحصائيات النظام</h5>
-                    <i class="bi bi-bar-chart-fill text-success" style="font-size: 2rem;"></i>
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="bi bi-bar-chart-fill me-2"></i>إحصائيات النظام</h5>
+        <span class="badge bg-light text-primary fs-6">عرض شامل</span>
+    </div>
+    <div class="card-body p-4">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 text-center">
+            
+            <div class="col">
+                <div class="stat-item bg-light p-3 rounded shadow-sm d-flex flex-column align-items-center">
+                    <i class="bi bi-house-door-fill text-primary mb-2 stat-icon"></i>
+                    <h4 class="mb-1 fw-bold" id="totalFamilies">0</h4>
+                    <p class="text-muted mb-0">إجمالي العائلات</p>
                 </div>
-                <div class="row text-center">
-                    <div class="col-md-4 mb-3 mb-md-0">
-                        <p class="mb-0 fs-5 fw-bold" id="totalMembers">0</p>
-                        <small class="text-muted">إجمالي أفراد العائلة</small>
-                    </div>
-                    <div class="col-md-4 mb-3 mb-md-0">
-                        <p class="mb-0 fs-5 fw-bold" id="totalFamilies">0</p>
-                        <small class="text-muted">إجمالي العائلات</small>
-                    </div>
-                    <div class="col-md-4">
-                        <p class="mb-0 fs-5 fw-bold" id="totalAid">0</p>
-                        <small class="text-muted">إجمالي المساعدات الموزعة</small>
-                    </div>
+            </div>
+
+            <div class="col">
+                <div class="stat-item bg-light p-3 rounded shadow-sm d-flex flex-column align-items-center">
+                    <i class="bi bi-people-fill text-success mb-2 stat-icon"></i>
+                    <h4 class="mb-1 fw-bold" id="totalMembers">0</h4>
+                    <p class="text-muted mb-0">إجمالي أفراد العائلة</p>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="stat-item bg-light p-3 rounded shadow-sm d-flex flex-column align-items-center">
+                    <i class="bi bi-cash-stack text-warning mb-2 stat-icon"></i>
+                    <h4 class="mb-1 fw-bold" id="totalAid">0</h4>
+                    <p class="text-muted mb-0">إجمالي المساعدات</p>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="stat-item bg-light p-3 rounded shadow-sm d-flex flex-column align-items-center">
+                    <i class="bi bi-heart-fill text-danger mb-2 stat-icon"></i>
+                    <h4 class="mb-1 fw-bold" id="totalMartyrs">0</h4>
+                    <p class="text-muted mb-0">عدد الشهداء</p>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="stat-item bg-light p-3 rounded shadow-sm d-flex flex-column align-items-center">
+                    <i class="bi bi-bandaid-fill text-info mb-2 stat-icon"></i>
+                    <h4 class="mb-1 fw-bold" id="totalWounded">0</h4>
+                    <p class="text-muted mb-0">عدد الجرحى</p>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="stat-item bg-light p-3 rounded shadow-sm d-flex flex-column align-items-center">
+                    <i class="bi bi-person-x-fill text-secondary mb-2 stat-icon"></i>
+                    <h4 class="mb-1 fw-bold" id="totalDivorced">0</h4>
+                    <p class="text-muted mb-0">عدد المطلقات</p>
                 </div>
             </div>
         </div>
+
+        <hr class="my-5">
+
+        <h6 class="text-center text-secondary mb-4"><i class="bi bi-diagram-3-fill me-2"></i>إحصائيات الفروع</h6>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 text-center">
+            
+            <div class="col">
+                <div class="stat-item bg-light p-3 rounded shadow-sm d-flex flex-column align-items-center">
+                    <i class="bi bi-person-circle text-dark mb-2 stat-icon"></i>
+                    <h4 class="mb-1 fw-bold" id="branchAhmad">0</h4>
+                    <p class="text-muted mb-0">فرع آل أحمد</p>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="stat-item bg-light p-3 rounded shadow-sm d-flex flex-column align-items-center">
+                    <i class="bi bi-person-circle text-dark mb-2 stat-icon"></i>
+                    <h4 class="mb-1 fw-bold" id="branchHamed">0</h4>
+                    <p class="text-muted mb-0">فرع آل حامد</p>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="stat-item bg-light p-3 rounded shadow-sm d-flex flex-column align-items-center">
+                    <i class="bi bi-person-circle text-dark mb-2 stat-icon"></i>
+                    <h4 class="mb-1 fw-bold" id="branchHamdan">0</h4>
+                    <p class="text-muted mb-0">فرع آل حمدان</p>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="stat-item bg-light p-3 rounded shadow-sm d-flex flex-column align-items-center">
+                    <i class="bi bi-person-circle text-dark mb-2 stat-icon"></i>
+                    <h4 class="mb-1 fw-bold" id="branchHammad">0</h4>
+                    <p class="text-muted mb-0">فرع آل حماد</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
         <div class="card">
             <div class="card-header bg-white border-0 pt-3">

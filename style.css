@@ -296,3 +296,53 @@ body {
     70% { box-shadow: 0 0 0 10px rgba(0, 128, 0, 0); }
     100% { box-shadow: 0 0 0 0 rgba(0, 128, 0, 0); }
 }
+/* --- Admin Dashboard Stats Styling --- */
+.card-header.bg-primary {
+    background-color: var(--primary-green) !important;
+    border-bottom: none;
+}
+
+.card-header .badge {
+    background-color: #fff !important;
+    color: var(--primary-green) !important;
+}
+
+.stat-item {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    min-height: 150px; /* لتوحيد ارتفاع البطاقات */
+    justify-content: center; /* لمحاذاة المحتوى عمودياً في المنتصف */
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.stat-item .stat-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-item h4 {
+    font-size: 1.8rem;
+    color: #343a40; /* لون نص الأرقام */
+}
+
+.stat-item p.text-muted {
+    font-size: 0.9rem;
+}
+
+/* تنسيق الفواصل */
+.card-body hr {
+    border-top: 2px dashed #e9ecef;
+    opacity: 0.7;
+}
+
+/* الأيقونات والألوان الخاصة */
+.stat-item .bi-house-door-fill { color: #007bff !important; } /* أزرق */
+.stat-item .bi-people-fill { color: #28a745 !important; } /* أخضر */
+.stat-item .bi-cash-stack { color: #ffc107 !important; } /* أصفر */
+.stat-item .bi-heart-fill { color: #dc3545 !important; } /* أحمر - للشهداء */
+.stat-item .bi-bandaid-fill { color: #17a2b8 !important; } /* أزرق سماوي - للجرحى */
+.stat-item .bi-person-x-fill { color: #6c757d !important; } /* رمادي - للمطلقات */
+.stat-item .bi-person-circle { color: #343a40 !important; } /* داكن - للفروع */

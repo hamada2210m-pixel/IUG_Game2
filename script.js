@@ -6,7 +6,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const App = {
-        WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbwXRMLiUTmXf7W2mhJp_Zn1-ZXiN1RmDsMuxUtpBoXakPSldbMfMQhMV8pl05WUyQG0/exec',
+        WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbxpXzDytwu8nRraRmicv-nncFkwB6j-ICgjQ5mvyJckIpLU8BCn9wvE3zANW5jt1wdM/exec',
         aidCategories: {
             "مساعدات مالية": ["نقد مباشر للعائلات المحتاجة", "دفع فواتير (كهرباء، ماء، إيجار)", "قروض حسنة أو صناديق دوارة"],
             "مساعدات غذائية": ["طرود غذائية أساسية", "وجبات جاهزة / مطبوخة", "توزيع مياه للشرب"],
@@ -134,8 +134,25 @@ document.addEventListener('DOMContentLoaded', () => {
         renderAidHistory(history) { const tableBody = document.getElementById('aidHistoryTableBody'); if (history.length === 0) { tableBody.innerHTML = '<tr><td colspan="4" class="text-center">لا يوجد سجل مساعدات لعرضه.</td></tr>'; return; } tableBody.innerHTML = history.map(item => `<tr><td>${item['نوع المساعدة']}</td><td>${this.formatDateToEnglish(item['تاريخ الاستلام'])}</td><td>${item['مصدر المساعدة'] || '-'}</td><td>${item['ملاحظات'] || '-'}</td></tr>`).join(''); },
 
         initAdminDashboardPage(token) { if (sessionStorage.getItem('adminRole') === 'superadmin') document.getElementById('superadmin-link')?.classList.remove('d-none'); this.loadAdminStats(token); },
-        async loadAdminStats(token) { const statsResult = await this.apiCall({ action: 'getAdminStats', token }); if (statsResult?.stats) { document.getElementById('totalMembers').textContent = statsResult.stats.totalIndividuals; document.getElementById('totalFamilies').textContent = statsResult.stats.totalFamilies; document.getElementById('totalAid').textContent = statsResult.stats.totalAid; } },
+// في ملف script.js
+async loadAdminStats(token) {
+    const statsResult = await this.apiCall({ action: 'getAdminStats', token });
+    if (statsResult?.stats) {
+        // الإحصائيات القديمة
+        document.getElementById('totalMembers').textContent = statsResult.stats.totalIndividuals;
+        document.getElementById('totalFamilies').textContent = statsResult.stats.totalFamilies;
+        document.getElementById('totalAid').textContent = statsResult.stats.totalAid;
 
+        // الإحصائيات الجديدة
+        document.getElementById('totalDivorced').textContent = statsResult.stats.divorced || 0;
+        document.getElementById('totalMartyrs').textContent = statsResult.stats.martyrs || 0;
+        document.getElementById('totalWounded').textContent = statsResult.stats.wounded || 0;
+        document.getElementById('branchAhmad').textContent = statsResult.stats.branchAhmad || 0;
+        document.getElementById('branchHamed').textContent = statsResult.stats.branchHamed || 0;
+        document.getElementById('branchHamdan').textContent = statsResult.stats.branchHamdan || 0;
+        document.getElementById('branchHammad').textContent = statsResult.stats.branchHammad || 0;
+    }
+},
         // --- **الوظيفة الكاملة والمحدثة** ---
         initManageMembersPage(token) {
             const editMemberModalElement = document.getElementById('editMemberModal');

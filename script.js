@@ -6,7 +6,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const App = {
-        WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbzL3Dv4CJJhZpqTJghuH3OnfOu0PvCwx_mQ1UzcHHXuhsW_WcOmp-RSp4ryMFL4oE6V/exec',
+        WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbwNN76USNIa7NmpdkZ-KgdtVSAEJg0XrheLUBKmUWC-MaRrUjTCr75JthZQUpIIjcNu/exec',
         aidCategories: {
             "مساعدات مالية": ["نقد مباشر للعائلات المحتاجة", "دفع فواتير (كهرباء، ماء، إيجار)", "قروض حسنة أو صناديق دوارة"],
             "مساعدات غذائية": ["طرود غذائية أساسية", "وجبات جاهزة / مطبوخة", "توزيع مياه للشرب"],

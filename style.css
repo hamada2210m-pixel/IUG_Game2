@@ -124,11 +124,39 @@ body {
 /* --- Footer --- */
 .footer {
     text-align: center;
-    padding: 1.5rem;
-    background-color: #e9ecef;
+    padding: 2rem 1rem;
+    background-color: #f8f9fa;
     color: #6c757d;
     margin-top: 4rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.footer .status-indicator {
     font-size: 0.9rem;
+    font-weight: bold;
+    color: #343a40;
+}
+
+.footer .copyright-text {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.footer .whatsapp-link {
+    text-decoration: none;
+    color: var(--primary-green);
+    font-weight: 600;
+    transition: color 0.2s ease-in-out;
+    font-size: 0.9rem;
+}
+
+.footer .whatsapp-link:hover {
+    color: #006400; /* Darker green on hover */
+}
+
+.footer .whatsapp-link i {
+    vertical-align: -1px;
+    margin-left: 5px;
 }
 
 /* Spinner inside button */
@@ -241,4 +269,30 @@ body {
     #printReportContent * {
         visibility: visible !important;
     }
+}
+/* في ملف style.css */
+.status-indicator .status-dot {
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 8px;
+    background-color: #ffc107; /* برتقالي (جاري التحقق) */
+    animation: pulse 2s infinite;
+}
+
+.status-indicator.online .status-dot {
+    background-color: #28a745; /* أخضر (متصل) */
+    animation: none;
+}
+
+.status-indicator.offline .status-dot {
+    background-color: #dc3545; /* أحمر (غير متصل) */
+    animation: none;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(0, 128, 0, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(0, 128, 0, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 128, 0, 0); }
 }

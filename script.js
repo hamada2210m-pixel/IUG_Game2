@@ -1,7 +1,7 @@
 /**
  * @file script.js
  * @description Frontend logic for the Family Aid System.
- * @version 8.2 - Added functionality for single aid delivery button.
+ * @version 8.3 - Completed member edit functionality, improved aid delivery UX, and activated server status check.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -25,12 +25,13 @@ document.addEventListener('DOMContentLoaded', () => {
         futureAidPageSize: 10,
         
         setPasswordModal: null, loginPasswordModal: null, forgotPasswordModal: null,
-        confirmationModal: null, userLoginModal: null, adminLoginModal: null,
+        userLoginModal: null, adminLoginModal: null,
         bulkCompleteModal: null, printReportModalInstance: null, editMemberModalInstance: null,
 
         init() {
             this.initModals();
             this.initPageBasedOnURL();
+            this.checkServerStatus(); // <-- **تم التفعيل**
         },
         
         initModals() {
@@ -38,7 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
             this.setPasswordModal = getModal('setPasswordModal');
             this.loginPasswordModal = getModal('loginPasswordModal');
             this.forgotPasswordModal = getModal('forgotPasswordModal');
-            this.confirmationModal = getModal('confirmationModal');
             this.userLoginModal = getModal('userLoginModal');
             this.adminLoginModal = getModal('adminLoginModal');
             this.bulkCompleteModal = getModal('confirmBulkCompleteModal');
@@ -86,10 +86,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 return result;
             } catch (error) { console.error('API Call Failed:', error); this.showToast(error.message, false); return null; } finally { if (isButtonTriggered) this.toggleButtonSpinner(false, activeSubmitButton); }
         },
+        
         showToast(message, isSuccess = true) { Toastify({ text: message, duration: 4000, gravity: "top", position: "center", style: { background: isSuccess ? "#28a745" : "#dc3545", boxShadow: "none" } }).showToast(); },
         toggleButtonSpinner(show, button) { const btn = button || document.querySelector('button[type="submit"]'); if (!btn) return; btn.disabled = show; btn.querySelector('.spinner-border')?.classList.toggle('d-none', !show); const buttonText = btn.querySelector('.button-text'); if(buttonText) buttonText.style.opacity = show ? 0.5 : 1; },
         formatDateToEnglish(dateString) { if (!dateString) return '-'; try { const date = new Date(dateString); if (isNaN(date.getTime())) return 'Invalid Date'; return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`; } catch (error) { return dateString; } },
         
+        // --- **وظيفة جديدة** ---
+        async checkServerStatus() {
+            const statusDiv = document.getElementById('server-status');
+            if (!statusDiv) return;
+
+            const statusText = statusDiv.querySelector('.status-text');
+
+            try {
+                const response = await fetch(this.WEB_APP_URL, { method: 'GET' });
+                if (response.ok) {
+                    const data = await response.json();
+                    statusDiv.classList.remove('offline');
+                    statusDiv.classList.add('online');
+                    statusText.textContent = `الخادم متصل (إصدار ${data.version})`;
+                } else {
+                    throw new Error('Server not reachable');
+                }
+            } catch (error) {
+                statusDiv.classList.remove('online');
+                statusDiv.classList.add('offline');
+                statusText.textContent = 'الخادم غير متصل';
+            }
+        },
+
         initIndexPage() {
             document.getElementById('loginForm')?.addEventListener('submit', (e) => this.handleUserLogin(e));
             document.getElementById('adminLoginForm')?.addEventListener('submit', (e) => this.handleAdminLogin(e));
@@ -111,13 +136,67 @@ document.addEventListener('DOMContentLoaded', () => {
         initAdminDashboardPage(token) { if (sessionStorage.getItem('adminRole') === 'superadmin') document.getElementById('superadmin-link')?.classList.remove('d-none'); this.loadAdminStats(token); },
         async loadAdminStats(token) { const statsResult = await this.apiCall({ action: 'getAdminStats', token }); if (statsResult?.stats) { document.getElementById('totalMembers').textContent = statsResult.stats.totalIndividuals; document.getElementById('totalFamilies').textContent = statsResult.stats.totalFamilies; document.getElementById('totalAid').textContent = statsResult.stats.totalAid; } },
 
+        // --- **الوظيفة الكاملة والمحدثة** ---
         initManageMembersPage(token) {
-            document.getElementById('memberSearchInput')?.addEventListener('input', () => { clearTimeout(this.searchTimeout); this.searchTimeout = setTimeout(() => this.handleMemberSearch(token), 500); });
+            const editMemberModalElement = document.getElementById('editMemberModal');
+
+            // منطق البحث عن الأعضاء
+            document.getElementById('memberSearchInput')?.addEventListener('input', () => { 
+                clearTimeout(this.searchTimeout); 
+                this.searchTimeout = setTimeout(() => this.handleMemberSearch(token), 500); 
+            });
+            
+            // منطق الأزرار داخل جدول الأعضاء (طباعة ومسح كلمة المرور)
             document.getElementById('membersTableBody')?.addEventListener('click', e => {
                 if (e.target.closest('.print-member-btn')) this.handlePrintMemberReport(e, token);
                 if (e.target.closest('.reset-password-btn')) this.handleResetPassword(e, token);
             });
-            document.getElementById('startPrintBtn')?.addEventListener('click', () => { setTimeout(() => window.print(), 250); });
+            
+            // منطق زر الطباعة النهائي داخل نافذة التقرير
+            document.getElementById('startPrintBtn')?.addEventListener('click', () => { 
+                setTimeout(() => window.print(), 250); 
+            });
+
+            // --- منطق تعديل بيانات الفرد المضاف حديثًا ---
+
+            // 1. حدث يتم تفعيله عند فتح نافذة التعديل لتعبئة البيانات
+            editMemberModalElement?.addEventListener('show.bs.modal', (event) => {
+                const button = event.relatedTarget; // الزر الذي قام بفتح النافذة
+                const memberData = JSON.parse(button.dataset.member);
+                
+                document.getElementById('editMemberId').value = memberData['رقم الهوية'];
+                document.getElementById('editFullName').value = memberData['الاسم الكامل'];
+                document.getElementById('editPhoneNumber').value = memberData['رقم الجوال'];
+                document.getElementById('editResidence').value = memberData['مكان الإقامة'];
+                document.getElementById('editSpouseId').value = memberData['رقم هوية الزوجة'];
+                document.getElementById('editSpouseFullName').value = memberData['اسم الزوجة رباعي'];
+            });
+
+            // 2. حدث يتم تفعيله عند الضغط على زر "حفظ التغييرات" لإرسال البيانات
+            document.getElementById('editMemberForm')?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const form = e.target;
+                const memberId = form.editMemberId.value;
+                const memberData = {
+                    'الاسم الكامل': form.editFullName.value,
+                    'رقم الجوال': form.editPhoneNumber.value,
+                    'مكان الإقامة': form.editResidence.value,
+                    'رقم هوية الزوجة': form.editSpouseId.value,
+                    'اسم الزوجة رباعي': form.editSpouseFullName.value,
+                };
+
+                const result = await this.apiCall({
+                    action: 'updateMember',
+                    token: token,
+                    memberId: memberId,
+                    memberData: memberData
+                }, true);
+
+                if (result) {
+                    this.editMemberModalInstance.hide();
+                    this.handleMemberSearch(token); 
+                }
+            });
         },
         async handleMemberSearch(token) {
             const tableBody = document.getElementById('membersTableBody');
@@ -147,12 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else { this.showToast('فشل تحميل كامل بيانات التقرير.', false); }
         },
         generateReportHTML(userData, aidHistory, futureAid) {
-            const createTable = (title, icon, data, headers) => `
-                <h5 class="report-section-title"><i class="bi bi-${icon} me-2"></i>${title}</h5>
-                <table class="table table-bordered table-sm mb-4">
-                    <thead><tr>${headers.map(h => `<th>${h.label}</th>`).join('')}</tr></thead>
-                    <tbody>${data.length > 0 ? data.map(item => `<tr>${headers.map(h => `<td>${item[h.key] ? (h.isDate ? this.formatDateToEnglish(item[h.key]) : item[h.key]) : '-'}</td>`).join('')}</tr>`).join('') : `<tr><td colspan="${headers.length}" class="text-center text-muted">لا توجد بيانات</td></tr>`}</tbody>
-                </table>`;
+            const createTable = (title, icon, data, headers) => `<h5 class="report-section-title"><i class="bi bi-${icon} me-2"></i>${title}</h5><table class="table table-bordered table-sm mb-4"><thead><tr>${headers.map(h => `<th>${h.label}</th>`).join('')}</tr></thead><tbody>${data.length > 0 ? data.map(item => `<tr>${headers.map(h => `<td>${item[h.key] ? (h.isDate ? this.formatDateToEnglish(item[h.key]) : item[h.key]) : '-'}</td>`).join('')}</tr>`).join('') : `<tr><td colspan="${headers.length}" class="text-center text-muted">لا توجد بيانات</td></tr>`}</tbody></table>`;
             const userInfoHtml = `<div class="row report-info-grid">${Object.entries({'الاسم الكامل': userData['الاسم الكامل'], 'رقم الهوية': userData['رقم الهوية'], 'رقم الجوال': userData['رقم الجوال'], 'مكان الإقامة': userData['مكان الإقامة'], 'اسم الزوجة': userData['اسم الزوجة رباعي'], 'رقم هوية الزوجة': userData['رقم هوية الزوجة']}).map(([label, value]) => `<div class="col-6"><div class="info-box"><strong>${label}:</strong><span>${value || '-'}</span></div></div>`).join('')}</div>`;
             return `<div class="report-header"><img src="logo.webp" alt="شعار"><div><h1>تقرير بيانات فرد</h1><p>عائلة أبو رجيلة (قديح)</p></div></div><h5 class="report-section-title"><i class="bi bi-person-fill me-2"></i>البيانات الشخصية</h5>${userInfoHtml}${createTable('سجل المساعدات المكتملة', 'card-list', aidHistory, [{label: 'نوع المساعدة', key: 'نوع المساعدة'}, {label: 'تاريخ الاستلام', key: 'تاريخ الاستلام', isDate: true}, {label: 'المصدر', key: 'مصدر المساعدة'}])}${createTable('المساعدات المستقبلية المجدولة', 'calendar-check', futureAid, [{label: 'نوع المساعدة', key: 'نوع المساعدة'}, {label: 'تاريخ الاستلام', key: 'تاريخ الاستلام', isDate: true}, {label: 'المصدر', key: 'مصدر المساعدة'}])}<div class="report-footer"><p>تاريخ الطباعة: ${new Date().toLocaleDateString('ar-EG')}</p><p>نظام عائلة أبو رجيلة © 2025</p></div>`;
         },
@@ -234,17 +308,45 @@ document.addEventListener('DOMContentLoaded', () => {
                 tableBody.innerHTML = records.map(aid => `<tr><td>${aid['اسم المستفيد'] || '-'}</td><td>${aid['معرف المستفيد']}</td><td>${aid['نوع المساعدة']}</td><td>${this.formatDateToEnglish(aid['تاريخ الاستلام'])}</td><td>${aid['مصدر المساعدة'] || '-'}</td></tr>`).join('');
             }
         },
+        // --- **الوظيفة المحسنة** ---
         async handleCompleteSingleAid(e, token) {
             const button = e.target.closest('.complete-aid-btn');
             const aidId = button.dataset.id;
-            const confirmed = await this.showConfirmationModal('هل أنت متأكد من تسليم هذه المساعدة؟');
-            if (confirmed) {
-                const result = await this.apiCall({ action: 'updateAidStatus', token, aidId, newStatus: 'Completed' }, true);
-                if (result) {
-                    await this.fetchAidDataAndPopulateTables(token);
-                    this.loadFutureAidData();
-                }
+            const tableRow = button.closest('tr');
+        
+            const confirmationModalEl = document.getElementById('confirmationModal');
+            if (!confirmationModalEl) {
+                this.showToast('خطأ: نافذة التأكيد غير موجودة في الصفحة.', false);
+                return;
             }
+            const confirmationModal = new bootstrap.Modal(confirmationModalEl);
+            const confirmBtn = document.getElementById('confirmActionBtn');
+            document.getElementById('confirmationModalBody').textContent = 'هل أنت متأكد من تسليم هذه المساعدة؟';
+            
+            confirmationModal.show();
+        
+            confirmBtn.onclick = async () => {
+                confirmationModal.hide();
+                
+                button.disabled = true;
+                button.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
+                
+                const result = await this.apiCall({ action: 'updateAidStatus', token, aidId, newStatus: 'Completed' });
+        
+                if (result) {
+                    this.showToast('تم تحديث الحالة بنجاح!', true);
+                    tableRow.style.opacity = '0';
+                    setTimeout(() => {
+                        tableRow.remove();
+                        const totalCountEl = document.getElementById('futureAidTotalCount');
+                        const currentCount = parseInt(totalCountEl.textContent.split(': ')[1] || '0', 10);
+                        totalCountEl.textContent = `إجمالي السجلات: ${Math.max(0, currentCount - 1)}`;
+                    }, 300);
+                } else {
+                    button.disabled = false;
+                    button.innerHTML = `<i class="bi bi-check-lg"></i>`;
+                }
+            };
         },
         async handleConfirmBulkProcess(token) {
             const allFilteredBeneficiaryIds = this.currentFilteredFutureAid.map(record => String(record['معرف المستفيد']));
@@ -310,6 +412,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = await this.apiCall({ action: 'clearMemberPassword', token, userId: userid, timestamp }, true);
                 if (result) this.fetchResetRequests(token);
             }
+        },
+        
+        async showConfirmationModal(message) {
+            return new Promise(resolve => {
+                const confirmationModalEl = document.getElementById('confirmationModal');
+                if (!confirmationModalEl) {
+                    this.showToast('خطأ: نافذة التأكيد غير موجودة.', false);
+                    resolve(false);
+                    return;
+                }
+                const confirmationModal = new bootstrap.Modal(confirmationModalEl);
+                const confirmBtn = document.getElementById('confirmActionBtn');
+                const modalBody = document.getElementById('confirmationModalBody');
+                
+                modalBody.textContent = message;
+                confirmationModal.show();
+
+                const confirmHandler = () => {
+                    confirmationModal.hide();
+                    confirmBtn.removeEventListener('click', confirmHandler);
+                    resolve(true);
+                };
+                
+                confirmBtn.addEventListener('click', confirmHandler);
+
+                confirmationModalEl.addEventListener('hidden.bs.modal', () => {
+                    confirmBtn.removeEventListener('click', confirmHandler);
+                    resolve(false);
+                }, { once: true });
+            });
         },
 
         initSuperAdminPage(token) {
